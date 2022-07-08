@@ -9,3 +9,14 @@ body {
     text-align: center;
     width: 100%;
 }
+
+.headshot {
+    margin-top: 15%;
+}
+
+.headshot img {
+    border-radius: 50%;
+    height: 200px;
+    width: 200px;
+}
+
