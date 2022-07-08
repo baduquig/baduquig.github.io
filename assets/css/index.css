@@ -6,6 +6,7 @@ body {
 }
 
 .container {
+    font-family: 'Roboto Condensed', sans-serif;
     text-align: center;
     width: 100%;
 }
@@ -20,3 +21,38 @@ body {
     width: 200px;
 }
 
+.sections {
+    margin: 5% 0;
+}
+
+.sections h2 {
+    font-size: 40px;
+}
+
+.sections hr {
+    border: 0;
+    height: 2px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+    width: 250px;
+    margin: 0 auto 20px;
+}
+
+#my-name h1 {
+    font-size: 55px;
+}
+
+#my-name p {
+    font-size: 25px;
+}
+
+
+
+#connect a {    
+    text-decoration: none;
+}
+
+#connect img {
+    height: 35px;
+    margin: 0 35px;
+    width: 35px;
+}
