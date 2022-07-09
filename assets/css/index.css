@@ -45,7 +45,25 @@ body {
     font-size: 25px;
 }
 
+#projects .row:hover h3 {
+    font-size: 25px;
+    transition: .6s ease;
+    visibility: visible;
+}
 
+#projects .row:hover img {
+    box-shadow: 5px 5px 10px #404142;
+}
+
+#projects h3 {
+    font-size: 20px;
+    visibility: hidden;
+}
+
+#projects img {
+    margin: 0 auto;
+    width: 85%;
+}
 
 #connect a {    
     text-decoration: none;
