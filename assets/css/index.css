@@ -45,10 +45,22 @@ body {
     font-size: 25px;
 }
 
-#projects .row:hover h3 {
-    font-size: 25px;
-    transition: .6s ease;
-    visibility: visible;
+#about-me .col-md {
+    background-color: #ffffff;
+    margin: 1%;
+    opacity: .8;
+}
+
+#about-me .about-section {
+    text-align: center;
+    vertical-align: middle;
+}
+
+#about-me .about-section img {
+    height: 90%;
+    max-height: 175px;
+    width: auto;
+    max-width: 90%;
 }
 
 #projects .row:hover img {
@@ -56,8 +68,7 @@ body {
 }
 
 #projects h3 {
-    font-size: 20px;
-    visibility: hidden;
+    font-size: 25px;
 }
 
 #projects img {
