@@ -66,12 +66,15 @@ body {
     box-shadow: 5px 5px 10px #404142;
 }
 
+#projects .row {
+    margin: 5% auto;
+}
+
 #projects h3 {
     font-size: 25px;
 }
 
 #projects img {
-    margin: 0 auto;
     width: 90%;
 }
 
@@ -81,6 +84,6 @@ body {
 
 #connect img {
     height: 35px;
-    margin: 0 35px;
+    margin: 0 8%;
     width: 35px;
 }
