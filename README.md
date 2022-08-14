@@ -1,5 +1,5 @@
 # baduquig.github.io
-Personal site to practice/try out front end web development
+Personal site to practice front end web development
 
 <br>
 
