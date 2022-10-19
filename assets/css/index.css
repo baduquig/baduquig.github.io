@@ -78,12 +78,17 @@ body {
     width: 90%;
 }
 
-#connect a {    
+#connect span {
+    height: 50px;
+    margin: 0 5%;
+    width: 50px;
+}
+
+#connect a {
     text-decoration: none;
 }
 
 #connect img {
     height: 35px;
-    margin: 0 5%;
     width: 35px;
 }
