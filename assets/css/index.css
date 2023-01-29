@@ -90,6 +90,8 @@ body {
 }
 
 #connect img {
+    background-color: #ffffff;
+    border-radius: 20%;
     height: 35px;
     width: 35px;
 }
