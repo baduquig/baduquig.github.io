@@ -1,0 +1,50 @@
+body {
+    background-attachment: fixed;
+    /* background-image: url(./images/) */
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.container {
+    color: #ffffff;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight: 200;
+    text-align: center;
+    width: 100%;
+}
+
+.inputs-div {
+    color: #000000;
+    margin: 20px auto;
+}
+
+.inputs-col {
+    display: inline-block;
+    margin: 0 5%;
+    width: 40%;
+}
+
+label {
+    color: #ffffff;
+}
+
+#map {
+    margin: 2% 10%;
+}
+
+#grid {
+    background-color: #ffffff;
+    margin: 0 10%;
+    opacity: .8;
+    text-align: left;
+}
+
+table {
+    color: #000000;
+    border-collapse: collapse;
+    margin: 25px auto;
+}
+
+table, th, td {
+    border: 1px solid;
+}
