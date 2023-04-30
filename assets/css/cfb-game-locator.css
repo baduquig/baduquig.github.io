@@ -1,6 +1,6 @@
 body {
     background-attachment: fixed;
-    /* background-image: url(./images/) */
+    background-image: url('../images/michigan-stadium-night-game-.jpg');
     background-repeat: no-repeat;
     background-size: cover;
 }
@@ -14,18 +14,21 @@ body {
 }
 
 .inputs-div {
+    margin: 15px auto;
+    width: 50%;
+}
+
+.input-group {
+    margin: 25px auto;
+}
+
+.input-field {
+    margin: 5px auto;
+}
+
+select {
     color: #000000;
-    margin: 20px auto;
-}
-
-.inputs-col {
-    display: inline-block;
-    margin: 0 5%;
-    width: 40%;
-}
-
-label {
-    color: #ffffff;
+    width: 70%;
 }
 
 #map {
