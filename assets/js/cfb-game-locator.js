@@ -1,24 +1,45 @@
+let gamesData = {};
+let schoolsData = {};
+let conferencesData = {};
 
-fetch('https://raw.githubusercontent.com/baduquig/espn-college-football-schedule-data-wrangling/main/data/games.json')
-    .then(response => response.json())
-    .then(gamesData => {
-        console.log('gamesData');
-        console.log(gamesData); // do something with the games data
-    })
-    .catch(error => console.error(error));
+let getJSON = (jsonFile, callback) => {
+    let url = 'https://raw.githubusercontent.com/baduquig/espn-college-football-schedule-data-wrangling/main/data/' + jsonFile;
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.responseType = 'json';
+    xhr.onload = () => {
+        if (xhr.status === 200) {
+            callback(null, xhr.response);
+        } else {
+            callback(xhr.status, xhr.response);
+        }
+    }
+    xhr.send();
+}
 
-fetch('https://raw.githubusercontent.com/baduquig/espn-college-football-schedule-data-wrangling/main/data/schools.json')
-    .then(response => response.json())
-    .then(schoolsData => {
-        console.log('schoolsData');
-        console.log(schoolsData); // do something with the games data
-    })
-    .catch(error => console.error(error));
-    
-fetch('https://raw.githubusercontent.com/baduquig/espn-college-football-schedule-data-wrangling/main/data/conferences.json')
-    .then(response => response.json())
-    .then(conferencesData => {
-        console.log('conferencesData');
-        console.log(conferencesData); // do something with the games data
-    })
-    .catch(error => console.error(error));
+getJSON('games.json', (err, data) => {
+    if (err !== null) {
+        console.log(err);
+    } else {
+        gamesData = data;
+    }
+}
+);
+
+getJSON('schools.json', (err, data) => {
+    if (err !== null) {
+        console.log(err);
+    } else {
+        schoolsData = data;
+    }
+}
+);
+
+getJSON('conferences.json', (err, data) => {
+        if (err !== null) {
+            console.log(err);
+        } else {
+            conferencesData = data;
+        }
+    }
+);
