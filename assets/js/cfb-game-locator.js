@@ -43,3 +43,10 @@ getJSON('conferences.json', (err, data) => {
         }
     }
 );
+
+//let gamesValues = gamesData.map(item => item.week);
+//let weeks = new Set(gamesValues);
+//let weeks = new Set(gamesData.map(item => item.week));
+
+let conferences = conferencesData.map(item => item.conference_name);
+console.log(conferences);
