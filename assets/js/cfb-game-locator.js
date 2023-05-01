@@ -4,6 +4,33 @@ let conferencesData = {};
 
 let weeksArray = []
 let weekOptions = '';
+let weekDropdown = document.getElementById('week');
+
+let conferenceArray = []
+let conferenceOptions = '';
+let conferencesDropdown = document.getElementById('conference');
+
+function setWeeksDropdown() {
+    for (i = 0; i < gamesData.length; i++) {
+        week = gamesData[i].week;
+        if (!weeksArray.includes(week)) {
+            weeksArray.push(week);
+            weekOptions += '<option value="' + week + '">' + week + '</option>';
+        }
+    }        
+    weekDropdown.innerHTML = weekOptions;
+}
+
+function setConferenceDropdown() {
+    for (i = 0; i < conferencesData.length; i++) {
+        conferenceName = conferencesData[i].conference_name;
+        if (!conferenceArray.includes(conferenceName)) {
+            conferenceArray.push(conferenceName);
+            conferenceOptions += '<option value="' + conferencesData[i].conference_id + '">' + conferenceName + '</option>';
+        }
+    }        
+    conferencesDropdown.innerHTML = conferenceOptions;
+}
 
 let getJSON = (jsonFile, callback) => {
     let url = 'https://raw.githubusercontent.com/baduquig/espn-college-football-schedule-data-wrangling/main/data/' + jsonFile;
@@ -25,6 +52,7 @@ getJSON('games.json', (err, data) => {
         console.log(err);
     } else {
         gamesData = data;
+        setWeeksDropdown(gamesData);
     }
 }
 );
@@ -43,17 +71,8 @@ getJSON('conferences.json', (err, data) => {
             console.log(err);
         } else {
             conferencesData = data;
+            setConferenceDropdown(conferencesData);
         }
     }
 );
 
-gamesData.forEach(game => {
-    week = game.week;
-    if (!weeksArray.includes(week)) {
-        weeksArray.push(week);
-        weekOptions += '<option value="' + week + '">' + week + '</option>';
-    }
-});
-
-let weekDropdown = document.getElementById('week');
-weekDropdown.innerHTML = weekOptions;
