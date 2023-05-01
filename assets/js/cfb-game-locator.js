@@ -2,6 +2,9 @@ let gamesData = {};
 let schoolsData = {};
 let conferencesData = {};
 
+let weeksArray = []
+let weekOptions = '';
+
 let getJSON = (jsonFile, callback) => {
     let url = 'https://raw.githubusercontent.com/baduquig/espn-college-football-schedule-data-wrangling/main/data/' + jsonFile;
     let xhr = new XMLHttpRequest();
@@ -44,9 +47,13 @@ getJSON('conferences.json', (err, data) => {
     }
 );
 
-//let gamesValues = gamesData.map(item => item.week);
-//let weeks = new Set(gamesValues);
-//let weeks = new Set(gamesData.map(item => item.week));
+gamesData.forEach(game => {
+    week = game.week;
+    if (!weeksArray.includes(week)) {
+        weeksArray.push(week);
+        weekOptions += '<option value="' + week + '">' + week + '</option>';
+    }
+});
 
-let conferences = conferencesData.map(item => item.conference_name);
-console.log(conferences);
+let weekDropdown = document.getElementById('week');
+weekDropdown.innerHTML = weekOptions;
