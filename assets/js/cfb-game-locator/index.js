@@ -2,13 +2,11 @@
 let gamesData = {};
 let schoolsData = {};
 let conferencesData = {};
+let locationsData = {};
 let filteredGames = gamesData;
 
 // Input field variables
-let weekArray = [];
-let weekOptions = '';
 let weekDropdown = document.getElementById('week');
-
 let dayDropdown = document.getElementById('day');
 let conferenceDropdown = document.getElementById('conference');
 let schoolDropdown = document.getElementById('school');
@@ -46,16 +44,15 @@ function updateSchoolOptions(conference) {
     schoolDropdown.innerHTML = schoolOptions;
 }
 
-function setWeekDropdown(weekNum) {
-    for (i = 0; i < gamesData.length; i++) {
-        weekNum = gamesData[i].week;
-        if (!weekArray.includes(weekNum)) {
-            weekArray.push(weekNum);
-            weekOptions += '<option value="' + weekNum + '">' + weekNum + '</option>';
-        }
+function setWeekDropdown() {
+    let weekOptions = '<option disabled selected value></option>';
+
+    for (i = 0; i < 15; i++) {
+        weekNum = i + 1;
+        weekOptions += '<option value="' + weekNum + '">' + weekNum + '</option>';
     }
     weekDropdown.innerHTML = weekOptions;
-    updateDayOptions(weekNum);
+    updateDayOptions(1);
 }
 
 function setConferenceDropdown() {
@@ -80,6 +77,7 @@ function filterGames() {
     let selectedConference = conferenceDropdown.value;
     let selectedSchool = schoolDropdown.value;
 
+    // Apply filters that are populated
     if ((selectedDay == null || selectedDay == '') && (selectedConference == null || selectedConference == '') && (selectedSchool == null || selectedSchool == '')) {
         console.log('Here 1');
         filteredGames = gamesData.filter(game => {
@@ -125,26 +123,66 @@ function filterGames() {
             )
         });
     }
-    console.log('HERE!');
+
+    // Iterate through all objects in filteredGames 
     for (i = 0; i < filteredGames.length; i++) {
-        console.log('Starting loop...')
         let awayJoined = false;
         let homeJoined = false;
+        let locationJoined = false;
         let j = 0;
 
-        while (!awayJoined && !homeJoined) {
-            console.log(filteredGames[i].away_school);
-            console.log(schoolsData[j].school_id);
-            if (filteredGames[i].away_school === schoolsData[j].school_id) {
-                awayJoined = true;
-                filteredGames[i].away_school_name = schoolsData[j].name;
-                filteredGames[i].away_school_mascot = schoolsData[j].mascot;
+        while (!awayJoined || !homeJoined || !locationJoined) {
+            // Join Away School Name and Mascot on School ID
+            if (!awayJoined) {
+                if (j < schoolsData.length) {
+                    if (filteredGames[i].away_school === schoolsData[j].school_id) {
+                        awayJoined = true;
+                        filteredGames[i].away_school_name = schoolsData[j].name;
+                        filteredGames[i].away_school_mascot = schoolsData[j].mascot;
+                    }
+                } else {
+                    awayJoined = true;
+                    filteredGames[i].away_school_name = 'Away School';
+                    filteredGames[i].away_school_mascot = 'Away Mascot';
+                }
             }
-            if (filteredGames[i].home_school === schoolsData[j].school_id) {
-                homeJoined = true;
-                filteredGames[i].home_school_name = schoolsData[j].name;
-                filteredGames[i].home_school_mascot = schoolsData[j].mascot;
+
+            // Join Home School Name and Mascot on School ID
+            if (!homeJoined) {
+                if (j < schoolsData.length) {
+                    if (filteredGames[i].home_school === schoolsData[j].school_id) {
+                        homeJoined = true;
+                        filteredGames[i].home_school_name = schoolsData[j].name;
+                        filteredGames[i].home_school_mascot = schoolsData[j].mascot;
+                    }
+                } else {
+                    homeJoined = true;
+                    filteredGames[i].home_school_name = 'Home School';
+                    filteredGames[i].home_school_mascot = 'Home Mascot';
+                }
             }
+
+            // Join Location Name and Geocoordinates on Location ID
+            if (!locationJoined) {
+                if (j < locationsData.length) {
+                    if (filteredGames[i].location_id == locationsData[j].location_id) {
+                        locationJoined = true;
+                        filteredGames[i].location_name = locationsData[j].location_name;
+                        filteredGames[i].city = locationsData[j].city;
+                        filteredGames[i].state = locationsData[j].state;
+                        filteredGames[i].latitude = locationsData[j].latitude;
+                        filteredGames[i].longitude = locationsData[j].longitude;
+                    }
+                } else {
+                    locationJoined = true;
+                    filteredGames[i].location_name = 'Stadium Name';
+                    filteredGames[i].city = 'City';
+                    filteredGames[i].state = 'State';
+                    filteredGames[i].latitude = 0;
+                    filteredGames[i].longitude = 0;
+                }
+            }
+            
             j++;
         }
     }
@@ -164,17 +202,16 @@ let getJSON = (jsonFile, callback) => {
         }
     }
     xhr.send();
-}
+} 
 
 getJSON('games.json', (err, data) => {
     if (err !== null) {
         console.log(err);
     } else {
         gamesData = data;
-        setWeekDropdown(gamesData);
+        setWeekDropdown();
     }
-}
-);
+});
 
 getJSON('schools.json', (err, data) => {
     if (err !== null) {
@@ -182,16 +219,21 @@ getJSON('schools.json', (err, data) => {
     } else {
         schoolsData = data;
     }
-}
-);
+});
 
 getJSON('conferences.json', (err, data) => {
-        if (err !== null) {
-            console.log(err);
-        } else {
-            conferencesData = data;
-            setConferenceDropdown(conferencesData);
-        }
+    if (err !== null) {
+        console.log(err);
+    } else {
+        conferencesData = data;
+        setConferenceDropdown(conferencesData);
     }
-);
+});
 
+getJSON('locations.json', (err, data) => {
+    if (err !== null) {
+        console.log(err);
+    } else {
+        locationsData = data;
+    }
+});
