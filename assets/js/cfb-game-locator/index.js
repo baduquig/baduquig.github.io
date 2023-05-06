@@ -71,6 +71,49 @@ function setConferenceDropdown() {
 }
 
 
+function renderMap(data) {
+    var plotPoints = [{
+        type:'scattergeo',
+        locationmode: 'USA-states',
+        lon: data.longitude,
+        lat: data.latitude,
+        //hoverinfor:  unpack(rows, 'airport'),
+        //text:  unpack(rows, 'airport'),
+        mode: 'markers',
+        marker: {
+            size: 8,
+            opacity: 0.8,
+            reversescale: true,
+            autocolorscale: false/*,
+            symbol: 'square',
+            line: {
+                width: 1,
+                color: 'rgb(102,102,102)'
+            },
+            colorscale: scl,
+            cmin: 0,
+            color: unpack(rows, 'cnt'),*/
+        }
+    }];
+
+    var layout = {
+        geo: {
+            scope: 'usa',
+            projection: {
+                type: 'albers usa'
+            },
+            showland: true,
+            landcolor: 'rgb(250,250,250)',
+            subunitcolor: 'rgb(217,217,217)',
+            countrycolor: 'rgb(217,217,217)',
+            countrywidth: 0.5,
+            subunitwidth: 0.5
+        }
+    }
+    Plotly.newPlot('map', plotPoints, layout);
+}
+
+
 function filterGames() {
     let selectedWeek = weekDropdown.value;
     let selectedDay = dayDropdown.value;
@@ -186,6 +229,7 @@ function filterGames() {
             j++;
         }
     }
+    renderMap(filteredGames);
 }
 
 
