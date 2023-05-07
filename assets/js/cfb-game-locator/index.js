@@ -1,9 +1,10 @@
 // Data Objects
+// let allData = {};
 let gamesData = {};
 let schoolsData = {};
 let conferencesData = {};
 let locationsData = {};
-let filteredGames = gamesData;
+let filteredData = {};
 
 // Input field variables
 let weekDropdown = document.getElementById('week');
@@ -12,16 +13,43 @@ let conferenceDropdown = document.getElementById('conference');
 let schoolDropdown = document.getElementById('school');
 
 
+// Initialize Week and Conference dropdown options
+function setWeekDropdown(weeks) {
+    //let weekOptions = '<option disabled selected value></option>';
+    let weekOptions = '';
+
+    for (i = 0; i < weeks; i++) {
+        weekNum = i + 1;
+        weekOptions += '<option value="' + weekNum + '">' + weekNum + '</option>';
+    }
+    weekDropdown.innerHTML = weekOptions;
+}
+
+function setConferenceDropdown(conferences) {
+    let conferenceArray = [];
+    let conferenceOptions = '<option disabled selected value></option>';
+
+    for (i = 0; i < conferences.length; i++) {
+        conferenceName = conferences[i].conferenceName;
+        conferenceID = conferences[i].conferenceID;
+        if (!conferenceArray.includes(conferenceName)) {
+            conferenceArray.push(conferenceName);
+            conferenceOptions += '<option value="' + conferenceID + '">' + conferenceName + '</option>';
+        }
+    }        
+    conferenceDropdown.innerHTML = conferenceOptions;
+}
+
 // Input field functions
 function updateDayOptions(weekNum) {
     dayDropdown.value = null;
     let dayArray = [];
     let dayOptions = '<option disabled selected value></option>';
-    filterGames();
-    
-    for (i = 0; i < filteredGames.length; i++) {
-        day = filteredGames[i].game_date;
-        if ((filteredGames[i].week == weekNum) && (!dayArray.includes(day))) {
+    filter();
+
+    for (i = 0; i < filteredData.length; i++) {
+        day = filteredData[i].gameDate;
+        if ((filteredData[i].week === weekNum) && (!dayArray.includes(day))) {
             dayArray.push(day);
             dayOptions += '<option value="' + day.split(',')[0] + '">' + day + '</option>';
         }
@@ -30,13 +58,14 @@ function updateDayOptions(weekNum) {
 }
 
 function updateSchoolOptions(conference) {
+    schoolDropdown.value = null;
     let schoolArray = [];
     let schoolOptions = '<option disabled selected value></option>';
-    filterGames();
+    filter();
 
     for (i = 0; i < schoolsData.length; i++) {
         schoolName = schoolsData[i].name;
-        if ((schoolsData[i].conference_id == conference) && (!schoolArray.includes(schoolName))) {
+        if ((schoolsData[i].conferenceID === conference) && (!schoolArray.includes(schoolName))) {
             schoolArray.push(schoolName);
             schoolOptions += '<option value="' + schoolsData[i].school_id + '">' + schoolName + '</option>'
         }
@@ -44,30 +73,56 @@ function updateSchoolOptions(conference) {
     schoolDropdown.innerHTML = schoolOptions;
 }
 
-function setWeekDropdown() {
-    let weekOptions = '<option disabled selected value></option>';
 
-    for (i = 0; i < 15; i++) {
-        weekNum = i + 1;
-        weekOptions += '<option value="' + weekNum + '">' + weekNum + '</option>';
+function applySelectedFilters(selectedWeek, selectedDay, selectedConference, selectedSchool) {
+    x = {};
+    
+    if ((selectedDay == null || selectedDay == '') && (selectedConference == null || selectedConference == '') && (selectedSchool == null || selectedSchool == '')) {
+        console.log('Here 1');
+        x = gamesData.filter(game => {
+            return (game.week === selectedWeek)
+        });
+    } else if ((selectedConference == null || selectedConference == '') && (selectedSchool == null || selectedSchool == '')) {
+        console.log('Here 2');
+        x = gamesData.filter(game => {
+            return ((game.week === selectedWeek) 
+                    && (game.gameDate.split(',')[0] == selectedDay)
+            )
+        });
+    } else if ((selectedDay == null || selectedDay == '') && (selectedSchool == null || selectedSchool == '')) {
+        console.log('Here 3');
+        x = gamesData.filter(game => {
+            return ((game.week === selectedWeek) 
+                    && (game.conferenceID == selectedConference) 
+            )
+        });
+    } else if (selectedDay == null || selectedDay == '') {
+        console.log('Here 4');
+        x = gamesData.filter(game => {
+            return ((game.week === selectedWeek)
+                    && (game.conferenceID == selectedConference) 
+                    && ((game.awaySchool == selectedSchool) || (game.homeSchool == selectedSchool))
+            )
+        });
+    } else if (selectedSchool == null || selectedSchool == '') {
+        console.log('Here 5');
+        x = gamesData.filter(game => {
+            return ((game.week === selectedWeek) 
+                    && (game.gameDate == selectedDay) 
+                    && (game.conferenceID == selectedConference)
+            )
+        });
+    } else {
+        console.log('Here 6');
+        x = gamesData.filter(game => {
+            return ((game.week === selectedWeek) 
+                    && (game.gameDate == selectedDay) 
+                    && (game.conferenceID == selectedConference) 
+                    && ((game.awaySchool == selectedSchool) || (game.homeSchool == selectedSchool))
+            )
+        });
     }
-    weekDropdown.innerHTML = weekOptions;
-    updateDayOptions(1);
-}
-
-function setConferenceDropdown() {
-    let conferenceArray = [];
-    let conferenceOptions = '<option disabled selected value></option>';
-
-    for (i = 0; i < conferencesData.length; i++) {
-        conferenceName = conferencesData[i].conference_name;
-        conferenceId = conferencesData[i].conference_id;
-        if (!conferenceArray.includes(conferenceName)) {
-            conferenceArray.push(conferenceName);
-            conferenceOptions += '<option value="' + conferenceId + '">' + conferenceName + '</option>';
-        }
-    }        
-    conferenceDropdown.innerHTML = conferenceOptions;
+    filteredData = x;
 }
 
 
@@ -75,8 +130,8 @@ function renderMap(data) {
     var plotPoints = [{
         type:'scattergeo',
         locationmode: 'USA-states',
-        lon: data.longitude,
-        lat: data.latitude,
+        //lon: unpack(rows, 'long'),
+        //lat: unpack(rows, 'lat'),
         //hoverinfor:  unpack(rows, 'airport'),
         //text:  unpack(rows, 'airport'),
         mode: 'markers',
@@ -84,19 +139,23 @@ function renderMap(data) {
             size: 8,
             opacity: 0.8,
             reversescale: true,
-            autocolorscale: false/*,
-            symbol: 'square',
+            autocolorscale: false,
+            /*symbol: 'square',
             line: {
                 width: 1,
                 color: 'rgb(102,102,102)'
             },
             colorscale: scl,
             cmin: 0,
-            color: unpack(rows, 'cnt'),*/
+            color: unpack(rows, 'cnt'),
+            colorbar: {
+                title: 'Incoming Flights February 2011'
+            }*/
         }
     }];
 
     var layout = {
+        colorbar: true,
         geo: {
             scope: 'usa',
             projection: {
@@ -106,130 +165,23 @@ function renderMap(data) {
             landcolor: 'rgb(250,250,250)',
             subunitcolor: 'rgb(217,217,217)',
             countrycolor: 'rgb(217,217,217)',
-            countrywidth: 0.5,
-            subunitwidth: 0.5
+            countrywidth: 1,
+            subunitwidth: 1
         }
-    }
+    };
+
     Plotly.newPlot('map', plotPoints, layout);
 }
 
 
-function filterGames() {
+function filter() {
     let selectedWeek = weekDropdown.value;
     let selectedDay = dayDropdown.value;
     let selectedConference = conferenceDropdown.value;
     let selectedSchool = schoolDropdown.value;
 
-    // Apply filters that are populated
-    if ((selectedDay == null || selectedDay == '') && (selectedConference == null || selectedConference == '') && (selectedSchool == null || selectedSchool == '')) {
-        console.log('Here 1');
-        filteredGames = gamesData.filter(game => {
-            return (game.week == selectedWeek)
-        });
-    } else if ((selectedConference == null || selectedConference == '') && (selectedSchool == null || selectedSchool == '')) {
-        console.log('Here 2');
-        filteredGames = gamesData.filter(game => {
-            return ((game.week == selectedWeek) 
-                    && (game.game_date.split(',')[0] == selectedDay)
-            )
-        });
-    } else if ((selectedDay == null || selectedDay == '') && (selectedSchool == null || selectedSchool == '')) {
-        console.log('Here 3');
-        filteredGames = gamesData.filter(game => {
-            return ((game.week == selectedWeek) 
-                    && (game.conference_id == selectedConference) 
-            )
-        });
-    } else if (selectedDay == null || selectedDay == '') {
-        console.log('Here 4');
-        filteredGames = gamesData.filter(game => {
-            return ((game.week === selectedWeek)
-                    && (game.conference_id == selectedConference) 
-                    && ((game.away_school == selectedSchool) || (game.home_school == selectedSchool))
-            )
-        });
-    } else if (selectedSchool == null || selectedSchool == '') {
-        console.log('Here 5');
-        filteredGames = gamesData.filter(game => {
-            return ((game.week == selectedWeek) 
-                    && (game.game_date == selectedDay) 
-                    && (game.conference_id == selectedConference)
-            )
-        });
-    } else {
-        console.log('Here 6');
-        filteredGames = gamesData.filter(game => {
-            return ((game.week === selectedWeek) 
-                    && (game.game_date == selectedDay) 
-                    && (game.conference_id == selectedConference) 
-                    && ((game.away_school == selectedSchool) || (game.home_school == selectedSchool))
-            )
-        });
-    }
-
-    // Iterate through all objects in filteredGames 
-    for (i = 0; i < filteredGames.length; i++) {
-        let awayJoined = false;
-        let homeJoined = false;
-        let locationJoined = false;
-        let j = 0;
-
-        while (!awayJoined || !homeJoined || !locationJoined) {
-            // Join Away School Name and Mascot on School ID
-            if (!awayJoined) {
-                if (j < schoolsData.length) {
-                    if (filteredGames[i].away_school === schoolsData[j].school_id) {
-                        awayJoined = true;
-                        filteredGames[i].away_school_name = schoolsData[j].name;
-                        filteredGames[i].away_school_mascot = schoolsData[j].mascot;
-                    }
-                } else {
-                    awayJoined = true;
-                    filteredGames[i].away_school_name = 'Away School';
-                    filteredGames[i].away_school_mascot = 'Away Mascot';
-                }
-            }
-
-            // Join Home School Name and Mascot on School ID
-            if (!homeJoined) {
-                if (j < schoolsData.length) {
-                    if (filteredGames[i].home_school === schoolsData[j].school_id) {
-                        homeJoined = true;
-                        filteredGames[i].home_school_name = schoolsData[j].name;
-                        filteredGames[i].home_school_mascot = schoolsData[j].mascot;
-                    }
-                } else {
-                    homeJoined = true;
-                    filteredGames[i].home_school_name = 'Home School';
-                    filteredGames[i].home_school_mascot = 'Home Mascot';
-                }
-            }
-
-            // Join Location Name and Geocoordinates on Location ID
-            if (!locationJoined) {
-                if (j < locationsData.length) {
-                    if (filteredGames[i].location_id == locationsData[j].location_id) {
-                        locationJoined = true;
-                        filteredGames[i].location_name = locationsData[j].location_name;
-                        filteredGames[i].city = locationsData[j].city;
-                        filteredGames[i].state = locationsData[j].state;
-                        filteredGames[i].latitude = locationsData[j].latitude;
-                        filteredGames[i].longitude = locationsData[j].longitude;
-                    }
-                } else {
-                    locationJoined = true;
-                    filteredGames[i].location_name = 'Stadium Name';
-                    filteredGames[i].city = 'City';
-                    filteredGames[i].state = 'State';
-                    filteredGames[i].latitude = 0;
-                    filteredGames[i].longitude = 0;
-                }
-            }
-            
-            j++;
-        }
-    }
-    renderMap(filteredGames);
+    applySelectedFilters(selectedWeek, selectedDay, selectedConference, selectedSchool);
+    renderMap(filteredData);
 }
 
 
@@ -248,12 +200,22 @@ let getJSON = (jsonFile, callback) => {
     xhr.send();
 } 
 
+/* getJSON('allData.json', (err, data) => {
+    if (err !== null) {
+        console.log(err);
+    } else {
+        allData = data;
+        setWeekDropdown();
+    }
+}); */
+
+setWeekDropdown(15);
+
 getJSON('games.json', (err, data) => {
     if (err !== null) {
         console.log(err);
     } else {
         gamesData = data;
-        setWeekDropdown();
     }
 });
 
@@ -269,8 +231,8 @@ getJSON('conferences.json', (err, data) => {
     if (err !== null) {
         console.log(err);
     } else {
+        setConferenceDropdown(data);
         conferencesData = data;
-        setConferenceDropdown(conferencesData);
     }
 });
 
