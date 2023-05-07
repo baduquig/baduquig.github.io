@@ -74,6 +74,7 @@ function updateSchoolOptions(conference) {
 
 
 function applySelectedFilters(selectedWeek, selectedDay, selectedConference, selectedSchool) {
+    // TODO: Fix conferene filters to filter for home/away conference
     if ((selectedDay == null || selectedDay == '') && (selectedConference == null || selectedConference == '') && (selectedSchool == null || selectedSchool == '')) {
         console.log('Here 1');
         filteredData= gamesData.filter(game => {
@@ -123,32 +124,16 @@ function applySelectedFilters(selectedWeek, selectedDay, selectedConference, sel
 
 
 function renderMap(data) {
-    var plotPoints = [{
+    var plotPoints = {
         type:'scattergeo',
         locationmode: 'USA-states',
-        //lon: unpack(rows, 'long'),
-        //lat: unpack(rows, 'lat'),
+        //lat: filteredData.map(game => game.latitude),
+        //lon: filteredData.map(game => game.longitude),
         //hoverinfor:  unpack(rows, 'airport'),
         //text:  unpack(rows, 'airport'),
-        mode: 'markers',
-        marker: {
-            size: 8,
-            opacity: 0.8,
-            reversescale: true,
-            autocolorscale: false,
-            /*symbol: 'square',
-            line: {
-                width: 1,
-                color: 'rgb(102,102,102)'
-            },
-            colorscale: scl,
-            cmin: 0,
-            color: unpack(rows, 'cnt'),
-            colorbar: {
-                title: 'Incoming Flights February 2011'
-            }*/
+        mode: 'markers'
         }
-    }];
+    };
 
     var layout = {
         colorbar: true,
@@ -159,11 +144,11 @@ function renderMap(data) {
             }
         },
         margin: {
-            l: 10,
-            r: 10,
-            b: 10,
-            t: 10,
-            pad: 4
+            l: 5,
+            r: 5,
+            b: 5,
+            t: 5,
+            pad: 2
           }
     };
 
@@ -240,3 +225,13 @@ getJSON('locations.json', (err, data) => {
         locationsData = data;
     }
 });
+
+for (x = 0; x < gamesData.length; x++) {
+    let awaySchoolJoined = false;
+    let homeSchoolJoined = false;
+    let awayConferenceJoined = false;
+    let homeConferenceJoined = false;
+    let locationJoined = false;
+
+    // TODO: Finish joining properties from schoolsData, conferencesData, locationsData objects
+}
