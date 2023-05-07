@@ -155,15 +155,16 @@ function renderMap(data) {
         geo: {
             scope: 'usa',
             projection: {
-                type: 'albers usa'
-            },
-            showland: true,
-            landcolor: 'rgb(250,250,250)',
-            subunitcolor: 'rgb(217,217,217)',
-            countrycolor: 'rgb(217,217,217)',
-            countrywidth: 1,
-            subunitwidth: 1
-        }
+                type: 'usa'
+            }
+        },
+        margin: {
+            l: 10,
+            r: 10,
+            b: 10,
+            t: 10,
+            pad: 4
+          }
     };
 
     Plotly.newPlot('map', plotPoints, layout);

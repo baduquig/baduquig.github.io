@@ -33,6 +33,11 @@ select {
 
 #map {
     margin: 2% 10%;
+    opacity: .9;
+}
+
+#geolayer {
+    width: 90%;
 }
 
 #grid {
