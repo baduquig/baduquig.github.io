@@ -1,5 +1,5 @@
 // Data Objects
-// let allData = {};
+let allData = {};
 let gamesData = {};
 let schoolsData = {};
 let conferencesData = {};
@@ -226,12 +226,92 @@ getJSON('locations.json', (err, data) => {
     }
 });
 
-for (x = 0; x < gamesData.length; x++) {
+allData = gamesData;
+for (x = 0; x < allData.length; x++) {
     let awaySchoolJoined = false;
     let homeSchoolJoined = false;
     let awayConferenceJoined = false;
     let homeConferenceJoined = false;
     let locationJoined = false;
+    let y = 0;
 
     // TODO: Finish joining properties from schoolsData, conferencesData, locationsData objects
+    while ((!awaySchoolJoined) || (!homeSchoolJoined) || (!awayConferenceJoined) || (!homeConferenceJoined) || (!locationJoined)) {
+        if (!awaySchoolJoined) {
+            if (y < schoolsData.length) {
+                if (allData[x].awaySchool == schoolData[y].schoolID) {
+                    allData[x].awaySchoolName = schoolData[y].name;
+                    allData[x].awaySchoolMascot = schoolData[y].mascot;
+                    allData[x].awaySchoolDivisionID = schoolData[y].divisionID;
+                    awaySchoolJoined = true;
+                }
+            } else {
+                allData[x].awaySchoolName = 'Away School';
+                allData[x].awaySchoolMascot = 'Away Mascot';
+                allData[x].awaySchoolDivisionID = 0;
+            }
+        }
+        
+        if (!homeSchoolJoined) {
+            if (y < schoolsData.length) {
+                if (allData[x].homeSchool == schoolData[y].schoolID) {
+                    allData[x].homeSchoolName = schoolData[y].name;
+                    allData[x].homeSchoolMascot = schoolData[y].mascot;
+                    allData[x].homeSchoolDivisionID = schoolData[y].divisionID;
+                    homeSchoolJoined = true;
+                }
+            } else {
+                allData[x].homeSchoolName = 'Home School';
+                allData[x].homeSchoolMascot = 'Home Mascot';
+                allData[x].homeSchoolDivisionID = 0;
+            }
+        }
+        
+        if (!awayConferenceJoined) {
+            if (y < conferencesData.length) {
+                if (allData[x].awayDivisionID == conferencesData[y].divisionID) {
+                    allData[x].awayConferenceID = conferencesData[y].conferenceID;
+                    allData[x].awayConferenceName = conferencesData[y].conferenceName;
+                    awayConferenceJoined = true;
+                }
+            } else {
+                allData[x].awayConferenceID = 0;
+                allData[x].awayConferenceName = 'Conference Name';
+            }
+        }
+        
+        if (!homeConferenceJoined) {
+            if (y < conferencesData.length) {
+                if (allData[x].homeDivisionID == conferencesData[y].divisionID) {
+                    allData[x].homeConferenceID = conferencesData[y].conferenceID;
+                    allData[x].homeConferenceName = conferencesData[y].conferenceName;
+                    homeConferenceJoined = true;
+                }
+            } else {
+                allData[x].homeConferenceID = 0;
+                allData[x].homeConferenceName = 'Conference Name';
+            }
+        }
+        
+        if (!locationJoined) {
+            if (y < locationsData.length) {
+                if (allData[x].locationID == locationsData[y].locationID) {
+                    allData[x].locationName = locationsData[y].locationName;
+                    allData[x].city = locationsData[y].city;
+                    allData[x].state = locationsData[y].state;
+                    allData[x].latitude = locationsData[y].latitude;
+                    allData[x].longitude = locationsData[y].longitude;
+                    locationJoined = true;
+                }
+            } else {
+                allData[x].locationName = 'Location Name';
+                allData[x].city = 'City';
+                allData[x].state = 'State';
+                allData[x].latitude = 0;
+                allData[x].longitude = 0;
+            }
+        }
+        
+    }
+    y++;
 }
