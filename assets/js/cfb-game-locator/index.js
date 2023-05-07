@@ -15,11 +15,10 @@ let schoolDropdown = document.getElementById('school');
 
 // Initialize Week and Conference dropdown options
 function setWeekDropdown(weeks) {
-    //let weekOptions = '<option disabled selected value></option>';
-    let weekOptions = '';
-
+    let weekOptions = '<option disabled selected value></option>';
+    
     for (i = 0; i < weeks; i++) {
-        weekNum = i + 1;
+        let weekNum = i + 1;
         weekOptions += '<option value="' + weekNum + '">' + weekNum + '</option>';
     }
     weekDropdown.innerHTML = weekOptions;
@@ -30,8 +29,8 @@ function setConferenceDropdown(conferences) {
     let conferenceOptions = '<option disabled selected value></option>';
 
     for (i = 0; i < conferences.length; i++) {
-        conferenceName = conferences[i].conferenceName;
-        conferenceID = conferences[i].conferenceID;
+        let conferenceName = conferences[i].conferenceName;
+        let conferenceID = conferences[i].conferenceID;
         if (!conferenceArray.includes(conferenceName)) {
             conferenceArray.push(conferenceName);
             conferenceOptions += '<option value="' + conferenceID + '">' + conferenceName + '</option>';
@@ -45,11 +44,11 @@ function updateDayOptions(weekNum) {
     dayDropdown.value = null;
     let dayArray = [];
     let dayOptions = '<option disabled selected value></option>';
-    filter();
-
+    filterGames();
+    
     for (i = 0; i < filteredData.length; i++) {
-        day = filteredData[i].gameDate;
-        if ((filteredData[i].week === weekNum) && (!dayArray.includes(day))) {
+        let day = filteredData[i].gameDate;
+        if ((filteredData[i].week == weekNum) && (!dayArray.includes(day))) {
             dayArray.push(day);
             dayOptions += '<option value="' + day.split(',')[0] + '">' + day + '</option>';
         }
@@ -61,13 +60,13 @@ function updateSchoolOptions(conference) {
     schoolDropdown.value = null;
     let schoolArray = [];
     let schoolOptions = '<option disabled selected value></option>';
-    filter();
+    filterGames();
 
     for (i = 0; i < schoolsData.length; i++) {
         schoolName = schoolsData[i].name;
         if ((schoolsData[i].conferenceID === conference) && (!schoolArray.includes(schoolName))) {
             schoolArray.push(schoolName);
-            schoolOptions += '<option value="' + schoolsData[i].school_id + '">' + schoolName + '</option>'
+            schoolOptions += '<option value="' + schoolsData[i].school_id + '">' + schoolName + '</option>';
         }
     }
     schoolDropdown.innerHTML = schoolOptions;
@@ -75,54 +74,51 @@ function updateSchoolOptions(conference) {
 
 
 function applySelectedFilters(selectedWeek, selectedDay, selectedConference, selectedSchool) {
-    x = {};
-    
     if ((selectedDay == null || selectedDay == '') && (selectedConference == null || selectedConference == '') && (selectedSchool == null || selectedSchool == '')) {
         console.log('Here 1');
-        x = gamesData.filter(game => {
-            return (game.week === selectedWeek)
+        filteredData= gamesData.filter(game => {
+            return (game.week == selectedWeek)
         });
     } else if ((selectedConference == null || selectedConference == '') && (selectedSchool == null || selectedSchool == '')) {
         console.log('Here 2');
-        x = gamesData.filter(game => {
-            return ((game.week === selectedWeek) 
+        filteredData= gamesData.filter(game => {
+            return ((game.week == selectedWeek) 
                     && (game.gameDate.split(',')[0] == selectedDay)
             )
         });
     } else if ((selectedDay == null || selectedDay == '') && (selectedSchool == null || selectedSchool == '')) {
         console.log('Here 3');
-        x = gamesData.filter(game => {
-            return ((game.week === selectedWeek) 
+        filteredData= gamesData.filter(game => {
+            return ((game.week == selectedWeek) 
                     && (game.conferenceID == selectedConference) 
             )
         });
     } else if (selectedDay == null || selectedDay == '') {
         console.log('Here 4');
-        x = gamesData.filter(game => {
-            return ((game.week === selectedWeek)
+        filteredData= gamesData.filter(game => {
+            return ((game.week == selectedWeek)
                     && (game.conferenceID == selectedConference) 
                     && ((game.awaySchool == selectedSchool) || (game.homeSchool == selectedSchool))
             )
         });
     } else if (selectedSchool == null || selectedSchool == '') {
         console.log('Here 5');
-        x = gamesData.filter(game => {
-            return ((game.week === selectedWeek) 
+        filteredData= gamesData.filter(game => {
+            return ((game.week == selectedWeek) 
                     && (game.gameDate == selectedDay) 
                     && (game.conferenceID == selectedConference)
             )
         });
     } else {
         console.log('Here 6');
-        x = gamesData.filter(game => {
-            return ((game.week === selectedWeek) 
+        filteredData= gamesData.filter(game => {
+            return ((game.week == selectedWeek) 
                     && (game.gameDate == selectedDay) 
                     && (game.conferenceID == selectedConference) 
                     && ((game.awaySchool == selectedSchool) || (game.homeSchool == selectedSchool))
             )
         });
     }
-    filteredData = x;
 }
 
 
@@ -174,7 +170,7 @@ function renderMap(data) {
 }
 
 
-function filter() {
+function filterGames() {
     let selectedWeek = weekDropdown.value;
     let selectedDay = dayDropdown.value;
     let selectedConference = conferenceDropdown.value;
