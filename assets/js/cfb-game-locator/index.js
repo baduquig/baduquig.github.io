@@ -1,5 +1,5 @@
 
-class cfbGameLocator {
+class GameLocator {
     constructor() {
         /* this.getJSON('games.json', (err, data) => {
             if (err !== null) {
@@ -45,6 +45,8 @@ class cfbGameLocator {
         this.dayDropdown = document.getElementById('day');
         this.conferenceDropdown = document.getElementById('conference');
         this.schoolDropdown = document.getElementById('school');
+
+        this.filteredData = {};
       }
       
 
@@ -65,12 +67,12 @@ class cfbGameLocator {
         let conferenceOptions = '<option disabled selected value></option>';
 
         for (let i = 0; i < conferences.length; i++) {
-            const conferenceID = conferences[i].conferenceID;
+            //const conferenceID = conferences[i].conferenceID;
             const conferenceName = conferences[i].conferenceName;
 
             if (!conferenceArray.includes(conferenceName)) {
                 conferenceArray.push(conferenceName);
-                conferenceOptions += '<option value="' + conferenceID + '">' + conferenceName + '</option>';
+                conferenceOptions += '<option value="' + conferenceName + '">' + conferenceName + '</option>';
             }
         }        
         this.conferenceDropdown.innerHTML = conferenceOptions;
@@ -92,17 +94,14 @@ class cfbGameLocator {
         }
         xhr.send();
     }
-} // End cfbGameLocator class
 
-
-class filterAllData extends cfbGameLocator {
-    constructor() {
-        super();
-        this.filteredData = {};
-    }
 
     // Filter for selected data elements
     applySelectedFilters(selectedWeek, selectedDay, selectedConference, selectedSchool) {
+        console.log(selectedWeek);
+        console.log(selectedDay);
+        console.log(selectedConference);
+        console.log(selectedSchool);
         if ((selectedDay == null || selectedDay == '') && (selectedConference == null || selectedConference == '') && (selectedSchool == null || selectedSchool == '')) {
             console.log('Here 1');
             this.filteredData = this.allData.filter(game => {
@@ -117,44 +116,37 @@ class filterAllData extends cfbGameLocator {
         } else if ((selectedDay == null || selectedDay == '') && (selectedSchool == null || selectedSchool == '')) {
             console.log('HERE 3');
             this.filteredData = this.allData.filter(game => {
-                return (game.week == selectedWeek)
+                return ((game.week == selectedWeek)
+                        && ((game.awayConferenceName == selectedConference) || (game.homeConferenceName == selectedConference)))
             });
-            this.allData = this.schoolsData.filter(school => {
-                return (school.conferenceID == selectedConference)
-            })
         } else if (selectedDay == null || selectedDay == '') {
             console.log('HERE 4');
             this.filteredData = this.allData.filter(game => {
-                return (game.week == selectedWeek)
-            });
-            this.filteredData = this.schoolsData.filter(school => {
-                return ((school.conferenceID == selectedConference) 
-                        && ((school.awaySchool == selectedSchool) || (school.homeSchool == selectedSchool)))
+                return ((game.week == selectedWeek)
+                        && ((game.awaySchool == selectedSchool) || (game.homeSchool == selectedSchool))
+                        && ((game.awayConferenceName == selectedConference) || (game.homeConferenceName == selectedConference)))
             });
         } else if (selectedSchool == null || selectedSchool == '') {
             console.log('HERE 5');
             this.filteredData = this.allData.filter(game => {
                 return ((game.week == selectedWeek) 
-                        && (game.gameDate == selectedDay))
-            });
-            this.filteredData = this.schoolsData.filter(school => {
-                return (school.conferenceID == selectedConference)
+                        && (game.gameDate == selectedDay)
+                        && ((game.awayConferenceName == selectedConference) || (game.homeConferenceName == selectedConference)))
             });
         } else {
             console.log('HERE 6');
             this.filteredData = this.allData.filter(game => {
                 return ((game.week == selectedWeek) 
-                        && (game.gameDate == selectedDay))
-            });
-            this.filteredData = this.schoolsData.filter(school => {
-                return((school.conferenceID == selectedConference) 
-                       && ((school.awaySchool == selectedSchool) || (game.homeSchool == selectedSchool)))
+                        && (game.gameDate == selectedDay)
+                        && ((game.awaySchool == selectedSchool) || (game.homeSchool == selectedSchool))
+                        && ((game.awayConferenceName == selectedConference) || (game.homeConferenceName == selectedConference)))
             });
         }
+        console.log('filteredData set');
+        console.log(this.filteredData);
     } // end applySelectedFilters() method
 
     filterGames() {
-        console.log('HERE');
         const selectedWeek = this.weekDropdown.value;
         const selectedDay = this.dayDropdown.value;
         const selectedConference = this.conferenceDropdown.value;
@@ -168,6 +160,9 @@ class filterAllData extends cfbGameLocator {
                 this.applySelectedFilters(selectedWeek, selectedDay, selectedConference, selectedSchool);
 
                 // Render US Scatterplot
+                const sctPlt = new ScatterPlot(this.filteredData);
+                console.log('ScatterPlot class initialized');
+                sctPlt.renderScatterPlot();
 
               clearInterval(intervalId); // Stop the loop
             } else {
@@ -221,14 +216,64 @@ class filterAllData extends cfbGameLocator {
 } // end filterAllData class
 
 
+class ScatterPlot {
+    constructor(data) {
+        this.data = data;
+    }
+
+    renderScatterPlot() {
+        for (let i = 0; i < this.data.length; i++) {
+            this.data[i].hoverText = this.data[i].awaySchoolName + ' @ ' + this.data[i].homeSchoolName;
+        }
+
+        var plotPoints = [{
+            type:'scattergeo',
+            locationmode: 'USA-states',
+            lat: this.data.map(game => game.latitude),
+            lon: this.data.map(game => game.longitude),
+            text: this.data.map(game => game.hoverText),
+            texttemplate: '%{text}<extra></extra>',
+            //lon: unpack(rows, 'long'),
+            //lat: unpack(rows, 'lat'),
+            //hoverinfor:  unpack(rows, 'airport'),
+            //text:  unpack(rows, 'airport'),
+            mode: 'markers',
+            marker: {
+                size: 5,
+                opacity: 0.8,
+                color: '#000000'
+            }
+            
+        }];
+    
+    
+        var layout = {
+            geo: {
+                scope: 'usa',
+                projection: {
+                    type: 'usa'
+                },
+                width: '100%'
+            },
+            margin: {
+                l: 0,
+                r: 0,
+                b: 0,
+                t: 0
+            }
+        };
+    
+        Plotly.newPlot('map', plotPoints, layout, {showLink: false});
+
+    }
+} // end renderScatterPlot class
+
+
 
 // Initial function calls to instantiate page
-const cfb = new cfbGameLocator();
+const cfb = new GameLocator();
 cfb.setWeekDropdown(15);
-
-// Instantiate filterAllData object
-fltr = new filterAllData();
-fltr.filterGames();
+cfb.filterGames();
 
 
 

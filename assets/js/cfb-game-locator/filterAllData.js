@@ -1,4 +1,4 @@
-
+/*
 joinAllProperties() {
     console.log('Joining all data:');
     for (let x = 0; x < this.allData.length; x++) {
