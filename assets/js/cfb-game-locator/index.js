@@ -1,45 +1,14 @@
 
 class GameLocator {
     constructor() {
-        /* this.getJSON('games.json', (err, data) => {
-            if (err !== null) {
-                console.log(err);
-            } else {
-                this.gamesData = data;
-            }
-        }); */
         this.getJSON('allData.json', (err, data) => {
             if (err !== null) {
                 console.log(err);
             } else {
                 this.allData = data;
+                this.setWeekDropdown(15);
             }
         });
-        
-        this.getJSON('schools.json', (err, data) => {
-            if (err !== null) {
-                console.log(err);
-            } else {
-                this.schoolsData = data;
-            }
-        });
-        
-        this.getJSON('conferences.json', (err, data) => {
-            if (err !== null) {
-                console.log(err);
-            } else {
-                this.setConferenceDropdown(data);
-                this.conferencesData = data;
-            }
-        });
-        
-        /* this.getJSON('locations.json', (err, data) => {
-            if (err !== null) {
-                console.log(err);
-            } else {
-                this.locationsData = data;
-            }
-        }); */
 
         this.weekDropdown = document.getElementById('week');
         this.dayDropdown = document.getElementById('day');
@@ -47,37 +16,7 @@ class GameLocator {
         this.schoolDropdown = document.getElementById('school');
 
         this.filteredData = {};
-      }
-      
-
-    // Initialize Week and Conference dropdown options
-    setWeekDropdown(weeks) {
-        let weekOptions = '';
-        //let weekOptions = '<option disabled selected value></option>';
-        
-        for (let i = 0; i < weeks; i++) {
-            const weekNum = i + 1;
-            weekOptions += '<option value="' + weekNum + '">' + weekNum + '</option>';
-        }
-        this.weekDropdown.innerHTML = weekOptions;
     }
-
-    setConferenceDropdown(conferences) {
-        let conferenceArray = [];
-        let conferenceOptions = '<option disabled selected value></option>';
-
-        for (let i = 0; i < conferences.length; i++) {
-            //const conferenceID = conferences[i].conferenceID;
-            const conferenceName = conferences[i].conferenceName;
-
-            if (!conferenceArray.includes(conferenceName)) {
-                conferenceArray.push(conferenceName);
-                conferenceOptions += '<option value="' + conferenceName + '">' + conferenceName + '</option>';
-            }
-        }        
-        this.conferenceDropdown.innerHTML = conferenceOptions;
-    }
-
 
     // Function to retrieve data from JSON files via HTTP Request
     getJSON = (jsonFile, callback) => {
@@ -94,14 +33,38 @@ class GameLocator {
         }
         xhr.send();
     }
+      
+
+    // Initialize Week and Conference dropdown options
+    setWeekDropdown(weeks) {
+        let weekOptions = '';
+        for (let i = 0; i < weeks; i++) {
+            const weekNum = i + 1;
+            weekOptions += '<option value="' + weekNum + '">' + weekNum + '</option>';
+        }
+        this.weekDropdown.innerHTML = weekOptions;
+        this.updateDayOptions(1);
+    }
+
+    setConferenceDropdown(conferenceData) {
+        let conferenceArray = [];
+        let conferenceOptions = '<option disabled selected value></option>';
+
+        for (let i = 0; i < conferenceData.length; i++) {
+            const conferenceID = conferenceData[i].conferenceID;
+            const conferenceName = conferenceData[i].conferenceName;
+
+            if (!conferenceArray.includes(conferenceName)) {
+                conferenceArray.push(conferenceName);
+                conferenceOptions += '<option value="' + conferenceID + '">' + conferenceName + '</option>';
+            }
+        }
+        this.conferenceDropdown.innerHTML = conferenceOptions;
+    }
 
 
     // Filter for selected data elements
     applySelectedFilters(selectedWeek, selectedDay, selectedConference, selectedSchool) {
-        console.log(selectedWeek);
-        console.log(selectedDay);
-        console.log(selectedConference);
-        console.log(selectedSchool);
         if ((selectedDay == null || selectedDay == '') && (selectedConference == null || selectedConference == '') && (selectedSchool == null || selectedSchool == '')) {
             console.log('Here 1');
             this.filteredData = this.allData.filter(game => {
@@ -117,7 +80,7 @@ class GameLocator {
             console.log('HERE 3');
             this.filteredData = this.allData.filter(game => {
                 return ((game.week == selectedWeek)
-                        && ((game.awayConferenceName == selectedConference) || (game.homeConferenceName == selectedConference)))
+                        && ((game.awayConferenceID == selectedConference) || (game.homeConferenceID == selectedConference)))
             });
         } else if (selectedDay == null || selectedDay == '') {
             console.log('HERE 4');
@@ -143,7 +106,6 @@ class GameLocator {
             });
         }
         console.log('filteredData set');
-        console.log(this.filteredData);
     } // end applySelectedFilters() method
 
     filterGames() {
@@ -152,64 +114,59 @@ class GameLocator {
         const selectedConference = this.conferenceDropdown.value;
         const selectedSchool = this.schoolDropdown.value;
 
-        // Ensure gamesData object is initialized before calling
-        const intervalId = setInterval(() => {
-            if (this.allData) {
-                
-                // Apply filters
-                this.applySelectedFilters(selectedWeek, selectedDay, selectedConference, selectedSchool);
+        // Apply filters
+        this.applySelectedFilters(selectedWeek, selectedDay, selectedConference, selectedSchool);
 
-                // Render US Scatterplot
-                const sctPlt = new ScatterPlot(this.filteredData);
-                console.log('ScatterPlot class initialized');
-                sctPlt.renderScatterPlot();
-
-              clearInterval(intervalId); // Stop the loop
-            } else {
-                console.log('gamesData not initialized yet...');
-            }
-          }, 100);
-    } // end filterGames() method
+        // Render US Scatterplot
+        const sctPlt = new ScatterPlot(this.filteredData);
+        sctPlt.renderScatterPlot();
+    } // end filterGames() method 
 
 
     // Update Input field functions
     updateDayOptions(weekNum) {
+        this.filterGames();
         this.dayDropdown.value = null;
         let dayArray = [];
         let dayOptions = '<option disabled selected value></option>';
-        this.filterGames();
-        
+        console.log('Updating day options');
         for (let i = 0; i < this.filteredData.length; i++) {
             const day = this.filteredData[i].gameDate;
 
-            if ((this.allData[i].week == weekNum) && (!dayArray.includes(day))) {
+            if ((this.filteredData[i].week == weekNum) && (!dayArray.includes(day))) {
                 dayArray.push(day);
                 dayOptions += '<option value="' + day + '">' + day + '</option>';
             }
         }
-        this.dayDropdown.innerHTML = dayOptions;
+        this.dayDropdown.innerHTML = dayOptions;        
     } // end updateDayOptions() method
 
     updateSchoolOptions(conferenceID) {
+        this.filterGames();
         this.schoolDropdown.value = null;
         let schoolArray = [];
         let schoolOptions = '<option disabled selected value></option>';
-        const divisionObjects = this.conferencesData.filter(division => {
-            return (division.conferenceID == conferenceID)
-        });
-        const divisionsList = divisionObjects.map(divObj => divObj.divisionID);
-        this.filterGames();
         
-        for (let i = 0; i < this.schoolsData.length; i++) {
-            const divisionID = this.schoolsData[i].divisionID;
-            const schoolID = this.schoolsData[i].schoolID;
-            const schoolName = this.schoolsData[i].name;
+        console.log('Updating school options');
+        console.log(this.filteredData);
+        for (let i = 0; i < this.filteredData.length; i++) {
+            const awayConferenceID = this.filteredData[i].awayConferenceID;
+            const homeConferenceID = this.filteredData[i].homeConferenceID;
+            const awaySchoolID = this.filteredData[i].awaySchool;
+            const awaySchoolName = this.filteredData[i].awaySchoolName;
+            const homeSchoolID = this.filteredData[i].homeSchool;
+            const homeSchoolName = this.filteredData[i].homeSchoolName;
 
-            if ((divisionsList.includes(divisionID)) && (!schoolArray.includes(schoolName))) {
-                schoolArray.push(schoolName);
-                schoolOptions += '<option value="' + schoolID + '">' + schoolName + '</option>';
+            if ((awayConferenceID == conferenceID) && (!schoolArray.includes(awaySchoolName))) {
+                schoolArray.push(awaySchoolName);
+                schoolOptions += '<option value="' + awaySchoolID + '">' + awaySchoolName + '</option>';
+            }
+            if ((homeConferenceID == conferenceID) && (!schoolArray.includes(homeSchoolName))) {
+                schoolArray.push(homeSchoolName);
+                schoolOptions += '<option value="' + homeSchoolID + '">' + homeSchoolName + '</option>';
             }
         }
+        console.log('Finished setting school options');
         this.schoolDropdown.innerHTML = schoolOptions;
     } // end updateSchoolOptions() method
 
@@ -272,34 +229,3 @@ class ScatterPlot {
 
 // Initial function calls to instantiate page
 const cfb = new GameLocator();
-cfb.setWeekDropdown(15);
-cfb.filterGames();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function joinAllData() {
-    console.log('Done');
-}
-
-
