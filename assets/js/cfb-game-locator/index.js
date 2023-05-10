@@ -9,6 +9,13 @@ class GameLocator {
                 this.setWeekDropdown(15);
             }
         });
+        this.getJSON('conferences.json', (err, data) => {
+            if (err !== null) {
+                console.log(err);
+            } else {
+                this.setConferenceDropdown(data);
+            }
+        });
 
         this.weekDropdown = document.getElementById('week');
         this.dayDropdown = document.getElementById('day');
@@ -47,18 +54,17 @@ class GameLocator {
     }
 
     setConferenceDropdown(conferenceData) {
-        let conferenceArray = [];
+        let conferencesArray = [];
         let conferenceOptions = '<option disabled selected value></option>';
-
         for (let i = 0; i < conferenceData.length; i++) {
             const conferenceID = conferenceData[i].conferenceID;
-            const conferenceName = conferenceData[i].conferenceName;
-
-            if (!conferenceArray.includes(conferenceName)) {
-                conferenceArray.push(conferenceName);
+            if (!conferencesArray.includes(conferenceID)) {
+                const conferenceName = conferenceData[i].conferenceName;
+                
+                conferencesArray.push(conferenceID)
                 conferenceOptions += '<option value="' + conferenceID + '">' + conferenceName + '</option>';
             }
-        }
+        }        
         this.conferenceDropdown.innerHTML = conferenceOptions;
     }
 
