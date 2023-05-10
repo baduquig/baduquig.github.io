@@ -60,7 +60,7 @@ class GameLocator {
             const conferenceID = conferenceData[i].conferenceID;
             if (!conferencesArray.includes(conferenceID)) {
                 const conferenceName = conferenceData[i].conferenceName;
-                
+
                 conferencesArray.push(conferenceID)
                 conferenceOptions += '<option value="' + conferenceID + '">' + conferenceName + '</option>';
             }
@@ -186,7 +186,7 @@ class ScatterPlot {
 
     renderScatterPlot() {
         for (let i = 0; i < this.data.length; i++) {
-            this.data[i].hoverText = this.data[i].awaySchoolName + ' @ ' + this.data[i].homeSchoolName;
+            this.data[i].hoverText = this.data[i].awaySchoolName + ' @ ' + this.data[i].homeSchoolName + ' | ' + this.data[i].gameDate + ' | ' + this.data[i].locationName;
         }
 
         var plotPoints = [{
@@ -194,12 +194,9 @@ class ScatterPlot {
             locationmode: 'USA-states',
             lat: this.data.map(game => game.latitude),
             lon: this.data.map(game => game.longitude),
-            text: this.data.map(game => game.hoverText),
-            texttemplate: '%{text}<extra></extra>',
-            //lon: unpack(rows, 'long'),
-            //lat: unpack(rows, 'lat'),
-            //hoverinfor:  unpack(rows, 'airport'),
-            //text:  unpack(rows, 'airport'),
+            text: this.data.map(game => [game.awaySchoolName + ' @ ' + game.homeSchoolName + '<br>' + game.gameDate + '<br>' + game.locationName]),
+            textposition: 'middle center',
+            hovertemplate: '%{text}',
             mode: 'markers',
             marker: {
                 size: 5,
@@ -211,6 +208,7 @@ class ScatterPlot {
     
     
         var layout = {
+            dragmode: false,
             geo: {
                 scope: 'usa',
                 projection: {
