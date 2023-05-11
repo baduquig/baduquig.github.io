@@ -55,7 +55,7 @@ class GameLocator {
 
     setConferenceDropdown(conferenceData) {
         let conferencesArray = [];
-        let conferenceOptions = '<option disabled selected value></option>';
+        let conferenceOptions = '<option selected value></option>';
         for (let i = 0; i < conferenceData.length; i++) {
             const conferenceID = conferenceData[i].conferenceID;
             if (!conferencesArray.includes(conferenceID)) {
@@ -93,14 +93,14 @@ class GameLocator {
             this.filteredData = this.allData.filter(game => {
                 return ((game.week == selectedWeek)
                         && ((game.awaySchool == selectedSchool) || (game.homeSchool == selectedSchool))
-                        && ((game.awayConferenceName == selectedConference) || (game.homeConferenceName == selectedConference)))
+                        && ((game.awayConferenceID == selectedConference) || (game.homeConferenceID == selectedConference)))
             });
         } else if (selectedSchool == null || selectedSchool == '') {
             console.log('HERE 5');
             this.filteredData = this.allData.filter(game => {
                 return ((game.week == selectedWeek) 
                         && (game.gameDate == selectedDay)
-                        && ((game.awayConferenceName == selectedConference) || (game.homeConferenceName == selectedConference)))
+                        && ((game.awayConferenceID == selectedConference) || (game.homeConferenceID == selectedConference)))
             });
         } else {
             console.log('HERE 6');
@@ -108,7 +108,7 @@ class GameLocator {
                 return ((game.week == selectedWeek) 
                         && (game.gameDate == selectedDay)
                         && ((game.awaySchool == selectedSchool) || (game.homeSchool == selectedSchool))
-                        && ((game.awayConferenceName == selectedConference) || (game.homeConferenceName == selectedConference)))
+                        && ((game.awayConferenceID == selectedConference) || (game.homeConferenceID == selectedConference)))
             });
         }
         console.log('filteredData set');
@@ -131,10 +131,10 @@ class GameLocator {
 
     // Update Input field functions
     updateDayOptions(weekNum) {
-        this.filterGames();
         this.dayDropdown.value = null;
+        this.filterGames();
         let dayArray = [];
-        let dayOptions = '<option disabled selected value></option>';
+        let dayOptions = '<option selected value></option>';
         console.log('Updating day options');
         for (let i = 0; i < this.filteredData.length; i++) {
             const day = this.filteredData[i].gameDate;
@@ -148,13 +148,11 @@ class GameLocator {
     } // end updateDayOptions() method
 
     updateSchoolOptions(conferenceID) {
-        this.filterGames();
         this.schoolDropdown.value = null;
+        this.filterGames();
         let schoolArray = [];
-        let schoolOptions = '<option disabled selected value></option>';
+        let schoolOptions = '<option selected value></option>';
         
-        console.log('Updating school options');
-        console.log(this.filteredData);
         for (let i = 0; i < this.filteredData.length; i++) {
             const awayConferenceID = this.filteredData[i].awayConferenceID;
             const homeConferenceID = this.filteredData[i].homeConferenceID;
@@ -183,11 +181,11 @@ class ScatterPlot {
     constructor(data) {
         this.data = data;
     }
-
+    
     renderScatterPlot() {
-        for (let i = 0; i < this.data.length; i++) {
-            this.data[i].hoverText = this.data[i].awaySchoolName + ' @ ' + this.data[i].homeSchoolName + ' | ' + this.data[i].gameDate + ' | ' + this.data[i].locationName;
-        }
+        console.log('Rendering map');
+        const fontSize = (document.getElementById('map').offsetWidth) * .05;
+        const markerSize = (document.getElementById('map').offsetWidth) * .005;
 
         var plotPoints = [{
             type:'scattergeo',
@@ -195,13 +193,16 @@ class ScatterPlot {
             lat: this.data.map(game => game.latitude),
             lon: this.data.map(game => game.longitude),
             text: this.data.map(game => [game.awaySchoolName + ' @ ' + game.homeSchoolName + '<br>' + game.gameDate + '<br>' + game.locationName]),
+            textfont: {
+                size: fontSize
+            },
             textposition: 'middle center',
             hovertemplate: '%{text}',
             mode: 'markers',
             marker: {
-                size: 5,
-                opacity: 0.8,
-                color: '#000000'
+                color: '#000000',
+                size: markerSize, 
+                opacity: 0.8
             }
             
         }];
