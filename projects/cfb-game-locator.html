@@ -56,8 +56,38 @@
             <!-- Map -->
             <div id="map"></div>
 
-            <!-- Games Grid Table -->
-            <div id="grid"></div>
+            <!-- Travel Distance and Duration -->
+            <div class="travel">
+                <div class="travelInputs">
+                    <div class="leftTravel">
+                        <label for="startLocation">Start Location</label>
+                        <input list="startLocationList" name="startLocation" id="startLocation" onchange="trvl.getTravelResults()">
+                        <datalist id="startLocationList"></datalist>
+                        <input type="button" name="clearStart" id="clearStart" onclick="trvl.clearTravelInput('startLocation')">
+                    </div>
+    
+                    <div class="rightTravel">
+                        <label for="endLocation">End Location</label>
+                        <input list="endLocationList" name="endLocation" id="endLocation" onchange="trvl.getTravelResults()">
+                        <datalist id="endLocationList"></datalist>
+                        <input type="button" name="clearEnd" id="clearEnd" onclick="trvl.clearTravelInput('endLocation')">
+                    </div>
+                </div> <!-- travelInputs -->
+                
+                <div class="travelResults">
+                    <div class="leftResults">
+                        <div class="leftResults">
+                            <label for="driveDistance">Drive Distance:</label>
+                            <span id="driveDistance"></span>
+                        </div>
+                        
+                        <div class="rightResults">
+                            <label for="driveDuration">Drive Duration:</label>
+                            <span id="driveDuration"></span>
+                        </div>
+                    </div>
+                </div> <!-- Travel Calculation Results -->
+            </div> <!-- travel DIV -->
 
         </div>
         
