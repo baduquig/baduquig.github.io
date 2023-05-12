@@ -267,7 +267,7 @@ class travelDistance {
                 const travelData = JSON.parse(this.responseText);
                 const unformattedDistance = travelData.features[0].properties.segments[0].distance;
                 const unformattedDuration = travelData.features[0].properties.segments[0].duration;
-                const distance = Math.round(unformattedDistance * 0.00062137);
+                const distance = Math.round(unformattedDistance * 0.00062137) + ' Mi.';
                 const hours = Math.floor(unformattedDuration / 3600);
                 const minutes = Math.floor((unformattedDuration % 3600) / 60);
                 const duration = hours + 'Hrs ' + minutes + 'min';

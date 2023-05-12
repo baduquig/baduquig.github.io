@@ -58,39 +58,39 @@
 
             <!-- Travel Distance and Duration -->
             <div class="travel">
-                <div class="travelInputs">
-                    <div class="leftTravel">
-                        <label for="startLocation">Start Location</label>
-                        <input list="startLocationList" name="startLocation" id="startLocation" onchange="trvl.getTravelResults()">
+                <div class="travel-inputs">
+                    <div class="start">
+                        <label for="startLocation">Start Location:&nbsp;</label>
+                        <input list="startLocationList" name="startLocation" class="location-input" id="startLocation" onchange="trvl.getTravelResults()">
                         <datalist id="startLocationList"></datalist>
-                        <input type="button" name="clearStart" id="clearStart" onclick="trvl.clearTravelInput('startLocation')">
+                        <span>&nbsp;</span>
+                        <input type="button" name="clearStart" id="clear-start" value="X" onclick="trvl.clearTravelInput('startLocation')">
                     </div>
     
-                    <div class="rightTravel">
-                        <label for="endLocation">End Location</label>
-                        <input list="endLocationList" name="endLocation" id="endLocation" onchange="trvl.getTravelResults()">
+                    <div class="end">
+                        <label for="endLocation">End Location:&nbsp;&nbsp;&nbsp;</label>
+                        <input list="endLocationList" name="endLocation" class="location-input" id="endLocation" onchange="trvl.getTravelResults()">
                         <datalist id="endLocationList"></datalist>
-                        <input type="button" name="clearEnd" id="clearEnd" onclick="trvl.clearTravelInput('endLocation')">
+                        <span>&nbsp;</span>
+                        <input type="button" name="clearEnd" id="clear-end" value="X" onclick="trvl.clearTravelInput('endLocation')">
                     </div>
                 </div> <!-- travelInputs -->
                 
-                <div class="travelResults">
-                    <div class="leftResults">
-                        <div class="leftResults">
-                            <label for="driveDistance">Drive Distance:</label>
-                            <span id="driveDistance"></span>
-                        </div>
-                        
-                        <div class="rightResults">
-                            <label for="driveDuration">Drive Duration:</label>
-                            <span id="driveDuration"></span>
-                        </div>
+                <div class="travel-results">
+                    <div class="distance">
+                        <label for="driveDistance">Drive Distance:</label>
+                        <span id="driveDistance"></span>
+                    </div>
+                    
+                    <div class="duration">
+                        <label for="driveDuration">Drive Duration:</label>
+                        <span id="driveDuration"></span>
                     </div>
                 </div> <!-- Travel Calculation Results -->
             </div> <!-- travel DIV -->
 
         </div>
         
-        <script src="../assets/js/cfb-game-locator/index.js"></script>
+        <script src="../assets/js/cfb-game-locator.js"></script>
     </body>
 </html>
