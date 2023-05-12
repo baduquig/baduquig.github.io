@@ -1,4 +1,3 @@
-
 class GameLocator {
     constructor() {
         this.getJSON('allData.json', (err, data) => {
@@ -27,8 +26,8 @@ class GameLocator {
 
     // Function to retrieve data from JSON files via HTTP Request
     getJSON = (jsonFile, callback) => {
-        let url = 'https://raw.githubusercontent.com/baduquig/espn-college-football-schedule-data-wrangling/main/data/' + jsonFile;
         let xhr = new XMLHttpRequest();
+        const url = 'https://raw.githubusercontent.com/baduquig/espn-college-football-schedule-data-wrangling/main/data/' + jsonFile;
         xhr.open('GET', url, true);
         xhr.responseType = 'json';
         xhr.onload = () => {
@@ -55,7 +54,7 @@ class GameLocator {
 
     setConferenceDropdown(conferenceData) {
         let conferencesArray = [];
-        let conferenceOptions = '<option disabled selected value></option>';
+        let conferenceOptions = '<option selected value></option>';
         for (let i = 0; i < conferenceData.length; i++) {
             const conferenceID = conferenceData[i].conferenceID;
             if (!conferencesArray.includes(conferenceID)) {
@@ -72,46 +71,39 @@ class GameLocator {
     // Filter for selected data elements
     applySelectedFilters(selectedWeek, selectedDay, selectedConference, selectedSchool) {
         if ((selectedDay == null || selectedDay == '') && (selectedConference == null || selectedConference == '') && (selectedSchool == null || selectedSchool == '')) {
-            console.log('Here 1');
             this.filteredData = this.allData.filter(game => {
                 return game.week == selectedWeek
             });
         } else if ((selectedConference == null || selectedConference == '') && (selectedSchool == null || selectedSchool == '')) {
-            console.log('HERE 2');
             this.filteredData = this.allData.filter(game => {
                 return ((game.week == selectedWeek) 
                         && (game.gameDate == selectedDay))
             });
         } else if ((selectedDay == null || selectedDay == '') && (selectedSchool == null || selectedSchool == '')) {
-            console.log('HERE 3');
             this.filteredData = this.allData.filter(game => {
                 return ((game.week == selectedWeek)
                         && ((game.awayConferenceID == selectedConference) || (game.homeConferenceID == selectedConference)))
             });
         } else if (selectedDay == null || selectedDay == '') {
-            console.log('HERE 4');
             this.filteredData = this.allData.filter(game => {
                 return ((game.week == selectedWeek)
                         && ((game.awaySchool == selectedSchool) || (game.homeSchool == selectedSchool))
-                        && ((game.awayConferenceName == selectedConference) || (game.homeConferenceName == selectedConference)))
+                        && ((game.awayConferenceID == selectedConference) || (game.homeConferenceID == selectedConference)))
             });
         } else if (selectedSchool == null || selectedSchool == '') {
-            console.log('HERE 5');
             this.filteredData = this.allData.filter(game => {
                 return ((game.week == selectedWeek) 
                         && (game.gameDate == selectedDay)
-                        && ((game.awayConferenceName == selectedConference) || (game.homeConferenceName == selectedConference)))
+                        && ((game.awayConferenceID == selectedConference) || (game.homeConferenceID == selectedConference)))
             });
         } else {
-            console.log('HERE 6');
             this.filteredData = this.allData.filter(game => {
                 return ((game.week == selectedWeek) 
                         && (game.gameDate == selectedDay)
                         && ((game.awaySchool == selectedSchool) || (game.homeSchool == selectedSchool))
-                        && ((game.awayConferenceName == selectedConference) || (game.homeConferenceName == selectedConference)))
+                        && ((game.awayConferenceID == selectedConference) || (game.homeConferenceID == selectedConference)))
             });
         }
-        console.log('filteredData set');
     } // end applySelectedFilters() method
 
     filterGames() {
@@ -131,11 +123,11 @@ class GameLocator {
 
     // Update Input field functions
     updateDayOptions(weekNum) {
-        this.filterGames();
         this.dayDropdown.value = null;
+        this.filterGames();
         let dayArray = [];
-        let dayOptions = '<option disabled selected value></option>';
-        console.log('Updating day options');
+        let dayOptions = '<option selected value></option>';
+        
         for (let i = 0; i < this.filteredData.length; i++) {
             const day = this.filteredData[i].gameDate;
 
@@ -148,13 +140,11 @@ class GameLocator {
     } // end updateDayOptions() method
 
     updateSchoolOptions(conferenceID) {
-        this.filterGames();
         this.schoolDropdown.value = null;
+        this.filterGames();
         let schoolArray = [];
-        let schoolOptions = '<option disabled selected value></option>';
+        let schoolOptions = '<option selected value></option>';
         
-        console.log('Updating school options');
-        console.log(this.filteredData);
         for (let i = 0; i < this.filteredData.length; i++) {
             const awayConferenceID = this.filteredData[i].awayConferenceID;
             const homeConferenceID = this.filteredData[i].homeConferenceID;
@@ -172,7 +162,6 @@ class GameLocator {
                 schoolOptions += '<option value="' + homeSchoolID + '">' + homeSchoolName + '</option>';
             }
         }
-        console.log('Finished setting school options');
         this.schoolDropdown.innerHTML = schoolOptions;
     } // end updateSchoolOptions() method
 
@@ -183,11 +172,10 @@ class ScatterPlot {
     constructor(data) {
         this.data = data;
     }
-
+    
     renderScatterPlot() {
-        for (let i = 0; i < this.data.length; i++) {
-            this.data[i].hoverText = this.data[i].awaySchoolName + ' @ ' + this.data[i].homeSchoolName + ' | ' + this.data[i].gameDate + ' | ' + this.data[i].locationName;
-        }
+        const fontSize = (document.getElementById('map').offsetWidth) * .05;
+        const markerSize = (document.getElementById('map').offsetWidth) * .005;
 
         var plotPoints = [{
             type:'scattergeo',
@@ -195,13 +183,16 @@ class ScatterPlot {
             lat: this.data.map(game => game.latitude),
             lon: this.data.map(game => game.longitude),
             text: this.data.map(game => [game.awaySchoolName + ' @ ' + game.homeSchoolName + '<br>' + game.gameDate + '<br>' + game.locationName]),
+            textfont: {
+                size: fontSize
+            },
             textposition: 'middle center',
             hovertemplate: '%{text}',
             mode: 'markers',
             marker: {
-                size: 5,
-                opacity: 0.8,
-                color: '#000000'
+                color: '#000000',
+                size: markerSize, 
+                opacity: 0.8
             }
             
         }];
@@ -230,6 +221,94 @@ class ScatterPlot {
 } // end renderScatterPlot class
 
 
+class travelDistance {
+    constructor() {
+        cfb.getJSON('locations.json', (err, data) => {
+            if (err !== null) {
+                console.log(err);
+            } else {
+                this.setLocationDatalist(data);
+                this.locationsData = data;
+            }
+        });
+
+        this.orsResponse = '';
+        this.startLocationList = document.getElementById('startLocationList');
+        this.endLocationList = document.getElementById('endLocationList');
+    }
+
+    // Initialize Locations datalist
+    setLocationDatalist(locationsData) {
+        let locationOptions = '';
+        for (let i = 0; i < locationsData.length; i++) {
+            const latLongValue = locationsData[i].longitude + ',' + locationsData[i].latitude;
+            const locationName = locationsData[i].locationName;
+            //locationOptions += '<option value="' + latLongValue + '">' + locationName + '</option>';
+            locationOptions += '<option value="' + locationName + '">';
+            //locationOptions += '<option>' + locationName + '</option>';
+        }
+        this.startLocationList.innerHTML = locationOptions;
+        this.endLocationList.innerHTML = locationOptions;
+    }
+
+    orsGetRequest(startLongitude, startLatitude, endLongitude, endLatitude) {
+        console.log('here 4');
+        let request = new XMLHttpRequest();
+        const orsDirectionsEndpoint = 'https://api.openrouteservice.org/v2/directions/driving-car?api_key=';
+        const orsKey = '5b3ce3597851110001cf624815b3b2ce7e0747dc90221abdc70363e5';
+        const start = startLongitude + ',' + startLatitude;
+        const end = endLongitude + ',' + endLatitude;
+        const url = orsDirectionsEndpoint + orsKey + '&start=' + start + '&end=' + end;
+        console.log(url);
+        request.open('GET', url, true);
+        request.setRequestHeader('Accept', 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8');
+        request.onreadystatechange = function () {
+            if (this.readyState === 4) {
+                const travelData = JSON.parse(this.responseText);
+                const unformattedDistance = travelData.features[0].properties.segments[0].distance;
+                const unformattedDuration = travelData.features[0].properties.segments[0].duration;
+                const distance = Math.round(unformattedDistance * 0.00062137);
+                const hours = Math.floor(unformattedDuration / 3600);
+                const minutes = Math.floor((unformattedDuration % 3600) / 60);
+                const duration = hours + 'Hrs ' + minutes + 'min';
+
+                document.getElementById('driveDistance').innerHTML = distance;
+                document.getElementById('driveDuration').innerHTML = duration;
+            }
+        }
+        request.send();
+    }
+
+    getTravelResults() {        
+        console.log('here');
+        const startValue = document.getElementById('startLocation').value;
+        const endValue = document.getElementById('endLocation').value;
+
+        if ((startValue.length > 0) && (endValue.length > 0)) {
+            console.log('here 2');
+            const startLocation = this.locationsData.filter(location => {
+                return location.locationName == startValue;
+            });
+            const endLocation = this.locationsData.filter(location => {
+                return location.locationName == endValue;
+            });
+
+            const startLongitude = startLocation[0].longitude;
+            const startLatitude = startLocation[0].latitude;
+            const endLongitude = endLocation[0].longitude;
+            const endLatitude = endLocation[0].latitude;
+            
+            this.orsGetRequest(startLongitude, startLatitude, endLongitude, endLatitude);
+        }
+    }
+
+    clearTravelInput(id) {
+        document.getElementById(id).value = null;
+    }
+
+}
+
 
 // Initial function calls to instantiate page
 const cfb = new GameLocator();
+const trvl = new travelDistance();
