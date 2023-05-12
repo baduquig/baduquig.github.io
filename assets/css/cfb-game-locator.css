@@ -36,19 +36,36 @@ select {
     opacity: .9;
 }
 
-#grid {
+.travel {
     background-color: #ffffff;
-    margin: 0 10%;
-    opacity: .8;
-    text-align: left;
-}
-
-table {
     color: #000000;
-    border-collapse: collapse;
-    margin: 25px auto;
+    margin: 5% auto;
+    opacity: .9;
+    padding: 5px;
+    width: 50%;
 }
 
-table, th, td {
-    border: 1px solid;
+.travel-inputs div {
+    display: flex;
+    justify-content: center;
+    margin: 5px auto;
+    text-align: center;
+}
+
+.location-input {
+    width: 35%;
+}
+
+#clear-start {
+    background-color: #dd182c;
+    border: none;
+    border-radius: 3px;
+    color: #ffffff;
+}
+
+#clear-end {
+    background-color: #dd182c;
+    border: none;
+    border-radius: 3px;
+    color: #ffffff;
 }
