@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Meta -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Stylesheet links -->
+        <link rel="stylesheet" href="../assets/css/home-value-index-analysis.css">
+
+        <!-- Plotly JS Library Import -->
+        <script src="https://cdn.plot.ly/plotly-2.20.0.min.js" charset="utf-8"></script>
+    </head>
+
+    <body>
+        <div class="hvi-container">
+            <h1>Zillow Home Value Index API Analysis</h1>
+
+            <!-- Geographic Inputs -->
+            <div class="inputs-div">
+                <div class="state-div">
+                    <label for="state">State</label>
+                    <select name="state" id="state" multiple></select>
+                </div>
+
+                <div class="city-div">
+                    <label for="city">City</label>
+                    <select name="city" id="city" multiple></select>
+                </div>
+
+                <div class="zipcode-div">
+                    <label for="zipcode">Zipcode</label>
+                    <select name="zipcode" id="zipcode" multiple></select>
+                </div>
+
+                <div class="hpi-graph"></div>
+
+                <div class="disclaimer-div">
+                    <p>Data retrieved from and available at </p>
+                    <a href="https://www.zillow.com/research/data/">Zillow Research</a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
