@@ -1,6 +1,12 @@
 
 class HomeValueIndex {
     constructor() {
+        this.setStates(['NJ', 'TX', 'NY', 'CA', 'IL', 'GA', 'TN', 'WA', 'OK', 'NC', 
+                        'AZ', 'VA', 'NM', 'HI', 'FL', 'KS', 'MO', 'IN', 'PA', 'CO', 
+                        'NV', 'UT', 'OH', 'MD', 'OR', 'DC', 'ID', 'MA', 'MI', 'SC', 
+                        'KY', 'CT', 'DE', 'LA', 'MN', 'WI', 'MT', 'MS', 'AL', 'AR', 
+                        'ND', 'SD', 'RI', 'NE', 'ME', 'IA', 'WV', 'AK', 'NH', 'VT', 'WY']);
+        
         this.getCSV('zvhi_3bed.csv', (err, data) => {
             if (err !== null) {
                 console.log(err);
@@ -9,7 +15,7 @@ class HomeValueIndex {
                     if (err !== null) {
                         console.log(err);
                     } else {
-                        this.setDropdownOptions(obj);                        
+                        this.threeBed = data;                        
                     }
                 });
             }
@@ -28,16 +34,7 @@ class HomeValueIndex {
                 this.rent = data;
             }
         });
-        /*this.readData('zvhi_3bed.csv')
-            .then(threeBed => {
-                setDropdownOptions(threeBed);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        this.fourBed = readData('zvhi_4bed.csv');
-        this.rent = readData('rent.csv');*/
-    }
+    } // end constructor()
     
     parseCSVLine(line) {
         const values = [];
@@ -58,12 +55,9 @@ class HomeValueIndex {
         }
         values.push(currentValue.trim());
         return values;
-    }
+    } // end parseCSVLine
 
     readData = (data, callback) => {
-            /*
-            .then(response => response.text())
-            .then(csvData => {*/
             const lines = data.split('\n'); 
             const headers = lines[0].split(',');
             let result = [];
@@ -80,10 +74,9 @@ class HomeValueIndex {
                     result.push(obj);
                 }
             }
-            //console.log(result);
+            
             callback(null, result);
-            //return result;
-    }
+    } // end readData()
     
     getCSV = (dataFile, callback) => {
         console.log('Retrieving ' + dataFile);
@@ -103,49 +96,15 @@ class HomeValueIndex {
     
     } // end async function readData()
     
-    setDropdownOptions(data) {
-        let states = [];
-        let cities = [];
-        let zipcodes = [];
-    
+    setStates(statesArray) {
         let stateOptions = '<option selected value></option>';
-        let cityOptions = '<option selected value></option>';
-        let zipOptions = '<option selected value></option>';
-        console.log('Setting dropdown options...');
-        console.log(data);
-        for (let i = 0; i < data.length; i++) {
-            const stateAbbr = data[i].State;
-            //const city = data[i].city;
-            //const zip = data[i].RegionID;
-            console.log(data[i]);
-            if (!states.includes(stateAbbr)) {
-                states.push(stateAbbr);
-            }
-    
-            /*if (!cities.includes(city)) {
-                cities.push(city);
-            }
-    
-            if (!zipcodes.includes(zip)) {
-                cities.push(zip);
-            }*/
-        } // end for (record in 3Bed file)
-    
-        states.forEach(state => {
+        
+        statesArray.sort().forEach(state => {
             stateOptions += '<option value=' + state + '>' + state + '</option>';
         });
-        /*cities.forEach(city => {
-            cityOptions += '<option value=' + city + '>' + city + '</option>';
-        });
-        zipcodes.forEach(zip => {
-            zipOptions += '<option value=' + zip + '>' + zip + '</option>';
-        });*/
-    
-        document.getElementById('state').innerHTML = stateOptions;
-        //document.getElementById('city').innerHTML = cityOptions;
-        //document.getElementById('zip').innerHTML = zipOptions;
-        console.log('Dropdown options set...');
-    }
+        document.getElementById('state-list').innerHTML = stateOptions;
+        console.log('State Dropdown options set...');
+    } // end setStates()
     
 }
 

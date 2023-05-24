@@ -20,18 +20,24 @@
             <!-- Geographic Inputs -->
             <div class="inputs-div">
                 <div class="state-div">
-                    <label for="state">State</label>
-                    <select name="state" id="state" multiple></select>
+                    <label for="state">State:&nbsp;&nbsp;&nbsp;</label>
+                    <input list="state-list" name="state" id="state" onchange="">
+                    <datalist id="state-list"></datalist>                    
+                    <input type="button" name="clear-state" id="clear-state" value="X" onclick="">
                 </div>
 
                 <div class="city-div">
-                    <label for="city">City</label>
-                    <select name="city" id="city" multiple></select>
+                    <label for="city">City:&nbsp;&nbsp;&nbsp;</label>
+                    <input list="city-list" name="city" id="city" onchange="">
+                    <datalist id="city-list"></datalist>                    
+                    <input type="button" name="clear-city" id="clear-city" value="X" onclick="">
                 </div>
 
                 <div class="zipcode-div">
-                    <label for="zipcode">Zipcode</label>
-                    <select name="zipcode" id="zipcode" multiple></select>
+                    <label for="zipcode">Zipcode:&nbsp;&nbsp;&nbsp;</label>
+                    <input list="zipcode-list" name="zipcode" id="zipcode" onchange="">
+                    <datalist id="zipcode-list"></datalist>                    
+                    <input type="button" name="clear-zip" id="clear-zip" value="X" onclick="">
                 </div>
 
                 <div class="hpi-graph"></div>
