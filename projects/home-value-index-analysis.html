@@ -17,37 +17,44 @@
         <div class="hvi-container">
             <h1>Zillow Home Value Index API Analysis</h1>
 
+            <!-- Data Source -->
+            <div class="source-div">
+                <input type="radio" name="data-source" id="three-bed" value="three-bed">
+                <label for="three-bed">3-Bed Homes</label>
+
+
+                <input type="radio" name="data-source" id="four-bed" value="four-bed">
+                <label for="four-bed">4-Bed Homes</label>
+
+
+                <input type="radio" name="data-source" id="rent" value="rent">
+                <label for="rent">Rent</label>
+            </div>
+
             <!-- Geographic Inputs -->
             <div class="inputs-div">
                 <div class="state-div">
                     <label for="state">State:&nbsp;&nbsp;&nbsp;</label>
                     <input list="state-list" name="state" id="state">
                     <datalist id="state-list"></datalist>                    
-                    <input type="button" name="clear-state" id="clear-state" value="X" onclick="">
+                    <input type="button" name="clear-state" id="clear-state" value="X">
                 </div>
 
                 <div class="city-div">
                     <label for="city">City:&nbsp;&nbsp;&nbsp;</label>
                     <input list="city-list" name="city" id="city" multiple>
                     <datalist id="city-list"></datalist>                    
-                    <input type="button" name="clear-city" id="clear-city" value="X" onclick="">
+                    <input type="button" name="clear-city" id="clear-city" value="X">
                 </div>
 
                 <div class="zipcode-div">
                     <label for="zipcode">Zipcode:&nbsp;&nbsp;&nbsp;</label>
                     <input list="zipcode-list" name="zipcode" id="zipcode" multiple>
                     <datalist id="zipcode-list"></datalist>                    
-                    <input type="button" name="clear-zipcode" id="clear-zipcode" value="X" onclick="">
+                    <input type="button" name="clear-zipcode" id="clear-zipcode" value="X">
                 </div>
-
-                <div class="hpi-graph"></div>
-
-                <div class="disclaimer-div">
-                    <p>Data retrieved from and available at </p>
-                    <a href="https://www.zillow.com/research/data/">Zillow Research</a>
-                </div>
-            </div>
-        </div>
+            </div> <!-- End Inputs DIV -->
+        </div> <!-- End hvi-container DIV -->
     
         <!-- Local JS -->
         <script src="../assets/js/home-value-index-analysis.js"></script>
