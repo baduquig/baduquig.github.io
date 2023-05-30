@@ -3,7 +3,6 @@ let fourBed = [];
 let rent = [];
 let filteredData = [];
 let dataSet = [];
-let selectedRadioButton = '';
 
 const states = ['NJ', 'TX', 'NY', 'CA', 'IL', 'GA', 'TN', 'WA', 'OK', 'NC', 'AZ', 'VA', 'NM', 'HI', 'FL', 'KS', 'MO', 
                     'IN', 'PA', 'CO', 'NV', 'UT', 'OH', 'MD', 'OR', 'DC', 'ID', 'MA', 'MI', 'SC', 'KY', 'CT', 'DE', 'LA', 
@@ -39,6 +38,7 @@ parseCSVLine = (line) => {
         }
     }
     values.push(currentValue.trim());
+
     return values;
 } // end parseCSVLine
 
@@ -65,9 +65,9 @@ readData = (data, callback) => {
 } // end readData()
 
 getCSV = (dataFile, callback) => {
-    console.log('Retrieving ' + dataFile);
     let xhr = new XMLHttpRequest();
     const url = 'https://raw.githubusercontent.com/baduquig/real-estate-analysis/main/data/' + dataFile;
+
     xhr.open('GET', url, true);
     xhr.responseType = 'text';
     xhr.onload = () => {
@@ -78,8 +78,29 @@ getCSV = (dataFile, callback) => {
         }
     }
     xhr.send();
-    console.log('Finished Retrieving ' + dataFile);
 } // end async function readData()
+
+setDataset = (radioButtonValue, callback) => {
+    let selectedDataSet = [];
+    switch (radioButtonValue) {
+        case 'three-bed':
+            //selectedDataSet = Array.from(threeBed);
+            console.log('here three-bed');
+            callback(null, threeBed);
+            break;
+        case 'four-bed':
+            selectedDataSet = Array.from(fourBed);
+            callback(null, selectedDataSet);
+            break;
+        case 'rent':
+            selectedDataSet = Array.from(rent);
+            callback(null, selectedDataSet);
+            break;
+        default:
+            console.log('Error setting tempObject');
+            break;
+    }    
+}
 
 
 
@@ -92,12 +113,11 @@ setStates = (statesArray) => {
     statesArray.sort().forEach(state => {
         stateOptions += '<option value="' + state + '">' + state + '</option>';
     });
+
     document.getElementById('state-list').innerHTML = stateOptions;
-    console.log('State Dropdown options set...');
 } // end setStates()
 
 updateCities = (selectedDataSet, selectedState) => {
-    console.log('updateCities started...');
     let cities = [];
     let cityOptions = '<option selected value></option>';
 
@@ -110,12 +130,11 @@ updateCities = (selectedDataSet, selectedState) => {
             cityOptions += '<option value="' + currentCity + '">' + currentCity + '</option>';
         }
     }
+
     document.getElementById('city-list').innerHTML = cityOptions;
-    console.log('updateCities completed...');
 } // end setCities()
 
 updateZipcodes = (selectedDataSet, selectedState, selectedCity) => {
-    console.log('updateZipcodes started...');
     let zipcodes = [];
     let zipcodeOptions = '<option selected value></option>';
 
@@ -129,57 +148,55 @@ updateZipcodes = (selectedDataSet, selectedState, selectedCity) => {
             zipcodeOptions += '<option value="' + currentZipcode + '">' + currentZipcode + '</option>';
         }
     }
+
     document.getElementById('zipcode-list').innerHTML = zipcodeOptions;
-    console.log('updateZipcodes completed...');
 } // end updateZipcodes()
+
+
+
+////////////////////////////////////////////////////////
+// Render line graph
+////////////////////////////////////////////////////////
+
 
 
 
 ////////////////////////////////////////////////////////
 // Methods to filter data based on selected inputs
 ////////////////////////////////////////////////////////
-getSelectedDataset = (radioButtonValue) => {
-    let selectedData = [];
-    
-    switch (radioButtonValue) {
-        case 'three-bed':
-            selectedData = Array.from(threeBed);
-            break;
-        case 'four-bed':
-            selectedData = Array.from(fourBed);
-            break;
-        case 'rent':
-            selectedData = Array.from(rent);
-            break;
-        default:
-            console.log('Error setting tempObject');
-            break;
-    }
-    
-    return selectedData;
-}
-
-applyFilters = (selectedDataSet, selectedState, selectedCity, selectedZipcode) => {
-    console.log('Applying filters');
+applyFilters = (selectedDataSet, selectedState, selectedCity, selectedZipcode, callback) => {
     console.log(selectedDataSet);
-    if (selectedZipcode != null) {
-        filteredData = selectedDataSet.filter(hviRecord => {
+    console.log('Applying filters');
+    if (selectedZipcode.length > 0) {
+        console.log('Here 1');
+        const newDataObject = selectedDataSet.filter(hviRecord => {
             return ((hviRecord.State == selectedState) && (hviRecord.City == selectedCity))
         });
-    } else if (selectedCity != null) {
-        filteredData = selectedDataSet.filter(hviRecord => {
+        console.log('filteredData set');
+        callback(null, newDataObject);
+    } else if (selectedCity.length > 0) {
+        console.log('Here 2');
+        const newDataObject = selectedDataSet.filter(hviRecord => {
             return ((hviRecord.State == selectedState) && (hviRecord.City == selectedCity))
         });
-    } else if (selectedState != null) {
-        filteredData = selectedDataSet.filter(hviRecord => {
+        console.log('filteredData set');
+        callback(null, newDataObject);
+    } else if (selectedState.length > 0) {
+        console.log('Here 3');
+        const newDataObject = selectedDataSet.filter(hviRecord => {
             return (hviRecord.State == selectedState)
         });
+        console.log('filteredData set');
+        callback(null, newDataObject);
     } else {
-        filteredData = selectedDataSet;
+        console.log('Here 4');
+        const newDataObject = selectedDataSet;
+        console.log('filteredData set');
+        callback(null, newDataObject);
     }
 
-    console.log('filteredData set');
 } // end applyFilters
+
 
 
 ////////////////////////////////////////////////////////
@@ -187,11 +204,6 @@ applyFilters = (selectedDataSet, selectedState, selectedCity, selectedZipcode) =
 ////////////////////////////////////////////////////////
 dataSourceRadioButtons.forEach(function(currentRadioButton) {
     currentRadioButton.addEventListener('click', function() {
-        console.log('Data source radio input event listener called');
-        
-        selectedRadioButton = currentRadioButton.value;
-        dataSet = getSelectedDataset(selectedRadioButton);
-
         stateDropdown.disabled = false;
         cityDropdown.disabled = false;
         zipcodeDropdown.disabled = false;
@@ -199,30 +211,54 @@ dataSourceRadioButtons.forEach(function(currentRadioButton) {
         stateDropdown.value = null;
         cityDropdown.value = null;
         zipcodeDropdown.value = null;
-        console.log('Here 1');
-        console.log(selectedRadioButton);
-        console.log(dataSet);
-        applyFilters(dataSet, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value);
+
+        setDataset(currentRadioButton.value, (err, data) => {
+            if (err == null) {
+                dataSet = data;
+                console.log('dataSet = ' + dataSet);
+            } else {
+                console.log(err);
+            }
+        });
+        
+        applyFilters(dataSet, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (err, data) => {
+            if (err === null) {
+                filteredData = data;
+                console.log('FILTERED DATA SET!!!');
+            } else {
+                console.log(err);
+            }
+        });
     });
 });
 
 stateDropdown.addEventListener('change', function() {
     console.log('State dropdown event listener called');
-
     cityDropdown.value = null;
     zipcodeDropdown.value = null;
 
-    applyFilters(dataset, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value);
-    updateCities(dataset, stateDropdown.value);
+    updateCities(dataSet, stateDropdown.value);
+    applyFilters(dataSet, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (err, data) => {
+        if (err === null) {
+            filteredData = data;
+        } else {
+            console.log(err);
+        }
+    });
 });
 
 cityDropdown.addEventListener('change', function() {
     console.log('City dropdown event listener called');
-
     zipcodeDropdown.value = null;
 
-    applyFilters(dataSet, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value);
     updateZipcodes(dataSet, stateDropdown.value, cityDropdown.value);
+    applyFilters(dataSet, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (err, data) => {
+        if (err === null) {
+            filteredData = data;
+        } else {
+            console.log(err);
+        }
+    });
 });
 
 clearState.addEventListener('click', function() {
@@ -230,20 +266,38 @@ clearState.addEventListener('click', function() {
     cityDropdown.value = null;
     zipcodeDropdown.value = null;
 
-    applyFilters(dataSet, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value);
+    applyFilters(dataSet, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (err, data) => {
+        if (err === null) {
+            filteredData = data;
+        } else {
+            console.log(err);
+        }
+    });
 });
 
 clearCity.addEventListener('click', function() {
     cityDropdown.value = null;
     zipcodeDropdown.value = null;
 
-    applyFilters(dataSet, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value);
+    applyFilters(dataSet, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (err, data) => {
+        if (err === null) {
+            filteredData = data;
+        } else {
+            console.log(err);
+        }
+    });
 });
 
 clearZipcode.addEventListener('click', function() {
     zipcodeDropdown.value = null;
 
-    applyFilters(dataSet, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value);
+    applyFilters(dataSet, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (err, data) => {
+        if (err === null) {
+            filteredData = data;
+        } else {
+            console.log(err);
+        }
+    });
 });
 
 
