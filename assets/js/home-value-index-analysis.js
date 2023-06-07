@@ -21,7 +21,7 @@ const clearZipcode = document.getElementById('clear-zipcode');
 // Data Retrieval Methods
 ////////////////////////////////////////////////////////
 parseCSVLine = (line) => {
-    const values = [];
+    let values = [];
     let currentValue = '';
     let withinQuotes = false;
 
@@ -40,7 +40,7 @@ parseCSVLine = (line) => {
     values.push(currentValue.trim());
 
     return values;
-} // end parseCSVLine
+} // end parseCSVLine()
 
 readData = (data, callback) => {
     const lines = data.split('\n'); 
@@ -60,47 +60,31 @@ readData = (data, callback) => {
             result.push(obj);
         }
     }
-    
-    callback(null, result);
+    callback(result);
 } // end readData()
 
 getCSV = (dataFile, callback) => {
+    console.log('Making HTTP request for ' + dataFile);
     let xhr = new XMLHttpRequest();
+    let data = [];
     const url = 'https://raw.githubusercontent.com/baduquig/real-estate-analysis/main/data/' + dataFile;
 
     xhr.open('GET', url, true);
     xhr.responseType = 'text';
     xhr.onload = () => {
         if (xhr.status === 200) {
-            callback(null, xhr.response);
+            console.log(dataFile + ' HTTP Request successful');
+            console.log('Reading data from ' + dataFile);
+            readData(xhr.response, (result) => {
+                callback(null, result);
+            });
+            console.log('Setting data from ' + dataFile + ' to array variable');
         } else {
             callback(xhr.status, xhr.response);
         }
     }
     xhr.send();
-} // end async function readData()
-
-setDataset = (radioButtonValue, callback) => {
-    let selectedDataSet = [];
-    switch (radioButtonValue) {
-        case 'three-bed':
-            //selectedDataSet = Array.from(threeBed);
-            console.log('here three-bed');
-            callback(null, threeBed);
-            break;
-        case 'four-bed':
-            selectedDataSet = Array.from(fourBed);
-            callback(null, selectedDataSet);
-            break;
-        case 'rent':
-            selectedDataSet = Array.from(rent);
-            callback(null, selectedDataSet);
-            break;
-        default:
-            console.log('Error setting tempObject');
-            break;
-    }    
-}
+} // end getCSV()
 
 
 
@@ -157,44 +141,104 @@ updateZipcodes = (selectedDataSet, selectedState, selectedCity) => {
 ////////////////////////////////////////////////////////
 // Render line graph
 ////////////////////////////////////////////////////////
-
+calculateRegionAverageZVHI = (data, callback) => {
+    let averageZVHI = {};    
+} // end calculateRegionAverageZVHI()
 
 
 
 ////////////////////////////////////////////////////////
 // Methods to filter data based on selected inputs
 ////////////////////////////////////////////////////////
+setDataset = (radioButtonValue, callback) => {    
+    switch (radioButtonValue) {
+        case 'three-bed':
+            dataSet = threeBed;
+            callback(threeBed);
+            break;
+        case 'four-bed':
+            dataSet = fourBed;
+            callback(fourBed);
+            break;
+        case 'rent':
+            dataSet = rent;
+            callback(rent);
+            break;
+        default:
+            console.log('Error setting tempObject');
+            break;
+    }
+} // end setDataset()
+
 applyFilters = (selectedDataSet, selectedState, selectedCity, selectedZipcode, callback) => {
-    console.log(selectedDataSet);
-    console.log('Applying filters');
+    let newDataObject = [];
+    
     if (selectedZipcode.length > 0) {
-        console.log('Here 1');
-        const newDataObject = selectedDataSet.filter(hviRecord => {
-            return ((hviRecord.State == selectedState) && (hviRecord.City == selectedCity))
-        });
-        console.log('filteredData set');
-        callback(null, newDataObject);
+        for (let i = 0; i < selectedDataSet.length; i++) {
+            if (selectedDataSet[i].RegionName == selectedZipcode) {
+                delete hviRecord.Country;
+                delete hviRecord.RegionID;
+                delete hviRecord.SizeRank;
+                delete hviRecord.RegionType;
+                delete hviRecord.StateName;
+                delete hviRecord.State;
+                delete hviRecord.City;
+                delete hviRecord.Metro;
+                delete hviRecord.CountyName;
+
+                newDataObject.push(selectedDataSet[i]);
+            }
+        }
     } else if (selectedCity.length > 0) {
-        console.log('Here 2');
-        const newDataObject = selectedDataSet.filter(hviRecord => {
-            return ((hviRecord.State == selectedState) && (hviRecord.City == selectedCity))
-        });
-        console.log('filteredData set');
-        callback(null, newDataObject);
+        for (let i = 0; i < selectedDataSet.length; i++) {
+            if ((selectedDataSet[i].State == selectedState) && (selectedDataSet[i].City == selectedCity)) {
+                delete hviRecord.Country;
+                delete hviRecord.RegionID;
+                delete hviRecord.SizeRank;
+                delete hviRecord.RegionName;
+                delete hviRecord.RegionType;
+                delete hviRecord.StateName;
+                delete hviRecord.State;
+                delete hviRecord.Metro;
+                delete hviRecord.CountyName;
+
+                newDataObject.push(selectedDataSet[i]);
+            }
+        }
     } else if (selectedState.length > 0) {
-        console.log('Here 3');
-        const newDataObject = selectedDataSet.filter(hviRecord => {
-            return (hviRecord.State == selectedState)
-        });
-        console.log('filteredData set');
-        callback(null, newDataObject);
+        for (let i = 0; i < selectedDataSet.length; i++) {
+            console.log(selectedDataSet[i]['State']);
+            if (selectedDataSet[i]['State'] == selectedState) {
+                delete selectedDataSet[i].Country;
+                delete selectedDataSet[i].RegionID;
+                delete selectedDataSet[i].SizeRank;
+                delete selectedDataSet[i].RegionName;
+                delete selectedDataSet[i].RegionType;
+                delete selectedDataSet[i].StateName;
+                delete selectedDataSet[i].City;
+                delete selectedDataSet[i].Metro;
+                delete selectedDataSet[i].CountyName;
+
+                newDataObject.push(selectedDataSet[i]);
+            } 
+        }
     } else {
-        console.log('Here 4');
-        const newDataObject = selectedDataSet;
-        console.log('filteredData set');
-        callback(null, newDataObject);
+        for (let i = 0; i < selectedDataSet.length; i++) {
+            delete selectedDataSet[i].RegionID;
+            delete selectedDataSet[i].SizeRank;
+            delete selectedDataSet[i].RegionName;
+            delete selectedDataSet[i].RegionType;
+            delete selectedDataSet[i].StateName;
+            delete selectedDataSet[i].State;
+            delete selectedDataSet[i].City;
+            delete selectedDataSet[i].Metro;
+            delete selectedDataSet[i].CountyName;
+        }
+        
+        newDataObject = selectedDataSet;
     }
 
+    callback(newDataObject);
 } // end applyFilters
 
 
@@ -212,52 +256,30 @@ dataSourceRadioButtons.forEach(function(currentRadioButton) {
         cityDropdown.value = null;
         zipcodeDropdown.value = null;
 
-        setDataset(currentRadioButton.value, (err, data) => {
-            if (err == null) {
-                dataSet = data;
-                console.log('dataSet = ' + dataSet);
-            } else {
-                console.log(err);
-            }
-        });
-        
-        applyFilters(dataSet, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (err, data) => {
-            if (err === null) {
+        setDataset(currentRadioButton.value, (newDataSet) => {
+            applyFilters(newDataSet, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
                 filteredData = data;
-                console.log('FILTERED DATA SET!!!');
-            } else {
-                console.log(err);
-            }
+            });
         });
     });
 });
 
 stateDropdown.addEventListener('change', function() {
-    console.log('State dropdown event listener called');
     cityDropdown.value = null;
     zipcodeDropdown.value = null;
 
     updateCities(dataSet, stateDropdown.value);
-    applyFilters(dataSet, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (err, data) => {
-        if (err === null) {
-            filteredData = data;
-        } else {
-            console.log(err);
-        }
+    applyFilters(dataSet, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
+        filteredData = data;
     });
 });
 
 cityDropdown.addEventListener('change', function() {
-    console.log('City dropdown event listener called');
     zipcodeDropdown.value = null;
 
     updateZipcodes(dataSet, stateDropdown.value, cityDropdown.value);
-    applyFilters(dataSet, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (err, data) => {
-        if (err === null) {
-            filteredData = data;
-        } else {
-            console.log(err);
-        }
+    applyFilters(dataSet, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
+        filteredData = data;
     });
 });
 
@@ -266,12 +288,8 @@ clearState.addEventListener('click', function() {
     cityDropdown.value = null;
     zipcodeDropdown.value = null;
 
-    applyFilters(dataSet, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (err, data) => {
-        if (err === null) {
-            filteredData = data;
-        } else {
-            console.log(err);
-        }
+    applyFilters(dataSet, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
+        filteredData = data;
     });
 });
 
@@ -279,24 +297,16 @@ clearCity.addEventListener('click', function() {
     cityDropdown.value = null;
     zipcodeDropdown.value = null;
 
-    applyFilters(dataSet, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (err, data) => {
-        if (err === null) {
-            filteredData = data;
-        } else {
-            console.log(err);
-        }
+    applyFilters(dataSet, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
+        filteredData = data;
     });
 });
 
 clearZipcode.addEventListener('click', function() {
     zipcodeDropdown.value = null;
 
-    applyFilters(dataSet, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (err, data) => {
-        if (err === null) {
-            filteredData = data;
-        } else {
-            console.log(err);
-        }
+    applyFilters(dataSet, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
+        filteredData = data;
     });
 });
 
@@ -319,45 +329,25 @@ setStates(states);
 
 // Instantiate threeBed object
 getCSV('zvhi_3bed.csv', (err, data) => {
-    if (err !== null) {
-        console.log(err);
+    if (err === null) {
+        threeBed = data;
     } else {
-        readData(data, (err, obj) => {
-            if (err !== null) {
-                console.log(err);
-            } else {
-                threeBed = obj;                        
-            }
-        });
+        console.log(err);
     }
 });
 
-// Instantiate fourBed object
 getCSV('zvhi_4bed.csv', (err, data) => {
-    if (err !== null) {
-        console.log(err);
+    if (err === null) {
+        fourBed = data;
     } else {
-        readData(data, (err, obj) => {
-            if (err !== null) {
-                console.log(err);
-            } else {
-                fourBed = obj;                        
-            }
-        });
+        console.log(err);
     }
 });
 
-// Instantiate rent object
 getCSV('rent.csv', (err, data) => {
-    if (err !== null) {
-        console.log(err);
+    if (err === null) {
+        rent = data;
     } else {
-        readData(data, (err, obj) => {
-            if (err !== null) {
-                console.log(err);
-            } else {
-                rent = obj;                        
-            }
-        });
+        console.log(err);
     }
 });
