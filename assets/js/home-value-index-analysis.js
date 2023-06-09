@@ -309,17 +309,20 @@ dataSourceRadioButtons.forEach(function(currentRadioButton) {
         zipcodeDropdown.value = null;
 
         setDataset(currentRadioButton.value, (newData) => {
-            selectedDataSource = newData;
             applyFilters(newData, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
                 groupDataByRegion(data, (xAxis, yAxis) => {
                     console.log(xAxis, yAxis);
                 });
             });
+            
+            selectedDataSource = newData;
         });
     });
 });
 
 stateDropdown.addEventListener('change', function() {
+    cityDropdown.disabled = false;
+    
     cityDropdown.value = null;
     zipcodeDropdown.value = null;
 
@@ -333,6 +336,7 @@ stateDropdown.addEventListener('change', function() {
 });
 
 cityDropdown.addEventListener('change', function() {
+    zipcodeDropdown.disabled = false;
     zipcodeDropdown.value = null;
 
     applyFilters(selectedDataSource, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
@@ -343,7 +347,18 @@ cityDropdown.addEventListener('change', function() {
     });
 });
 
+zipcodeDropdown.addEventListener('change', function() {
+    applyFilters(selectedDataSource, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
+        groupDataByRegion(data, (xAxis, yAxis) => {
+            console.log(xAxis, yAxis);
+        })
+    });
+});
+
 clearState.addEventListener('click', function() {
+    cityDropdown.disabled = true;
+    zipcodeDropdown.disabled = true;
+
     stateDropdown.value = null;
     cityDropdown.value = null;
     zipcodeDropdown.value = null;
@@ -356,6 +371,8 @@ clearState.addEventListener('click', function() {
 });
 
 clearCity.addEventListener('click', function() {
+    zipcodeDropdown.disabled = true;
+    
     cityDropdown.value = null;
     zipcodeDropdown.value = null;
 
