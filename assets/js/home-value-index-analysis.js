@@ -1,8 +1,8 @@
 let threeBed = [];
 let fourBed = [];
 let rent = [];
+let selectedDataSource = [];
 let filteredData = [];
-let currentDataSource = '';
 
 const states = ['NJ', 'TX', 'NY', 'CA', 'IL', 'GA', 'TN', 'WA', 'OK', 'NC', 'AZ', 'VA', 'NM', 'HI', 'FL', 'KS', 'MO', 
                     'IN', 'PA', 'CO', 'NV', 'UT', 'OH', 'MD', 'OR', 'DC', 'ID', 'MA', 'MI', 'SC', 'KY', 'CT', 'DE', 'LA', 
@@ -151,94 +151,95 @@ calculateRegionAverageZVHI = (data, callback) => {
 // Methods to filter data based on selected inputs
 ////////////////////////////////////////////////////////
 setDataset = (radioButtonValue, callback) => {
+    let newDeepCopy = [];
+    
     if (radioButtonValue == 'three-bed') {
-        callback(threeBed);
+        newDeepCopy = JSON.parse(JSON.stringify(threeBed));
     } else if (radioButtonValue == 'four-bed') {
-        callback(fourBed);
+        newDeepCopy = JSON.parse(JSON.stringify(fourBed));
     } else if (radioButtonValue == 'rent') {
-        callback(rent);
+        newDeepCopy = JSON.parse(JSON.stringify(rent));
     } else {
         console.log('Error setting tempObject');
-        callback([]);
     }
+
+    callback(newDeepCopy);
 } // end setDataset()
 
-applyFilters = (currentDataSource, selectedState, selectedCity, selectedZipcode, callback) => {
+applyFilters = (baseDataSet, selectedState, selectedCity, selectedZipcode, callback) => {
     let newDataList = [];
     
-    setDataset(currentDataSource, (baseDataSet) => {
-        if (selectedZipcode.length > 0) {
-            for (let i = 0; i < baseDataSet.length; i++) {
-                if (baseDataSet[i].RegionName == selectedZipcode) {
-                    let newObject = JSON.parse(JSON.stringify(baseDataSet[i]));
-
-                    delete newObject.Country;
-                    delete newObject.RegionID;
-                    delete newObject.SizeRank;
-                    delete newObject.RegionType;
-                    delete newObject.StateName;
-                    delete newObject.State;
-                    delete newObject.City;
-                    delete newObject.Metro;
-                    delete newObject.CountyName;
-    
-                    newDataList.push(newObject);
-                }
-            }
-        } else if (selectedCity.length > 0) {
-            for (let i = 0; i < baseDataSet.length; i++) {
-                if ((baseDataSet[i].State == selectedState) && (baseDataSet[i].City == selectedCity)) {
-                    let newObject = JSON.parse(JSON.stringify(baseDataSet[i]));
-                    
-                    delete newObject.Country;
-                    delete newObject.RegionID;
-                    delete newObject.SizeRank;
-                    delete newObject.RegionName;
-                    delete newObject.RegionType;
-                    delete newObject.StateName;
-                    delete newObject.State;
-                    delete newObject.Metro;
-                    delete newObject.CountyName;
-    
-                    newDataList.push(newObject);
-                }
-            }
-        } else if (selectedState.length > 0) {
-            for (let i = 0; i < baseDataSet.length; i++) {
-                if (baseDataSet[i].State == selectedState) {
-                    let newObject = JSON.parse(JSON.stringify(baseDataSet[i]));
-
-                    delete newObject.Country;
-                    delete newObject.RegionID;
-                    delete newObject.SizeRank;
-                    delete newObject.RegionName;
-                    delete newObject.RegionType;
-                    delete newObject.StateName;
-                    delete newObject.City;
-                    delete newObject.Metro;
-                    delete newObject.CountyName;
-    
-                    newDataList.push(newObject);
-                } 
-            }
-        } else {
-            for (let i = 0; i < baseDataSet.length; i++) {
+    if (selectedZipcode.length > 0) {
+        for (let i = 0; i < baseDataSet.length; i++) {
+            if (baseDataSet[i].RegionName == selectedZipcode) {
                 let newObject = JSON.parse(JSON.stringify(baseDataSet[i]));
 
+                delete newObject.Country;
                 delete newObject.RegionID;
                 delete newObject.SizeRank;
-                delete newObject.RegionName;
                 delete newObject.RegionType;
                 delete newObject.StateName;
                 delete newObject.State;
                 delete newObject.City;
                 delete newObject.Metro;
                 delete newObject.CountyName;
-    
+
                 newDataList.push(newObject);
             }
         }
-    });    
+    } else if (selectedCity.length > 0) {
+        for (let i = 0; i < baseDataSet.length; i++) {
+            if ((baseDataSet[i].State == selectedState) && (baseDataSet[i].City == selectedCity)) {
+                let newObject = JSON.parse(JSON.stringify(baseDataSet[i]));
+                
+                delete newObject.Country;
+                delete newObject.RegionID;
+                delete newObject.SizeRank;
+                delete newObject.RegionName;
+                delete newObject.RegionType;
+                delete newObject.StateName;
+                delete newObject.State;
+                delete newObject.Metro;
+                delete newObject.CountyName;
+
+                newDataList.push(newObject);
+            }
+        }
+    } else if (selectedState.length > 0) {
+        for (let i = 0; i < baseDataSet.length; i++) {
+            if (baseDataSet[i].State == selectedState) {
+                let newObject = JSON.parse(JSON.stringify(baseDataSet[i]));
+
+                delete newObject.Country;
+                delete newObject.RegionID;
+                delete newObject.SizeRank;
+                delete newObject.RegionName;
+                delete newObject.RegionType;
+                delete newObject.StateName;
+                delete newObject.City;
+                delete newObject.Metro;
+                delete newObject.CountyName;
+
+                newDataList.push(newObject);
+            } 
+        }
+    } else {
+        for (let i = 0; i < baseDataSet.length; i++) {
+            let newObject = JSON.parse(JSON.stringify(baseDataSet[i]));
+
+            delete newObject.RegionID;
+            delete newObject.SizeRank;
+            delete newObject.RegionName;
+            delete newObject.RegionType;
+            delete newObject.StateName;
+            delete newObject.State;
+            delete newObject.City;
+            delete newObject.Metro;
+            delete newObject.CountyName;
+
+            newDataList.push(newObject);
+        }
+    }   
 
     callback(newDataList);
 } // end applyFilters
@@ -258,10 +259,11 @@ dataSourceRadioButtons.forEach(function(currentRadioButton) {
         cityDropdown.value = null;
         zipcodeDropdown.value = null;
 
-        currentDataSource = currentRadioButton.value;
-
-        applyFilters(currentRadioButton.value, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
-            filteredData = data;
+        setDataset(currentRadioButton.value, (newData) => {
+            selectedDataSource = newData;
+            applyFilters(newData, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
+                filteredData = data;
+            });
         });
     });
 });
@@ -271,7 +273,7 @@ stateDropdown.addEventListener('change', function() {
     zipcodeDropdown.value = null;
 
     
-    applyFilters(currentDataSource, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
+    applyFilters(selectedDataSource, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
         updateCities(data, stateDropdown.value);
         filteredData = data;
     });
@@ -280,7 +282,7 @@ stateDropdown.addEventListener('change', function() {
 cityDropdown.addEventListener('change', function() {
     zipcodeDropdown.value = null;
 
-    applyFilters(currentDataSource, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
+    applyFilters(selectedDataSource, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
         updateZipcodes(data, stateDropdown.value, cityDropdown.value);
         filteredData = data;
     });
@@ -291,7 +293,7 @@ clearState.addEventListener('click', function() {
     cityDropdown.value = null;
     zipcodeDropdown.value = null;
 
-    applyFilters(currentDataSource, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
+    applyFilters(selectedDataSource, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
         filteredData = data;
     });
 });
@@ -300,7 +302,7 @@ clearCity.addEventListener('click', function() {
     cityDropdown.value = null;
     zipcodeDropdown.value = null;
 
-    applyFilters(currentDataSource, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
+    applyFilters(selectedDataSource, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
         filteredData = data;
     });
 });
@@ -308,7 +310,7 @@ clearCity.addEventListener('click', function() {
 clearZipcode.addEventListener('click', function() {
     zipcodeDropdown.value = null;
 
-    applyFilters(currentDataSource, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
+    applyFilters(selectedDataSource, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
         filteredData = data;
     });
 });
@@ -318,6 +320,10 @@ clearZipcode.addEventListener('click', function() {
 ////////////////////////////////////////////////////////
 // Initial values
 ////////////////////////////////////////////////////////
+dataSourceRadioButtons.forEach((currentRadioButton) => {
+    currentRadioButton.disabled = true;
+});
+
 stateDropdown.value = null;
 cityDropdown.value = null;
 zipcodeDropdown.value = null;
@@ -333,6 +339,9 @@ setStates(states);
 getCSV('zvhi_3bed.csv', (err, data) => {
     if (err === null) {
         threeBed = data;
+        dataSourceRadioButtons.forEach((currentRadioButton) => {
+            currentRadioButton.disabled = false;
+        });
     } else {
         console.log(err);
     }
