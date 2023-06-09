@@ -18,7 +18,7 @@ const clearZipcode = document.getElementById('clear-zipcode');
 
 
 ////////////////////////////////////////////////////////
-// Data Retrieval Methods
+// Data Retrieval/parsing Methods
 ////////////////////////////////////////////////////////
 parseCSVLine = (line) => {
     let values = [];
@@ -66,7 +66,6 @@ readData = (data, callback) => {
 getCSV = (dataFile, callback) => {
     console.log('Making HTTP request for ' + dataFile);
     let xhr = new XMLHttpRequest();
-    let data = [];
     const url = 'https://raw.githubusercontent.com/baduquig/real-estate-analysis/main/data/' + dataFile;
 
     xhr.open('GET', url, true);
@@ -105,7 +104,7 @@ updateCities = (selectedDataSet, selectedState) => {
     let cities = [];
     let cityOptions = '<option selected value></option>';
 
-    for (i = 0; i < selectedDataSet.length; i++) {
+    for (let i = 0; i < selectedDataSet.length; i++) {
         const currentState = selectedDataSet[i].State;
         const currentCity = selectedDataSet[i].City;
 
@@ -122,7 +121,7 @@ updateZipcodes = (selectedDataSet, selectedState, selectedCity) => {
     let zipcodes = [];
     let zipcodeOptions = '<option selected value></option>';
 
-    for (i = 0; i < selectedDataSet.length; i++) {
+    for (let i = 0; i < selectedDataSet.length; i++) {
         const currentState = selectedDataSet[i].State;
         const currentCity = selectedDataSet[i].City;
         const currentZipcode = selectedDataSet[i].RegionName;
@@ -141,9 +140,59 @@ updateZipcodes = (selectedDataSet, selectedState, selectedCity) => {
 ////////////////////////////////////////////////////////
 // Render line graph
 ////////////////////////////////////////////////////////
-calculateRegionAverageZVHI = (data, callback) => {
-    let averageZVHI = {};    
-} // end calculateRegionAverageZVHI()
+
+
+
+////////////////////////////////////////////////////////
+// Render line graph
+////////////////////////////////////////////////////////
+groupDataByRegion = (data, callback) => {
+    let dates = [];
+    let valuesSum = [];
+    let notNullDateCount = [];
+    let averageHomeValues = [];
+
+    for (let i = 0; i < data.length; i++) {
+        // Iterate through each key/value pair of data object
+        let j = 0;
+        Object.entries(data[i]).forEach(([currentKey, currentValue]) => {
+            
+            // Do not include region name in grouping
+            if (currentKey.substring(0, 2) == '20') {
+
+                // Instantiate initial values of `valuesSum` and `notNullDateCount` for first object in data list
+                if (i === 0) {
+                    dates.push(currentKey);
+
+                    // Verify that data was captured for region on this date
+                    if (currentValue.length > 0) {
+                        valuesSum.push(Number(currentValue));
+                        notNullDateCount.push(1);
+                    } else {
+                        valuesSum.push(0);
+                        notNullDateCount.push(0);
+                    }
+                } else {
+                    // Verify that data was captured for region on this date
+                    if (currentValue.length > 0) {
+                        valuesSum[j] += Number(currentValue);
+                        notNullDateCount[j] += 1;
+                    }
+                }
+            }
+            
+            // Increment iterater for `valuesSum`, `notNullDateCount`
+            j++;
+        }); // end forEach
+    } // end iteration through `data` 
+
+    // Calculate averageHomeValues values
+    for (let k = 0; k < dates.length; k++) {
+        averageHomeValues[k] = valuesSum[k] / notNullDateCount[k];
+    }
+    
+    callback(dates, averageHomeValues);
+}
 
 
 
@@ -262,7 +311,9 @@ dataSourceRadioButtons.forEach(function(currentRadioButton) {
         setDataset(currentRadioButton.value, (newData) => {
             selectedDataSource = newData;
             applyFilters(newData, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
-                filteredData = data;
+                groupDataByRegion(data, (xAxis, yAxis) => {
+                    console.log(xAxis, yAxis);
+                });
             });
         });
     });
@@ -274,8 +325,10 @@ stateDropdown.addEventListener('change', function() {
 
     
     applyFilters(selectedDataSource, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
-        updateCities(data, stateDropdown.value);
-        filteredData = data;
+        updateCities(selectedDataSource, stateDropdown.value);
+        groupDataByRegion(data, (xAxis, yAxis) => {
+            console.log(xAxis, yAxis);
+        });
     });
 });
 
@@ -283,8 +336,10 @@ cityDropdown.addEventListener('change', function() {
     zipcodeDropdown.value = null;
 
     applyFilters(selectedDataSource, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
-        updateZipcodes(data, stateDropdown.value, cityDropdown.value);
-        filteredData = data;
+        updateZipcodes(selectedDataSource, stateDropdown.value, cityDropdown.value);
+        groupDataByRegion(data, (xAxis, yAxis) => {
+            console.log(xAxis, yAxis);
+        });
     });
 });
 
@@ -294,7 +349,9 @@ clearState.addEventListener('click', function() {
     zipcodeDropdown.value = null;
 
     applyFilters(selectedDataSource, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
-        filteredData = data;
+        groupDataByRegion(data, (xAxis, yAxis) => {
+            console.log(xAxis, yAxis);
+        });
     });
 });
 
@@ -303,7 +360,9 @@ clearCity.addEventListener('click', function() {
     zipcodeDropdown.value = null;
 
     applyFilters(selectedDataSource, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
-        filteredData = data;
+        groupDataByRegion(data, (xAxis, yAxis) => {
+            console.log(xAxis, yAxis);
+        });
     });
 });
 
@@ -311,7 +370,9 @@ clearZipcode.addEventListener('click', function() {
     zipcodeDropdown.value = null;
 
     applyFilters(selectedDataSource, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
-        filteredData = data;
+        groupDataByRegion(data, (xAxis, yAxis) => {
+            console.log(xAxis, yAxis);
+        });
     });
 });
 
@@ -320,9 +381,9 @@ clearZipcode.addEventListener('click', function() {
 ////////////////////////////////////////////////////////
 // Initial values
 ////////////////////////////////////////////////////////
-dataSourceRadioButtons.forEach((currentRadioButton) => {
+/* dataSourceRadioButtons.forEach((currentRadioButton) => {
     currentRadioButton.disabled = true;
-});
+}); */
 
 stateDropdown.value = null;
 cityDropdown.value = null;
@@ -339,9 +400,9 @@ setStates(states);
 getCSV('zvhi_3bed.csv', (err, data) => {
     if (err === null) {
         threeBed = data;
-        dataSourceRadioButtons.forEach((currentRadioButton) => {
+        /*dataSourceRadioButtons.forEach((currentRadioButton) => {
             currentRadioButton.disabled = false;
-        });
+        });*/
     } else {
         console.log(err);
     }
