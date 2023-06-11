@@ -3,6 +3,7 @@ let fourBed = [];
 let rent = [];
 let selectedDataSource = [];
 let filteredData = [];
+let selectedRadioButton = '';
 
 const states = ['NJ', 'TX', 'NY', 'CA', 'IL', 'GA', 'TN', 'WA', 'OK', 'NC', 'AZ', 'VA', 'NM', 'HI', 'FL', 'KS', 'MO', 
                     'IN', 'PA', 'CO', 'NV', 'UT', 'OH', 'MD', 'OR', 'DC', 'ID', 'MA', 'MI', 'SC', 'KY', 'CT', 'DE', 'LA', 
@@ -140,11 +141,35 @@ updateZipcodes = (selectedDataSet, selectedState, selectedCity) => {
 ////////////////////////////////////////////////////////
 // Render line graph
 ////////////////////////////////////////////////////////
+renderLineGraph = (xAxis, yAxis, propertyType, regionName) => {
+    let chartTitle = '';
+
+    if (propertyType === 'rent') {
+        chartTitle = 'Typical Rental Rates in ' + regionName;
+    } else {
+        chartTitle = 'Typical Home Value for a ' + propertyType.charAt(0).toUpperCase() + propertyType.slice(1) + ' Home in ' + regionName;
+    }
+
+    const trace = {
+        x: xAxis,
+        y: yAxis,
+        mode: 'lines',
+        name: regionName
+    };
+
+    const data = [ trace ];
+
+    const layout = {
+        title: chartTitle
+    };
+
+    Plotly.newPlot('zhvi-chart', data, layout);
+}
 
 
 
 ////////////////////////////////////////////////////////
-// Render line graph
+// Group Data by Region
 ////////////////////////////////////////////////////////
 groupDataByRegion = (data, callback) => {
     let dates = [];
@@ -308,10 +333,13 @@ dataSourceRadioButtons.forEach(function(currentRadioButton) {
         cityDropdown.value = null;
         zipcodeDropdown.value = null;
 
+        selectedRadioButton = currentRadioButton.value;
+
         setDataset(currentRadioButton.value, (newData) => {
             applyFilters(newData, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
                 groupDataByRegion(data, (xAxis, yAxis) => {
                     console.log(xAxis, yAxis);
+                    renderLineGraph(xAxis, yAxis, selectedRadioButton, 'the United States');
                 });
             });
             
