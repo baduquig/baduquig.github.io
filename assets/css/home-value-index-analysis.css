@@ -51,6 +51,10 @@ select {
     width: 90%;
 }
 
+#zhvi-chart {
+    margin: 20px;
+}
+
 .disclaimer-div {
     margin: 15px;
     text-align: right;
