@@ -55,7 +55,7 @@ select {
     margin: 20px;
 }
 
-.disclaimer-div {
-    margin: 15px;
+#disclaimer-div {
+    margin: 20px;
     text-align: right;
 }

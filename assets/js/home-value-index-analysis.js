@@ -16,7 +16,7 @@ const zipcodeDropdown = document.getElementById('zipcode');
 const clearState = document.getElementById('clear-state');
 const clearCity = document.getElementById('clear-city');
 const clearZipcode = document.getElementById('clear-zipcode');
-
+const disclaimerDiv = document.getElementById('disclaimer-div');
 
 ////////////////////////////////////////////////////////
 // Data Retrieval/parsing Methods
@@ -154,7 +154,8 @@ renderLineGraph = (xAxis, yAxis, propertyType, regionName) => {
         x: xAxis,
         y: yAxis,
         mode: 'lines',
-        name: regionName
+        name: regionName,
+        textposition: 'top left'
     };
 
     const data = [ trace ];
@@ -359,6 +360,7 @@ stateDropdown.addEventListener('change', function() {
         updateCities(selectedDataSource, stateDropdown.value);
         groupDataByRegion(data, (xAxis, yAxis) => {
             console.log(xAxis, yAxis);
+            renderLineGraph(xAxis, yAxis, selectedRadioButton, stateDropdown.value);
         });
     });
 });
@@ -371,6 +373,7 @@ cityDropdown.addEventListener('change', function() {
         updateZipcodes(selectedDataSource, stateDropdown.value, cityDropdown.value);
         groupDataByRegion(data, (xAxis, yAxis) => {
             console.log(xAxis, yAxis);
+            renderLineGraph(xAxis, yAxis, selectedRadioButton, cityDropdown.value);
         });
     });
 });
@@ -379,6 +382,7 @@ zipcodeDropdown.addEventListener('change', function() {
     applyFilters(selectedDataSource, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
         groupDataByRegion(data, (xAxis, yAxis) => {
             console.log(xAxis, yAxis);
+            renderLineGraph(xAxis, yAxis, selectedRadioButton, zipcodeDropdown.value);
         })
     });
 });
@@ -394,6 +398,7 @@ clearState.addEventListener('click', function() {
     applyFilters(selectedDataSource, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
         groupDataByRegion(data, (xAxis, yAxis) => {
             console.log(xAxis, yAxis);
+            renderLineGraph(xAxis, yAxis, selectedRadioButton, 'the United States');
         });
     });
 });
@@ -407,6 +412,7 @@ clearCity.addEventListener('click', function() {
     applyFilters(selectedDataSource, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
         groupDataByRegion(data, (xAxis, yAxis) => {
             console.log(xAxis, yAxis);
+            renderLineGraph(xAxis, yAxis, selectedRadioButton, stateDropdown.value);
         });
     });
 });
@@ -417,6 +423,7 @@ clearZipcode.addEventListener('click', function() {
     applyFilters(selectedDataSource, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
         groupDataByRegion(data, (xAxis, yAxis) => {
             console.log(xAxis, yAxis);
+            renderLineGraph(xAxis, yAxis, selectedRadioButton, cityDropdown.value);
         });
     });
 });
@@ -426,9 +433,9 @@ clearZipcode.addEventListener('click', function() {
 ////////////////////////////////////////////////////////
 // Initial values
 ////////////////////////////////////////////////////////
-/* dataSourceRadioButtons.forEach((currentRadioButton) => {
+dataSourceRadioButtons.forEach((currentRadioButton) => {
     currentRadioButton.disabled = true;
-}); */
+});
 
 stateDropdown.value = null;
 cityDropdown.value = null;
@@ -445,9 +452,13 @@ setStates(states);
 getCSV('zvhi_3bed.csv', (err, data) => {
     if (err === null) {
         threeBed = data;
-        /*dataSourceRadioButtons.forEach((currentRadioButton) => {
+        dataSourceRadioButtons.forEach((currentRadioButton) => {
             currentRadioButton.disabled = false;
-        });*/
+            if (currentRadioButton.value === 'three-bed') {
+                currentRadioButton.click();
+            } 
+        });
+        disclaimerDiv.innerHTML = '<p>Data available at and retrieved from <a href="https://www.zillow.com/research/data/">Zillow Research</a></p>';
     } else {
         console.log(err);
     }
