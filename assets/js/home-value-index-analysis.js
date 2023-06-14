@@ -136,6 +136,20 @@ updateZipcodes = (selectedDataSet, selectedState, selectedCity) => {
     document.getElementById('zipcode-list').innerHTML = zipcodeOptions;
 } // end updateZipcodes()
 
+nullZipcode = () => {
+    zipcodeDropdown.value = null;
+}
+nullCity = () => {
+    nullZipcode();
+    zipcodeDropdown.disabled = true;
+    cityDropdown.value = null;
+}
+nullState = () => {
+    nullCity();
+    cityDropdown.disabled = true;
+    stateDropdown.value = null;
+}
+
 
 
 ////////////////////////////////////////////////////////
@@ -418,7 +432,7 @@ clearCity.addEventListener('click', function() {
 });
 
 clearZipcode.addEventListener('click', function() {
-    zipcodeDropdown.value = null;
+    nullZipcode();
 
     applyFilters(selectedDataSource, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
         groupDataByRegion(data, (xAxis, yAxis) => {
@@ -449,12 +463,12 @@ setStates(states);
 
 
 // Instantiate threeBed object
-getCSV('zvhi_3bed.csv', (err, data) => {
+getCSV('rent.csv', (err, data) => {
     if (err === null) {
-        threeBed = data;
+        rent = data;
         dataSourceRadioButtons.forEach((currentRadioButton) => {
-            currentRadioButton.disabled = false;
-            if (currentRadioButton.value === 'three-bed') {
+            if (currentRadioButton.value === 'rent') {
+                currentRadioButton.disabled = false;
                 currentRadioButton.click();
             } 
         });
@@ -464,17 +478,27 @@ getCSV('zvhi_3bed.csv', (err, data) => {
     }
 });
 
-getCSV('zvhi_4bed.csv', (err, data) => {
+getCSV('4bed.csv', (err, data) => {
     if (err === null) {
         fourBed = data;
+        dataSourceRadioButtons.forEach((currentRadioButton) => {
+            if (currentRadioButton.value === 'four-bed') {
+                currentRadioButton.disabled = false;
+            } 
+        });
     } else {
         console.log(err);
     }
 });
 
-getCSV('rent.csv', (err, data) => {
+getCSV('3bed.csv', (err, data) => {
     if (err === null) {
-        rent = data;
+        threeBed = data;
+        dataSourceRadioButtons.forEach((currentRadioButton) => {
+            if (currentRadioButton.value === 'three-bed') {
+                currentRadioButton.disabled = false;
+            } 
+        });
     } else {
         console.log(err);
     }
