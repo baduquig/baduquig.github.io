@@ -1,3 +1,76 @@
+// DOM Elements
+const dataSourceRadioButtons = document.querySelectorAll('input[name="data-source"]');
+const stateDropdown = document.getElementById('state');
+const cityDropdown = document.getElementById('city');
+const zipcodeDropdown = document.getElementById('zipcode');
+const clearState = document.getElementById('clear-state');
+const clearCity = document.getElementById('clear-city');
+const clearZipcode = document.getElementById('clear-zipcode');
+const disclaimerDiv = document.getElementById('disclaimer-div');
+
+const states = ['NJ', 'TX', 'NY', 'CA', 'IL', 'GA', 'TN', 'WA', 'OK', 'NC', 
+                'AZ', 'VA', 'NM', 'HI', 'FL', 'KS', 'MO', 'IN', 'PA', 'CO', 
+                'NV', 'UT', 'OH', 'MD', 'OR', 'DC', 'ID', 'MA', 'MI', 'SC', 
+                'KY', 'CT', 'DE', 'LA', 'MN', 'WI', 'MT', 'MS', 'AL', 'AR',
+                'ND', 'SD', 'RI', 'NE', 'ME', 'IA', 'WV', 'AK', 'NH', 'VT', 'WY'];
+
+let selectedRadioButton = 'three-bed';
+
+
+//////////////////////////////
+// Input Element Setters    //
+//////////////////////////////
+nullZipcode = () => {
+    zipcodeDropdown.value = null;
+}
+nullCity = () => {
+    nullZipcode();
+    zipcodeDropdown.disabled = true;
+    cityDropdown.value = null;
+}
+nullState = () => {
+    nullCity();
+    cityDropdown.disabled = true;
+    stateDropdown.value = null;
+}
+
+setDropdownOptions = (dropdownElement, optionsArray) => {
+    let dropdownOptions = '';
+    
+    optionsArray.sort().forEach(option => {
+        dropdownOptions += '<option value="' + option + '">' + option + '</option>';
+    });
+
+    dropdownElement.innerHTML = dropdownOptions;
+} // end setDropdownOptions()
+
+
+//////////////////////////////
+// Data Retrieval Methods   //
+//////////////////////////////
+getData = (selectedDataset, selectedState, selectedCity, selectedZipcode, callback) => {
+    let xhr = new XMLHttpRequest();
+    const url = 'https://gbaduqui.pythonanywhere.com/zhvi-data?'
+
+    xhr.open('GET', url, true);
+    xhr.responseType = 'json';
+}
+
+
+//////////////////////
+// Event Listeners  //
+//////////////////////
+dataSourceRadioButtons.forEach(currentRadioButton => {
+    currentRadioButton.addEventListener('click', function() {
+        nullState();
+        selectedRadioButton = currentRadioButton.value;
+    });
+});
+
+
+
+/*
+
 let threeBed = [];
 let fourBed = [];
 let rent = [];
@@ -503,3 +576,5 @@ getCSV('3bed.csv', (err, data) => {
         console.log(err);
     }
 });
+
+*/
