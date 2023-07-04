@@ -8,12 +8,6 @@ const clearCity = document.getElementById('clear-city');
 const clearZipcode = document.getElementById('clear-zipcode');
 const disclaimerDiv = document.getElementById('disclaimer-div');
 
-const states = ['NJ', 'TX', 'NY', 'CA', 'IL', 'GA', 'TN', 'WA', 'OK', 'NC', 
-                'AZ', 'VA', 'NM', 'HI', 'FL', 'KS', 'MO', 'IN', 'PA', 'CO', 
-                'NV', 'UT', 'OH', 'MD', 'OR', 'DC', 'ID', 'MA', 'MI', 'SC', 
-                'KY', 'CT', 'DE', 'LA', 'MN', 'WI', 'MT', 'MS', 'AL', 'AR',
-                'ND', 'SD', 'RI', 'NE', 'ME', 'IA', 'WV', 'AK', 'NH', 'VT', 'WY'];
-
 let selectedRadioButton = 'three-bed';
 
 
@@ -46,28 +40,206 @@ setDropdownOptions = (dropdownElement, optionsArray) => {
 
 
 //////////////////////////////
-// Data Retrieval Methods   //
+// Data Retrieval           //
 //////////////////////////////
 getData = (selectedDataset, selectedState, selectedCity, selectedZipcode, callback) => {
     let xhr = new XMLHttpRequest();
-    const url = 'https://gbaduqui.pythonanywhere.com/zhvi-data?'
+    let endpoint = 'https://gbaduqui.pythonanywhere.com/zhvi-data?';
+    let qParams = 'dataset=' + selectedDataset;
 
-    xhr.open('GET', url, true);
-    xhr.responseType = 'json';
+    if (selectedZipcode.length > 0) {
+        qParams.concat('&state=' + selectedState + '&city=' + selectedCity + '&zipcode=' + selectedZipcode);
+    } else if (selectedCity.length > 0) {        
+        qParams.concat('&state=' + selectedState + '&city=' + selectedCity);
+    } else if (selectedState.length > 0) {
+        qParams.concat('&state=' + selectedState);
+    } else {
+        //
+    }
+    url = endpoint + qParams;
+
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+            throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(data => {
+            callback(data);
+        })
+        .catch(error => {
+            console.error("Fetch error:", error);
+        });
+}
+
+getDropdowns = (selectedDataset, selectedState, selectedCity, selectedZipcode, callback) => {
+    // let xhr = new XMLHttpRequest();
+    let endpoint = 'https://gbaduqui.pythonanywhere.com/zhvi-dropdowns?';
+    let qParams = ``;
+
+    if (selectedZipcode.length > 0) {
+        qParams = `dataset=${selectedDataset}&state=${selectedState}&city=${selectedCity}&zipcode=${selectedZipcode}`;
+    } else if (selectedCity.length > 0) {        
+        qParams = `dataset=${selectedDataset}&state=${selectedState}&city=${selectedCity}`;
+    } else if (selectedState.length > 0) {
+        qParams = `dataset=${selectedDataset}&state=${selectedState}`;
+    } else {
+        qParams = `dataset=${selectedDataset}`;
+    }
+
+    url = endpoint + qParams;
+
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(data => {
+            optionsArray = Object.values(data);
+            callback(optionsArray);
+        })
+        .catch(error => {
+            console.error("Fetch error:", error);
+        });
+}
+
+//////////////////////////////
+// Render Chart             //
+//////////////////////////////
+renderChart = (xAxis, yAxis, regionName) => {
+    let chartTitle = '';
+
+    if (selectedRadioButton === 'rent') {
+        chartTitle = 'Typical Rental Rates in ' + regionName;
+    } else {
+        chartTitle = 'Typical Home Value for a ' + selectedRadioButton.charAt(0).toUpperCase() + selectedRadioButton.slice(1) + ' Home in ' + regionName;
+    }
+
+    const trace = {
+        x: xAxis,
+        y: yAxis,
+        mode: 'lines',
+        name: regionName,
+        textposition: 'top left'
+    };
+
+    const data = [ trace ];
+
+    const layout = {
+        title: chartTitle
+    };
+
+    Plotly.newPlot('zhvi-chart', data, layout);
 }
 
 
-//////////////////////
-// Event Listeners  //
-//////////////////////
+//////////////////////////////
+// Event Listeners          //
+//////////////////////////////
 dataSourceRadioButtons.forEach(currentRadioButton => {
-    currentRadioButton.addEventListener('click', function() {
+    currentRadioButton.addEventListener('click', () => {
         nullState();
         selectedRadioButton = currentRadioButton.value;
+
+        getData(currentRadioButton.value, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
+            dates = Object.keys(data);
+            values = Object.values(data);
+
+            renderChart(dates, values, ' the United States');
+        });
+
+        getDropdowns(selectedRadioButton, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (dropdownOptions) => {
+            setDropdownOptions(stateDropdown, dropdownOptions);
+        });
     });
 });
 
+stateDropdown.addEventListener('click', () => {
+    nullCity();
 
+    getData(selectedRadioButton, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
+        dates = Object.keys(data);
+        values = Object.values(data);
+
+        renderChart(dates, values, stateDropdown.value);
+    });
+
+    getDropdowns(selectedRadioButton, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (dropdownOptions) => {
+        setDropdownOptions(cityDropdown, dropdownOptions);
+    });
+});
+
+cityDropdown.addEventListener('click', () => {
+    nullZipcode();
+
+    getData(selectedRadioButton, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
+        dates = Object.keys(data);
+        values = Object.values(data);
+
+        renderChart(dates, values, cityDropdown.value);
+    });
+
+    getDropdowns(selectedRadioButton, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (dropdownOptions) => {
+        setDropdownOptions(zipcodeDropdown, dropdownOptions);
+    });
+});
+
+zipcodeDropdown.addEventListener('click', () => {
+    getData(selectedRadioButton, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
+        dates = Object.keys(data);
+        values = Object.values(data);
+
+        renderChart(dates, values, zipcodeDropdown.value);
+    });
+});
+
+clearState.addEventListener('click', () => {
+    nullState();
+
+    getData(selectedRadioButton, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
+        dates = Object.keys(data);
+        values = Object.values(data);
+
+        renderChart(dates, values, ' the United States');
+    });
+
+    getDropdowns(selectedRadioButton, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (dropdownOptions) => {
+        setDropdownOptions(stateDropdown, dropdownOptions);
+    });
+});
+
+clearCity.addEventListener('click', () => {
+    nullCity();
+
+    getData(selectedRadioButton, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
+        dates = Object.keys(data);
+        values = Object.values(data);
+
+        renderChart(dates, values, stateDropdown.value);
+    });
+
+    getDropdowns(selectedRadioButton, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (dropdownOptions) => {
+        setDropdownOptions(cityDropdown, dropdownOptions);
+    });
+});
+
+clearZipcode.addEventListener('click', () => {
+    nullZipcode();
+
+    getData(selectedRadioButton, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (data) => {
+        dates = Object.keys(data);
+        values = Object.values(data);
+
+        renderChart(dates, values, cityDropdown.value);
+    });
+
+    getDropdowns(selectedRadioButton, stateDropdown.value, cityDropdown.value, zipcodeDropdown.value, (dropdownOptions) => {
+        setDropdownOptions(zipcodeDropdown, dropdownOptions);
+    });
+});
 
 /*
 
