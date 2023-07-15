@@ -40,14 +40,14 @@
 
                 <div class="city-div">
                     <label for="city">City:&nbsp;&nbsp;&nbsp;</label>
-                    <input list="city-list" name="city" id="city" multiple>
+                    <input list="city-list" name="city" id="city">
                     <datalist id="city-list"></datalist>                    
                     <input type="button" name="clear-city" id="clear-city" value="X">
                 </div>
 
                 <div class="zipcode-div">
                     <label for="zipcode">Zipcode:&nbsp;&nbsp;&nbsp;</label>
-                    <input list="zipcode-list" name="zipcode" id="zipcode" multiple>
+                    <input list="zipcode-list" name="zipcode" id="zipcode">
                     <datalist id="zipcode-list"></datalist>                    
                     <input type="button" name="clear-zipcode" id="clear-zipcode" value="X">
                 </div>
@@ -55,7 +55,9 @@
 
             <div id="zhvi-chart"></div>
 
-            <div id="disclaimer-div"></div>
+            <div id="disclaimer-div">
+                <p>Data available at and retrieved from <a href="href='https://www.zillow.com/research/data/'">Zillow Research</a></p>
+            </div>
         </div> <!-- End hvi-container DIV -->
     
         <!-- Local JS -->
