@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Meta -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Stylesheet links -->
+        <link rel="stylesheet" href="../assets/css/home-value-index-analysis.css">
+
+        <!-- JS Library CDNs -->
+        <script src="https://cdn.plot.ly/plotly-2.20.0.min.js" charset="utf-8"></script>
+        <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+    </head>
+
+    <body>
+        <div class="hvi-container">
+            <h1>Zillow Home Value Index API Analysis</h1>
+
+            <!-- Data Source -->
+            <div class="source-div">                
+                <input type="radio" name="data-source" id="three-bed" value="three-bed">
+                <label for="three-bed">3-Bed Homes</label>
+
+                <input type="radio" name="data-source" id="four-bed" value="four-bed">
+                <label for="four-bed">4-Bed Homes</label>
+                
+                <input type="radio" name="data-source" id="rent" value="rent">
+                <label for="rent">Rent</label>
+            </div>
+
+            <!-- Geographic Inputs -->
+            <div class="inputs-div">
+                <div class="state-div">
+                    <label for="state">State:&nbsp;&nbsp;&nbsp;</label>
+                    <input list="state-list" name="state" id="state">
+                    <datalist id="state-list"></datalist>                    
+                    <input type="button" name="clear-state" id="clear-state" value="X">
+                </div>
+
+                <div class="city-div">
+                    <label for="city">City:&nbsp;&nbsp;&nbsp;</label>
+                    <input list="city-list" name="city" id="city">
+                    <datalist id="city-list"></datalist>                    
+                    <input type="button" name="clear-city" id="clear-city" value="X">
+                </div>
+
+                <div class="zipcode-div">
+                    <label for="zipcode">Zipcode:&nbsp;&nbsp;&nbsp;</label>
+                    <input list="zipcode-list" name="zipcode" id="zipcode">
+                    <datalist id="zipcode-list"></datalist>                    
+                    <input type="button" name="clear-zipcode" id="clear-zipcode" value="X">
+                </div>
+            </div> <!-- End Inputs DIV -->
+
+            <div id="zhvi-chart"></div>
+
+            <div id="disclaimer-div">
+                <p>Data available at and retrieved from <a href="href='https://www.zillow.com/research/data/'">Zillow Research</a></p>
+            </div>
+        </div> <!-- End hvi-container DIV -->
+    
+        <!-- Local JS -->
+        <script src="../assets/js/home-value-index-analysis.js"></script>
+
+        <!-- Plotly JS Library Import -->
+        <script src="https://cdn.plot.ly/plotly-2.20.0.min.js" charset="utf-8"></script>
+    </body>
+</html>
