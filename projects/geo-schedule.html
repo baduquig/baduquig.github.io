@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>2024 Sports Trip Planner</title>
+
+        <!-- Meta -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Stylesheets -->
+
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>2024 Sports Trip Planner</h1>
+
+            <!-- Inputs -->
+            <div id="all-filters">
+                <h2>Trip Filters</h2>
+
+                <!-- Week Filter -->
+                <div class="input-filter" id="week-div">
+                    <label for="week-input">Week</label>
+                    <select name="week-input" id="week-select">
+                        <option value="0" selected>0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                    </select>
+                </div>
+                
+                <!-- League Filter -->
+                <div class="input-filter" id="league-div">
+                    <input type="checkbox" id="cfb-league-checkbox" value="CFB">
+                    <label for="cfb-league-checkbox">CFB</label>
+
+                    <input type="checkbox" id="nfl-league-checkbox" value="NFL">
+                    <label for="nfl-league-checkbox">NFL</label>
+
+                    <input type="checkbox" id="mlb-league-checkbox" value="MLB">
+                    <label for="mlb-league-checkbox">MLB</label>
+
+                    <input type="checkbox" id="nba-league-checkbox" value="NBA">
+                    <label for="nba-league-checkbox">NBA</label>
+                </div>
+
+            </div>
+            <!-- /Inputs-->
+
+            <!-- Map -->
+            <div id="map"></div>
+
+            <!-- Travel Calculator -->
+            <div id="travel-calculator">
+                <h2>Travel Calculator</h2>
+                
+                <!-- Travel Filters -->
+                <div id="travel-filters">
+                    
+                    <div class="location-div" id="start-location">
+                        <input name="start-location" id="start-location">
+                        <datalist id="start-location-datalist"></datalist>
+                        <input type="button" name="clear-start" id="clear-start-button">
+                    </div>
+
+                    <div class="location-div" id="end-location">
+                        <input name="end-location" id="end-location">
+                        <datalist id="end-location-datalist"></datalist>
+                        <input type="button" name="clear-end" id="clear-end-button">
+                    </div>
+
+                </div><!-- Travel Filters -->
+
+                <!-- Travel Results -->
+                <div id="travel-results-div">
+                    <div class="travel-results" id="travel-distance-div">
+                        <p>Distance: <span id="distance"></span></p>
+                    </div>
+
+                    <div class="travel-results" id="drive-duration-div">
+                        <p>Drive duration: <span id="drive-duration"></span></p>
+                    </div>
+
+                    <div class="travel-results" id="train-duration-div">
+                        <p>Train duration: <span id="train-duration"></span></p>
+                    </div>
+                </div><!-- Travel Results -->
+
+            </div><!-- /Travel Calculator -->
+
+        <!-- JavaScript -->
+        <script src="../assets/js/geo-schedule.js"></script>
+
+        </div>
+    </body>
+</html>
