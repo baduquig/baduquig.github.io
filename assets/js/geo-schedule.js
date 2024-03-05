@@ -1,3 +1,5 @@
+
+
 const jsonFileURL = 'https://raw.githubusercontent.com/baduquig/pickem-etl/main/pickem_data/all_schedule.json';
 const weekSelect = document.getElementById('week-select');
 const cfbCheckbox = document.getElementById('cfb-league-checkbox');
@@ -5,8 +7,8 @@ const nflCheckbox = document.getElementById('nfl-league-checkbox');
 const mlbCheckbox = document.getElementById('mlb-league-checkbox');
 const nbaCheckbox = document.getElementById('nba-league-checkbox');
 
+let allData;
 let leaguesChecked = [];
-let filteredSchedule = {};
 
 seasonWeeks = {
 	0: new Date('August 20, 2024'),
@@ -54,16 +56,33 @@ function updateLeaguesCheckedArray(checkbox, callback) {
 		leaguesChecked.splice(leaguesChecked.indexOf(league));
 	}
 	console.log('leaguesChecked array updated!')
-	
 	callback();
 }
 
-function setFilteredSchedule() {
+function setFilteredSchedule(callback) {
 	let weekValue = weekSelect.value;
 	if ((weekValue !== null || weekValue !== '') && (leaguesChecked.length > 0)) {
 		console.log('Filtering schedule data...');
+		let filteredSchedule = [];
+
+		for (i = 0; i < allData.length; i++) {
+			let gameRow = allData[i]
+			let nextWeekNumber = parseInt(weekValue) + 1;
+			let weekStart = seasonWeeks[weekValue];
+			let weekEnd = seasonWeeks[nextWeekNumber];
+			let gameDate = new Date(gameRow.game_date);
+
+			if ((weekStart <= gameDate && gameDate < weekEnd) && leaguesChecked.includes(gameRow.game_date)) {
+				keys = Object.keys(gameRow);
+				for (j = 0; j < gameRow.length; j++) {
+					copiedGameRow[keys[j]] = gameRow[j];
+				}
+			}
+
+			filteredSchedule.push(copiedGameRow);
+		}
 		
-		filteredSchedule = allData.filter(gameRow => {
+		/*filteredSchedule = allData.filter(gameRow => {
 			let nextWeekNumber = parseInt(weekValue) + 1;
 			let weekStart = seasonWeeks[weekValue];
 			let weekEnd = seasonWeeks[nextWeekNumber];
@@ -71,19 +90,78 @@ function setFilteredSchedule() {
 
 			return ( (weekStart <= gameDate && gameDate < weekEnd)
 					&& leaguesChecked.includes(gameRow.league) )
-		});
+		});*/
 
 		console.log('Schedule data filtered!');
 	}
 	console.log(filteredSchedule);
+	callback();
 }
 
-weekSelect.addEventListener('change', setFilteredSchedule);
-cfbCheckbox.addEventListener('change', function(){ updateLeaguesCheckedArray(cfbCheckbox, setFilteredSchedule); });
-nflCheckbox.addEventListener('change', function(){ updateLeaguesCheckedArray(nflCheckbox, setFilteredSchedule); });
-mlbCheckbox.addEventListener('change', function(){ updateLeaguesCheckedArray(mlbCheckbox, setFilteredSchedule); });
-nbaCheckbox.addEventListener('change', function(){ updateLeaguesCheckedArray(nbaCheckbox, setFilteredSchedule); });
+function renderScatterPlot() {
+	const fontSize = (document.getElementById('map').offsetWidth) * .05;
+	const markerSize = (document.getElementById('map').offsetWidth) * .005;
 
+	console.log('Rendering schedule plot...');
+
+	var plotPoints = [{
+		type:'scattergeo',
+		locationmode: 'USA-states',
+		lat: filteredSchedule.map(game => game.latitude),
+		lon: filteredSchedule.map(game => game.longitude),
+		text: filteredSchedule.map(game => [game.away_team_name + ' @ ' + game.home_team_name + '<br>' + game.game_date + '<br>' + game.stadium + ', ' + game.city + ', ' + game.state]),
+		textfont: {
+			size: fontSize
+		},
+		textposition: 'middle center',
+		hovertemplate: '%{text}',
+		mode: 'markers',
+		marker: {
+			color: '#000000',
+			size: markerSize, 
+			opacity: 0.75
+		}
+		
+	}];
+
+	var layout = {
+		dragmode: false,
+		geo: {
+			scope: 'usa',
+			projection: {
+				type: 'usa'
+			},
+			width: '100%'
+		},
+		margin: {
+			l: 0,
+			r: 0,
+			b: 0,
+			t: 0
+		}
+	};
+
+	Plotly.newPlot('map', plotPoints, layout, {showLink: false});
+	console.log('Rendered schedule plot!');
+}
+
+function refilter(checkbox) {
+	console.log('here');
+	if (weekSelect.value != '') {
+		if (checkbox !== 0) {
+			updateLeaguesCheckedArray(checkbox, setFilteredSchedule(renderScatterPlot));
+		} else {
+			setFilteredSchedule(renderScatterPlot);
+		}
+	}
+}
+/*
+weekSelect.addEventListener('change', refilter(0));
+cfbCheckbox.addEventListener('change', refilter(cfbCheckbox));
+nflCheckbox.addEventListener('change', refilter(nflCheckbox));
+mlbCheckbox.addEventListener('change', refilter(mlbCheckbox));
+nbaCheckbox.addEventListener('change', refilter(nbaCheckbox));
+*/
 
 fetchJSON().then(data => {
 	allData = data;
