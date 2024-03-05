@@ -74,14 +74,14 @@
                 <!-- Travel Filters -->
                 <div id="travel-filters">
                     
-                    <div class="location-div" id="start-location">
-                        <input name="start-location" id="start-location">
+                    <div class="location-div" id="start-location-div">
+                        <input list="start-location-datalist" name="start-location" id="start-location" onchange="calculateTravel()">
                         <datalist id="start-location-datalist"></datalist>
                         <input type="button" name="clear-start" id="clear-start-button">
                     </div>
 
-                    <div class="location-div" id="end-location">
-                        <input name="end-location" id="end-location">
+                    <div class="location-div" id="end-location-div">
+                        <input list="end-location-datalist" name="end-location" id="end-location" onchange="calculateTravel()">
                         <datalist id="end-location-datalist"></datalist>
                         <input type="button" name="clear-end" id="clear-end-button">
                     </div>

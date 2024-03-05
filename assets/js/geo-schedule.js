@@ -10,6 +10,7 @@ const nbaCheckbox = document.getElementById('nba-league-checkbox');
 let allData;
 let filteredSchedule = [];
 let leaguesChecked = [];
+let allLocations = [];
 
 seasonWeeks = {
 	0: new Date('August 20, 2024'),
@@ -48,6 +49,59 @@ async function fetchJSON() {
 	}
 }
 
+async function fetchTravel(startLatitude, startLongitude, endLatitude, endLongitude) {
+	let request = new XMLHttpRequest();
+	let orsDirectionsEndpoint = 'https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf624815b3b2ce7e0747dc90221abdc70363e5&start=' + startLatitude + ',' + startLongitude + '&end=' + endLatitude + ',' + endLongitude;
+	console.log('Calling OpenRoute Service API...');
+	
+	request.open('GET', orsDirectionsEndpoint);
+	request.setRequestHeader('Accept', 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8');
+	request.onreadystatechange = function() {
+		if (this.readyState === 4) {
+			console.log(this.status);
+			console.log(this.getAllResponseHeaders());
+			console.log(this.responseText);
+			let travelData = JSON.parse(this.responseText);
+			console.log(travelData);
+			let unformattedDistance = travelData.features[0].properties.segments[0].distance;
+			let unformattedDuration = travelData.features[0].properties.segments[0].duration;
+			let distance = Math.round(unformattedDistance * 0.00062137) + ' miles';
+			let hours = Math.floor(unformattedDuration / 3600);
+			let minutes = Math.floor((unformattedDuration % 3600) / 60);
+			let duration = hours + ' hour(s), ' + minutes + ' minute(s)';
+
+			document.getElementById('driveDistance').innerHTML = distance;
+			document.getElementById('driveDuration').innerHTML = duration;
+		}
+	}
+	request.send();
+}
+
+function setLocations() {
+	console.log('Setting locations options...');
+	let locationOptions = '';
+	let distinctLocations = [];
+
+	for (i = 0; i < allData.length; i++) {
+		if (!distinctLocations.includes(allData[i].location_id)) {
+			locationOptions += '<option value="' + allData[i].city + ', ' + allData[i].state + '">' + allData[i].location_id + '</option>';
+			distinctLocations.push(allData[i].location_id)
+			allLocations.push({
+				'locationID': allData[i].location_id,
+				'stadium': allData[i].stadium,
+				'city': allData[i].city,
+				'state': allData[i].state,
+				'latitude': allData[i].latitude,
+				'longitude': allData[i].longitude
+			});
+		}
+	}
+
+	document.getElementById('start-location-datalist').innerHTML = locationOptions;
+	document.getElementById('end-location-datalist').innerHTML = locationOptions;
+	console.log('Location options set!');
+}
+
 function updateLeaguesCheckedArray(league) {
 	console.log('Updating leagesChecked array...');
 	if (!leaguesChecked.includes(league)) {
@@ -79,7 +133,6 @@ function setFilteredSchedule() {
 					let key = keys[j];
 					copiedGameRow[key] = gameRow[key];					
 				}
-				console.log(copiedGameRow);
 				filteredSchedule.push(copiedGameRow);
 			}
 		}
@@ -105,7 +158,7 @@ function renderScatterPlot() {
 		locationmode: 'USA-states',
 		lat: filteredSchedule.map(game => game.latitude),
 		lon: filteredSchedule.map(game => game.longitude),
-		text: filteredSchedule.map(game => [game.away_team_name + ' @ ' + game.home_team_name + '<br>' + game.game_date + '<br>' + game.stadium + ', ' + game.city + ', ' + game.state]),
+		text: filteredSchedule.map(game => [game.away_team_name + ' @ ' + game.home_team_name + '<br>' + game.game_date + '<br>' + game.game_time + '<br>' + game.stadium + ', ' + game.city + ', ' + game.state]),
 		textfont: {
 			size: fontSize
 		},
@@ -152,7 +205,39 @@ function refilter(league) {
 	}
 }
 
+function calculateTravel() {
+	const startLocationValue = document.getElementById('start-location').value;
+	const endLocationValue = document.getElementById('end-location').value;
+	
+	console.log('Calculating travel...');
+
+	if ((startLocationValue !== '') && (endLocationValue !== '')) {
+		let startCity = startLocationValue.substring(0, startLocationValue.indexOf(', '));
+		let startState = startLocationValue.substring(startLocationValue.indexOf(', ') + 2);
+		let endCity = endLocationValue.substring(0, endLocationValue.indexOf(', '));
+		let endState = endLocationValue.substring(endLocationValue.indexOf(', ') + 2);
+		let startLatitude;
+		let startLongitude;
+		let endLatitude;
+		let endLongitude;
+		
+		for (i = 0; i < allLocations.length; i++) {
+			if ((allLocations[i].city == startCity) && (allLocations[i].state == startState)) {
+				startLatitude = allLocations[i].latitude;
+				startLongitude = allLocations[i].longitude;
+			}
+			if ((allLocations[i].city == endCity) && (allLocations[i].state == endState)) {
+				endLatitude = allLocations[i].latitude;
+				endLongitude = allLocations[i].longitude;
+			}
+		}
+		fetchTravel(startLatitude, startLongitude, endLatitude, endLongitude);
+	}
+	console.log('Travel Calculated!');
+}
+
 fetchJSON().then(data => {
-	allData = data;
 	renderScatterPlot(filteredSchedule);
+	allData = data;
+	setLocations();
 });
