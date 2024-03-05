@@ -8,6 +8,7 @@ const mlbCheckbox = document.getElementById('mlb-league-checkbox');
 const nbaCheckbox = document.getElementById('nba-league-checkbox');
 
 let allData;
+let filteredSchedule = [];
 let leaguesChecked = [];
 
 seasonWeeks = {
@@ -47,23 +48,22 @@ async function fetchJSON() {
 	}
 }
 
-function updateLeaguesCheckedArray(checkbox, callback) {
+function updateLeaguesCheckedArray(league) {
 	console.log('Updating leagesChecked array...');
-	let league = checkbox.value;
-	if (checkbox.checked) {
+	if (!leaguesChecked.includes(league)) {
 		leaguesChecked.push(league);
 	} else {
 		leaguesChecked.splice(leaguesChecked.indexOf(league));
 	}
-	console.log('leaguesChecked array updated!')
-	callback();
+	console.log('leaguesChecked array updated!');
+	setFilteredSchedule();
 }
 
-function setFilteredSchedule(callback) {
+function setFilteredSchedule() {
 	let weekValue = weekSelect.value;
+	console.log('Filtering schedule data...');
 	if ((weekValue !== null || weekValue !== '') && (leaguesChecked.length > 0)) {
-		console.log('Filtering schedule data...');
-		let filteredSchedule = [];
+		filteredSchedule = [];
 
 		for (i = 0; i < allData.length; i++) {
 			let gameRow = allData[i]
@@ -71,36 +71,32 @@ function setFilteredSchedule(callback) {
 			let weekStart = seasonWeeks[weekValue];
 			let weekEnd = seasonWeeks[nextWeekNumber];
 			let gameDate = new Date(gameRow.game_date);
+			let copiedGameRow = {}
 
-			if ((weekStart <= gameDate && gameDate < weekEnd) && leaguesChecked.includes(gameRow.game_date)) {
-				keys = Object.keys(gameRow);
-				for (j = 0; j < gameRow.length; j++) {
-					copiedGameRow[keys[j]] = gameRow[j];
+			if ((weekStart <= gameDate && gameDate < weekEnd) && leaguesChecked.includes(gameRow.league)) {
+				let keys = Object.keys(gameRow);
+				for (j = 0; j < keys.length; j++) {
+					let key = keys[j];
+					copiedGameRow[key] = gameRow[key];					
 				}
+				console.log(copiedGameRow);
+				filteredSchedule.push(copiedGameRow);
 			}
-
-			filteredSchedule.push(copiedGameRow);
 		}
-		
-		/*filteredSchedule = allData.filter(gameRow => {
-			let nextWeekNumber = parseInt(weekValue) + 1;
-			let weekStart = seasonWeeks[weekValue];
-			let weekEnd = seasonWeeks[nextWeekNumber];
-			let gameDate = new Date(gameRow.game_date);
-
-			return ( (weekStart <= gameDate && gameDate < weekEnd)
-					&& leaguesChecked.includes(gameRow.league) )
-		});*/
-
 		console.log('Schedule data filtered!');
 	}
-	console.log(filteredSchedule);
-	callback();
+	renderScatterPlot();
 }
 
 function renderScatterPlot() {
 	const fontSize = (document.getElementById('map').offsetWidth) * .05;
 	const markerSize = (document.getElementById('map').offsetWidth) * .005;
+	const leagueColors = {
+		'CFB': '#000000',
+		'NFL': '#e21c12',
+		'MLB': '#1215e2',
+		'NBA': '#15e212'
+	}
 
 	console.log('Rendering schedule plot...');
 
@@ -117,7 +113,7 @@ function renderScatterPlot() {
 		hovertemplate: '%{text}',
 		mode: 'markers',
 		marker: {
-			color: '#000000',
+			color: filteredSchedule.map(game => leagueColors[game.league]), 
 			size: markerSize, 
 			opacity: 0.75
 		}
@@ -145,24 +141,18 @@ function renderScatterPlot() {
 	console.log('Rendered schedule plot!');
 }
 
-function refilter(checkbox) {
-	console.log('here');
+function refilter(league) {
+	console.log(league);
 	if (weekSelect.value != '') {
-		if (checkbox !== 0) {
-			updateLeaguesCheckedArray(checkbox, setFilteredSchedule(renderScatterPlot));
+		if (league !== 0) {
+			updateLeaguesCheckedArray(league);
 		} else {
-			setFilteredSchedule(renderScatterPlot);
+			setFilteredSchedule();
 		}
 	}
 }
-/*
-weekSelect.addEventListener('change', refilter(0));
-cfbCheckbox.addEventListener('change', refilter(cfbCheckbox));
-nflCheckbox.addEventListener('change', refilter(nflCheckbox));
-mlbCheckbox.addEventListener('change', refilter(mlbCheckbox));
-nbaCheckbox.addEventListener('change', refilter(nbaCheckbox));
-*/
 
 fetchJSON().then(data => {
 	allData = data;
+	renderScatterPlot(filteredSchedule);
 });

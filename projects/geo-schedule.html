@@ -9,7 +9,6 @@
 
         <!-- Stylesheets and JavaScript -->
         <script src="https://cdn.plot.ly/plotly-2.29.1.min.js" charset="utf-8"></script>
-        <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
 
     </head>
 
@@ -25,7 +24,6 @@
                 <div class="input-filter" id="week-div">
                     <label for="week-input">Week</label>
                     <select name="week-input" id="week-select" onchange="refilter(0)">
-                        <option value="" selected disabled hidden></option>
                         <option value="0">0</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
@@ -50,16 +48,16 @@
                 
                 <!-- League Filter -->
                 <div class="input-filter" id="league-div">
-                    <input type="checkbox" id="cfb-league-checkbox" value="CFB" onchange="refilter('value')">
+                    <input type="checkbox" id="cfb-league-checkbox" value="CFB" onchange="refilter(this.value)">
                     <label for="cfb-league-checkbox">CFB</label>
 
-                    <input type="checkbox" id="nfl-league-checkbox" value="NFL" onchange="refilter('value')>
+                    <input type="checkbox" id="nfl-league-checkbox" value="NFL" onchange="refilter(this.value)">
                     <label for="nfl-league-checkbox">NFL</label>
 
-                    <input type="checkbox" id="mlb-league-checkbox" value="MLB" onchange="refilter('value')>
+                    <input type="checkbox" id="mlb-league-checkbox" value="MLB" onchange="refilter(this.value)">
                     <label for="mlb-league-checkbox">MLB</label>
 
-                    <input type="checkbox" id="nba-league-checkbox" value="NBA" onchange="refilter('value')>
+                    <input type="checkbox" id="nba-league-checkbox" value="NBA" onchange="refilter(this.value)">
                     <label for="nba-league-checkbox">NBA</label>
                 </div>
 
