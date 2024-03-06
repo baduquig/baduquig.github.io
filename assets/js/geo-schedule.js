@@ -190,6 +190,7 @@ function renderScatterPlot() {
 		}
 	};
 
+	document.getElementById('map-title').innerHTML = 'Tuesday ' + (seasonWeeks[weekSelect.value].getMonth() + 1) + '/' + seasonWeeks[weekSelect.value].getDate() + '/' + seasonWeeks[weekSelect.value].getFullYear() + ' - Tuesday ' + (seasonWeeks[parseInt(weekSelect.value + 1)].getMonth() + 1) + '/' + seasonWeeks[parseInt(weekSelect.value + 1)].getDate() + '/' + seasonWeeks[parseInt(weekSelect.value + 1)].getFullYear();
 	Plotly.newPlot('map', plotPoints, layout, {showLink: false});
 	console.log('Rendered schedule plot!');
 }
