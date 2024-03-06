@@ -1,0 +1,17 @@
+#cfb-span {
+    background: #000000;
+    color: #ffffff;
+}
+
+#nfl-span {
+    background: #e21c12;
+}
+
+#mlb-span {
+    background: #1215e2;
+    color: #ffffff;
+}
+
+#nba-span {
+    background: #15e212;
+}

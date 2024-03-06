@@ -8,6 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <!-- Stylesheets and JavaScript -->
+        <link rel="stylesheet" href="../assets/css/geo-schedule.css">
         <script src="https://cdn.plot.ly/plotly-2.29.1.min.js" charset="utf-8"></script>
 
     </head>
@@ -48,17 +49,25 @@
                 
                 <!-- League Filter -->
                 <div class="input-filter" id="league-div">
-                    <input type="checkbox" id="cfb-league-checkbox" value="CFB" onchange="refilter(this.value)">
-                    <label for="cfb-league-checkbox">CFB</label>
+                    <span id="cfb-span">
+                        <input type="checkbox" id="cfb-league-checkbox" value="CFB" onchange="refilter(this.value)">
+                        <label for="cfb-league-checkbox">CFB</label>
+                    </span>
 
-                    <input type="checkbox" id="nfl-league-checkbox" value="NFL" onchange="refilter(this.value)">
-                    <label for="nfl-league-checkbox">NFL</label>
+                    <span id="nfl-span">
+                        <input type="checkbox" id="nfl-league-checkbox" value="NFL" onchange="refilter(this.value)">
+                        <label for="nfl-league-checkbox">NFL</label>
+                    </span>
 
-                    <input type="checkbox" id="mlb-league-checkbox" value="MLB" onchange="refilter(this.value)">
-                    <label for="mlb-league-checkbox">MLB</label>
+                    <span id="mlb-span">
+                        <input type="checkbox" id="mlb-league-checkbox" value="MLB" onchange="refilter(this.value)">
+                        <label for="mlb-league-checkbox">MLB</label>
+                    </span>
 
-                    <input type="checkbox" id="nba-league-checkbox" value="NBA" onchange="refilter(this.value)">
-                    <label for="nba-league-checkbox">NBA</label>
+                    <span id="nba-span">
+                        <input type="checkbox" id="nba-league-checkbox" value="NBA" onchange="refilter(this.value)">
+                        <label for="nba-league-checkbox">NBA</label>
+                    </span>
                 </div>
 
             </div>
