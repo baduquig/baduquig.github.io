@@ -1,5 +1,3 @@
-
-
 const jsonFileURL = 'https://raw.githubusercontent.com/baduquig/pickem-etl/main/pickem_data/all_schedule.json';
 const weekSelect = document.getElementById('week-select');
 const cfbCheckbox = document.getElementById('cfb-league-checkbox');
@@ -193,7 +191,23 @@ function renderScatterPlot() {
 
 	document.getElementById('map-title').innerHTML = 'Week Starting Tuesday ' + (seasonWeeks[parseInt(weekSelect.value)].getMonth() + 1) + '/' + seasonWeeks[parseInt(weekSelect.value)].getDate() + '/' + seasonWeeks[parseInt(weekSelect.value)].getFullYear();
 	Plotly.newPlot('map', plotPoints, layout, {showLink: false});
+	generateGamesTable();
 	console.log('Rendered schedule plot!');
+}
+
+function generateGamesTable() {
+	let tableHtml = '<table><tr><td>Date</td><td>Time</td><td>Location</td><td>Away</td><td>Home</td></tr>';
+	for (i = 0; i < filteredSchedule.length; i++) {
+		let gameDay = filteredSchedule[i].game_date;
+		let gameTime = filteredSchedule[i].game_time;
+		let gameLocation = filteredSchedule[i].city + ', ' + filteredSchedule[i].state;
+		let awayTeam = filteredSchedule[i].away_team_name;
+		let homeTeam = filteredSchedule[i].home_team_name;
+
+		tableHtml += '<tr><td>' + gameDay + '</td><td> ' + gameTime + '</td><td> ' + gameLocation + '</td><td>' + awayTeam + '</td> <td>' + homeTeam + '</td> </tr>';
+	}
+	tableHtml += '</table>';
+	document.getElementById('table').innerHTML = tableHtml;
 }
 
 function refilter(league) {
