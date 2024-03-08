@@ -1,6 +1,26 @@
+body {
+    background: #8d8a8e;
+    height: 100%;
+    text-align: center;
+    width: 100%;
+}
+
+span {
+    margin: 5px;
+    padding: 3px;
+}
+
+#league-div {
+    margin-top: 10px;
+}
+
+#league-div span {
+    border-radius: 12px;
+    color: #ffffff;
+}
+
 #cfb-span {
     background: #000000;
-    color: #ffffff;
 }
 
 #nfl-span {
@@ -9,7 +29,6 @@
 
 #mlb-span {
     background: #1215e2;
-    color: #ffffff;
 }
 
 #nba-span {

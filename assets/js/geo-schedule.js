@@ -187,10 +187,11 @@ function renderScatterPlot() {
 			r: 0,
 			b: 0,
 			t: 0
-		}
+		},
+		paper_bgcolor: '#8d8a8e'
 	};
 
-	document.getElementById('map-title').innerHTML = 'Tuesday ' + (seasonWeeks[weekSelect.value].getMonth() + 1) + '/' + seasonWeeks[weekSelect.value].getDate() + '/' + seasonWeeks[weekSelect.value].getFullYear() + ' - Tuesday ' + (seasonWeeks[parseInt(weekSelect.value + 1)].getMonth() + 1) + '/' + seasonWeeks[parseInt(weekSelect.value + 1)].getDate() + '/' + seasonWeeks[parseInt(weekSelect.value + 1)].getFullYear();
+	document.getElementById('map-title').innerHTML = 'Week Starting Tuesday ' + (seasonWeeks[parseInt(weekSelect.value)].getMonth() + 1) + '/' + seasonWeeks[parseInt(weekSelect.value)].getDate() + '/' + seasonWeeks[parseInt(weekSelect.value)].getFullYear();
 	Plotly.newPlot('map', plotPoints, layout, {showLink: false});
 	console.log('Rendered schedule plot!');
 }
