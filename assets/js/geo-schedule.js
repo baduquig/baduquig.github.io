@@ -203,10 +203,12 @@ function generateGamesTable() {
 		let gameDay = filteredSchedule[i].game_date;
 		let gameTime = filteredSchedule[i].game_time;
 		let gameLocation = filteredSchedule[i].city + ', ' + filteredSchedule[i].state;
+		let awayLogoURL = filteredSchedule[i].away_team_logo;
+		let homeLogoURL = filteredSchedule[i].home_team_logo;
 		let awayTeam = filteredSchedule[i].away_team_name;
 		let homeTeam = filteredSchedule[i].home_team_name;
 
-		tableHtml += '<tr><td>' + gameDay + '</td><td> ' + gameTime + '</td><td> ' + gameLocation + '</td><td>' + awayTeam + '</td> <td>' + homeTeam + '</td> </tr>';
+		tableHtml += '<tr><td>' + gameDay + '</td><td> ' + gameTime + '</td><td> ' + gameLocation + '</td><td><span><img src="' + awayLogoURL + '" height="100%"> </span><span>&nbsp;&nbsp;' + awayTeam + '</span></td><td><span><img src="' + homeLogoURL + '" height="100%"> </span><span>&nbsp;&nbsp;' + homeTeam + '</span></td></td> </tr>';
 	}
 	tableHtml += '</table>';
 	document.getElementById('table').innerHTML = tableHtml;

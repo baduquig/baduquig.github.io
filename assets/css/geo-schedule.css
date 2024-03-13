@@ -55,4 +55,13 @@ td {
     border: 1px solid #000000;
     border-collapse: collapse;
     padding-right: 15px;
+    position: relative;
+}
+
+td span img {
+    height: 100%;
+    object-fit: cover;
+    padding-right: 5px;
+    position: absolute;
+    width: auto;
 }
