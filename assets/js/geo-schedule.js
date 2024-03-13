@@ -186,7 +186,8 @@ function renderScatterPlot() {
 			b: 0,
 			t: 0
 		},
-		paper_bgcolor: '#8d8a8e'
+		plot_bgcolor: '#ffffff',
+		paper_bgcolor: 'rgba(0,0,0,0)'
 	};
 
 	document.getElementById('map-title').innerHTML = 'Week Starting Tuesday ' + (seasonWeeks[parseInt(weekSelect.value)].getMonth() + 1) + '/' + seasonWeeks[parseInt(weekSelect.value)].getDate() + '/' + seasonWeeks[parseInt(weekSelect.value)].getFullYear();
@@ -196,6 +197,7 @@ function renderScatterPlot() {
 }
 
 function generateGamesTable() {
+	console.log('Generating games table...');
 	let tableHtml = '<table><tr><td>Date</td><td>Time</td><td>Location</td><td>Away</td><td>Home</td></tr>';
 	for (i = 0; i < filteredSchedule.length; i++) {
 		let gameDay = filteredSchedule[i].game_date;
@@ -208,6 +210,7 @@ function generateGamesTable() {
 	}
 	tableHtml += '</table>';
 	document.getElementById('table').innerHTML = tableHtml;
+	console.log('Games table generated!');
 }
 
 function refilter(league) {
