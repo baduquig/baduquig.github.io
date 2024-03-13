@@ -47,7 +47,6 @@ table {
     background: #ffffff;
     border-collapse: collapse;
     color: #000000;
-    font-size: 15px;
     text-align: left;
     margin: 0 auto;
 }
@@ -65,4 +64,11 @@ td span img {
     padding-right: 5px;
     position: absolute;
     width: auto;
+}
+
+
+@media only screen and (max-width: 600px) {
+    table {
+        font-size: 8px;
+    }
 }
