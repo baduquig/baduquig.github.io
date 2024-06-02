@@ -102,11 +102,18 @@ function setLocations() {
 
 function updateLeaguesCheckedArray(league) {
 	console.log('Updating leagesChecked array...');
-	if (!leaguesChecked.includes(league)) {
+	allLeagues = [cfbCheckbox, nflCheckbox, mlbCheckbox, nbaCheckbox];
+	leaguesChecked = [];
+	for (i = 0; i < allLeagues.length; i++) {
+		if (allLeagues[i].checked) {
+			leaguesChecked.push(allLeagues[i].value);
+		}
+	}
+	/* if (!leaguesChecked.includes(league)) {
 		leaguesChecked.push(league);
 	} else {
 		leaguesChecked.splice(leaguesChecked.indexOf(league));
-	}
+	} */
 	console.log('leaguesChecked array updated!');
 	setFilteredSchedule();
 }
