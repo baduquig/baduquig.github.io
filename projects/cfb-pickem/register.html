@@ -13,13 +13,19 @@
     <body>
         <h1>New User Registration</h1>
 
+        <div id="disclaimer"><p>This project is a side hobby and is not secure. Please <u>DO NOT</u> use passwords used for any other secured accounts!</p></div>
+
+        <div id="registration-error"><span>User already exists!</span></div>
+
         <input type="text" class="text-input" id="username" placeholder="Username">
 
         <div id="pw-fields">
             <input type="password" class="pw-input" id="password" placeholder="Password">
-            <input type="password" class="pw-input" id="confirm-pw" placeholder="Confirm Password">
+            <input type="password" class="pw-input" id="confirm-password" placeholder="Confirm Password">
         </div>
 
-        <button type="button" id="create-btn">Sign In</button>
+        <button type="button" id="create-btn">Create</button>
+
+        <script src="../../assets/js/cfb-pickem/register.js"></script>
     </body>
 </html>
