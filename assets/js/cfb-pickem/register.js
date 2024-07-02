@@ -36,14 +36,60 @@ function registrationCompleted() {
     }
 }
 
+function createUser() {
+    let serverEndpoint = `http://127.0.0.1:5000/create-user?username=${usernameInput.value}&pw=${passwordInput.value}`;
+    console.log('Starting request to ', serverEndpoint);
+
+    fetch(serverEndpoint)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Response was not ok: ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Request successful: ', data);
+            if (data['status'] == 200) {
+                console.log('User created successfully');
+                // create user token
+            } else {
+                console.log('Error occurred creating user account');
+            }
+        })
+        .catch(error => {
+            console.error('Error: ', error);
+        });
+}
+
 function checkIfUserExists() {
-    // call /get-user endpoint
-    /* if user does not exist, call /create-user endpoint
-        else, render username already exists message */
+    let serverEndpoint = `http://127.0.0.1:5000/get-user?username=${usernameInput.value}&pw=${passwordInput.value}`;
+    console.log('Starting request to ', serverEndpoint);
+
+    fetch(serverEndpoint)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Response was not ok: ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Request successful: ', data);
+            if (data['userid'] > 0) {
+                console.log('User already exists');
+                registrationErrorDiv.removeAttribute('hidden');
+            } else {
+                console.log('user does not exist');
+                createUser();
+            }
+        })
+        .catch(error => {
+            console.error('Error: ', error);
+        });
 }
 
 usernameInput.addEventListener("input", registrationCompleted);
 passwordInput.addEventListener("input", registrationCompleted);
 confirmPasswordInput.addEventListener("input", registrationCompleted);
+createButton.addEventListener("click", checkIfUserExists);
 
 registrationCompleted();

@@ -14,9 +14,6 @@ function checkCredentialsInputs() {
 }
 
 function checkIfUserExists() {
-    // call /get-user endpoint
-    /* if user does not exist, unhide login error message
-        else, open pickem page */
     let serverEndpoint = `http://127.0.0.1:5000/get-user?username=${usernameInput.value}&pw=${passwordInput.value}`;
     console.log('Starting request to ', serverEndpoint);
 
@@ -30,7 +27,8 @@ function checkIfUserExists() {
         .then(data => {
             console.log('Request successful: ', data);
             if (data['userid'] > 0) {
-                console.log('User exists');                
+                console.log('User exists');
+                // create user token
             } else {
                 console.log('user does not exist');
                 loginErrorDiv.removeAttribute('hidden');
