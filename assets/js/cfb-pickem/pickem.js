@@ -19,9 +19,33 @@ const seasonWeeks = {
     16: new Date('December 10, 2024'),
     17: new Date('December 17, 2024'),
     18: new Date('December 24, 2024')
-}
+};
+const today = new Date();
 let allPicks = [];
-let currentWeek;
+
+function filterPicks() {
+    const user = document.getElementById('user-select').value;
+    const week = document.getElementById('week-select').value;
+    const weekStart = seasonWeeks[week];
+    const weekEnd = seasonWeeks[parseInt(week + 1)];
+    let filteredPicks = [];
+
+    for (i = 0; i < allPicks.length; i++) {
+        let gameDate = new Date(allPicks[i].gameDate);
+        
+        if ((allPicks[i].username == user) && (weekStart <= gameDate && gameDate < weekEnd)) {
+            let keys = Object.keys(allPicks[i]);
+            let objectCopy = {}
+            for (j = 0; j < keys.length; j++) {
+                let key = keys[j];
+                objectCopy[key] = allPicks[i][key];
+            }
+            filteredPicks.push(objectCopy);
+        }
+    }
+    console.log('Filtered all user picks for week ', week);
+    return filteredPicks;
+}
 
 function createUsersDropdown(distinctUsersArray) {
     let usersSelectInnerHTML = '';
@@ -42,7 +66,7 @@ function setDistinctUsers() {
     return distinctUsers;
 }
 
-function createWeeksDropdown() {
+function createWeeksDropdown(currentWeek) {
     let weekSelectInnerHTML = '';
     for (i = 0; i <= Object.keys(seasonWeeks).length; i++) {
         if (i == currentWeek) {
@@ -54,9 +78,7 @@ function createWeeksDropdown() {
     document.getElementById('week-select').innerHTML = weekSelectInnerHTML;
 }
 
-function setCurrentWeek() {
-    const today = new Date();
-    
+function setCurrentWeek() {    
     for (i = 0; i <= Object.keys(seasonWeeks).length; i++) {
         console.log('Current week: ', i);
         if (today <= seasonWeeks[i]) {
@@ -83,6 +105,9 @@ fetch(serverEndpoint)
 
         // Instantiate `users`
         createUsersDropdown(setDistinctUsers());
+
+        // Instantiate `picks`
+        console.log(filterPicks());
     })
     .catch(error => {
         console.error('Error: ', error);
