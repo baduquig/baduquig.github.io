@@ -23,6 +23,88 @@ const seasonWeeks = {
 const today = new Date();
 let allPicks = [];
 
+function renderPicks(userWeekPicks) {
+    let picksBodyInnerHTML = '<table id="picks-table">';
+
+    for (i = 0; i < userWeekPicks.length; i++) {
+        let pick = userWeekPicks[i];
+        let awayOverallRecord;
+        let awayConferenceRecord;
+        let homeOverallRecord;
+        let homeConferenceRecord;
+        
+        if (pick.awayOverallTies == 0) {
+            awayOverallRecord = `${pick.awayOverallWins}-${pick.awayOverallLosses}`;
+        } else {
+            awayOverallRecord = `${pick.awayOverallWins}-${pick.awayOverallLosses}-${pick.awayOverallTies}`;
+        }
+        if (pick.awayConferenceTies == 0) {
+            awayConferenceRecord = `${pick.awayConferenceWins}-${pick.awayConferenceLosses}`;
+        } else {
+            awayConferenceRecord = `${pick.awayConferenceWins}-${pick.awayConferenceLosses}-${pick.awayConferenceTies}`;
+        }
+
+        if (pick.homeOverallTies == 0) {
+            homeOverallRecord = `${pick.homeOverallWins}-${pick.homeOverallLosses}`;
+        } else {
+            homeOverallRecord = `${pick.homeOverallWins}-${pick.homeOverallLosses}-${pick.homeOverallTies}`;
+        }
+        if (pick.homeConferenceTies == 0) {
+            homeConferenceRecord = `${pick.homeConferenceWins}-${pick.homeConferenceLosses}`;
+        } else {
+            homeConferenceRecord = `${pick.homeConferenceWins}-${pick.homeConferenceLosses}-${pick.homeConferenceTies}`;
+        }
+
+        picksBodyInnerHTML = `${picksBodyInnerHTML}
+        <tr>
+            <td class="away-team-logo">
+                <img src="${pick.awayLogoURL}">
+                <span class="tooltip">
+                    ${pick.awayTeamName}<br>
+                    ${pick.awayTeamMascot}<br>
+                    Record: ${awayOverallRecord}<br>
+                    (Conference: ${awayConferenceRecord})
+                </span>
+            </td>
+
+            <td class="selection-cell"></td>
+            
+            <td class="home-team-logo">
+                <img src="${pick.homeLogoURL}">
+                <span class="tooltip">
+                    ${pick.homeTeamName}<br>
+                    ${pick.homeTeamMascot}<br>
+                    Record: ${homeOverallRecord}<br>
+                    (Conference: ${homeConferenceRecord})
+                </span>
+            </td>
+
+            <td class="info-cell">
+                <span class="material-symbols-outlined">
+                    info
+                </span>
+                <span class="tooltip">
+                    ${pick.gameDate}, ${pick.gameTime}<br>
+                    ${pick.awayTeamName}<br>
+                    ${pick.awayTeamMascot}<br>
+                    @<br>
+                    ${pick.homeTeamName}<br>
+                    ${pick.homeTeamMascot}<br>
+                    ${pick.stadium}<br>
+                    Capacity: ${pick.stadiumCapacity}<br>
+                    TV: ${pick.tvCoverage}<br>
+                    Betting Line: ${pick.bettingLine}<br>
+                    Over/Under: ${pick.bettingLineOverUnder}<br>
+                    ${pick.awatTeamMascot} Win %: ${pick.awayWinPercentage}<br>
+                    ${pick.homeTeamMascot} Win %: ${pick.homeWinPercentage}
+                </span>
+            </td>
+        </tr>`
+    }
+    picksBodyInnerHTML = `${picksBodyInnerHTML}</table>`;
+    document.getElementById('picks-body').innerHTML = picksBodyInnerHTML;
+}
+
 function filterPicks() {
     const user = document.getElementById('user-select').value;
     const week = document.getElementById('week-select').value;
@@ -107,6 +189,7 @@ fetch(serverEndpoint)
         createUsersDropdown(setDistinctUsers());
 
         // Instantiate `picks`
+        renderPicks(filterPicks());
         console.log(filterPicks());
     })
     .catch(error => {
