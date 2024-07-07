@@ -27,8 +27,10 @@ function checkIfUserExists() {
         .then(data => {
             console.log('Request successful: ', data);
             if (data['userid'] > 0) {
-                console.log('User exists');
-                // create user token
+                const userID = data['userid'];
+                console.log('User', userID,' exists. Creating local session');
+                sessionStorage.setItem('userid', userID);
+                window.location.href = 'pickem.html';
             } else {
                 console.log('user does not exist');
                 loginErrorDiv.removeAttribute('hidden');

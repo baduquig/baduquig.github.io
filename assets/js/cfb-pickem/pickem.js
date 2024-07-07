@@ -22,6 +22,7 @@ const seasonWeeks = {
     18: new Date('December 24, 2024')
 };
 const today = new Date();
+let userID = sessionStorage.getItem('userid');
 let allPicks = [];
 
 function updateDB(updatedPicks) {
@@ -46,7 +47,6 @@ function updateDB(updatedPicks) {
 }
 
 function compilePicks() {
-    let userID = document.getElementById('user-select').value;
     let radioInputs = document.querySelectorAll('input[type="radio"]');
     let updatedPicks = [];
     console.log('Compiling picks...');
@@ -250,6 +250,7 @@ function instantiatePage() {
 
 // Instantiate page
 instantiatePage()
+
 savePicksButton.addEventListener("click", () => {
     const updatedPicks = compilePicks();
     updateDB(updatedPicks);
