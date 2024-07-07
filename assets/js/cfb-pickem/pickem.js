@@ -1,4 +1,5 @@
-const serverEndpoint = 'http://127.0.0.1:5000/all-picks';
+const savePicksButton = document.getElementById('save-picks');
+const serverGetEndpoint = 'http://127.0.0.1:5000/all-picks';
 const seasonWeeks = {
     0: new Date('August 20, 2024'),
     1: new Date('August 27, 2024'),
@@ -22,6 +23,48 @@ const seasonWeeks = {
 };
 const today = new Date();
 let allPicks = [];
+
+function updateDB(updatedPicks) {
+    updatedPicks.forEach(pick => {
+        let serverPutEndpoint = `http://127.0.0.1:5000/submit-pick?userid=${pick.userID}&gameid=${pick.gameID}&selected=${pick.selectedTeam}`;
+        console.log('Starting request to ', serverPutEndpoint);
+        fetch(serverPutEndpoint)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to update data.');
+            });
+    });
+}
+
+function compilePicks() {
+    let userID = document.getElementById('user-select').value;
+    let radioInputs = document.querySelectorAll('input[type="radio"]');
+    let updatedPicks = [];
+    console.log('Compiling picks...');
+    radioInputs.forEach(radio => {
+        if (radio.checked) {
+            let gameID = radio.name;
+            let selectedTeam = radio.value;
+            let pickObject = {
+                'userID': userID,
+                'gameID': gameID,
+                'selectedTeam': selectedTeam
+            };
+            updatedPicks.push(pickObject);
+        }
+    });
+    console.log(updatedPicks);
+    return updatedPicks;
+}
 
 function renderPicks(userWeekPicks) {
     let picksBodyInnerHTML = '<table id="picks-table">';
@@ -67,7 +110,15 @@ function renderPicks(userWeekPicks) {
                 </span>
             </td>
 
-            <td class="selection-cell"></td>
+            <td class="selection-cell">
+                <form>
+                    <div id="${pick.gameID}-div">
+                        <input type="radio" id="${pick.awayTeam}" name="${pick.gameID}" value="${pick.awayTeam}" onclick="document.getElementById('${pick.gameID}-pick').innerHTML = '${pick.awayTeamName}'">
+                        <span id="${pick.gameID}-pick"></span>
+                        <input type="radio" id="${pick.homeTeam}" name="${pick.gameID}" value="${pick.homeTeam}" onclick="document.getElementById('${pick.gameID}-pick').innerHTML = '${pick.homeTeamName}'">
+                    </div>
+                </form>
+            </td>
             
             <td class="home-team-logo">
                 <img src="${pick.homeLogoURL}">
@@ -91,12 +142,11 @@ function renderPicks(userWeekPicks) {
                     ${pick.homeTeamName}<br>
                     ${pick.homeTeamMascot}<br>
                     ${pick.stadium}<br>
-                    Capacity: ${pick.stadiumCapacity}<br>
-                    TV: ${pick.tvCoverage}<br>
+                    TV ${pick.tvCoverage}<br>
                     Betting Line: ${pick.bettingLine}<br>
                     Over/Under: ${pick.bettingLineOverUnder}<br>
-                    ${pick.awatTeamMascot} Win %: ${pick.awayWinPercentage}<br>
-                    ${pick.homeTeamMascot} Win %: ${pick.homeWinPercentage}
+                    ${pick.awayTeamName} Win %: ${pick.awayWinPercentage}<br>
+                    ${pick.homeTeamName} Win %: ${pick.homeWinPercentage}
                 </span>
             </td>
         </tr>`
@@ -170,30 +220,37 @@ function setCurrentWeek() {
     return 14;
 }
 
-fetch(serverEndpoint)
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Response was not ok: ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        // Instantiate `allData`
-        allPicks = data;
-        console.log('HTTP request successful!');
+function instantiatePage() {
+    fetch(serverGetEndpoint)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Response was not ok: ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Instantiate `allData`
+            allPicks = data;
+            console.log('HTTP request successful!');
 
-        // Instantiate `currentWeek`
-        createWeeksDropdown(setCurrentWeek());
+            // Instantiate `currentWeek`
+            createWeeksDropdown(setCurrentWeek());
 
-        // Instantiate `users`
-        createUsersDropdown(setDistinctUsers());
+            // Instantiate `users`
+            createUsersDropdown(setDistinctUsers());
 
-        // Instantiate `picks`
-        renderPicks(filterPicks());
-        console.log(filterPicks());
-    })
-    .catch(error => {
-        console.error('Error: ', error);
-    });
+            // Instantiate `picks`
+            renderPicks(filterPicks());
+            console.log(filterPicks());
+        })
+        .catch(error => {
+            console.error('Error: ', error);
+        });
+}
 
-    
+// Instantiate page
+instantiatePage()
+savePicksButton.addEventListener("click", () => {
+    const updatedPicks = compilePicks();
+    updateDB(updatedPicks);
+});
