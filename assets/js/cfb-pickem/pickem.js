@@ -1,3 +1,4 @@
+const userID = sessionStorage.getItem('userid');
 const savePicksButton = document.getElementById('save-picks');
 const serverGetEndpoint = 'http://127.0.0.1:5000/all-picks';
 const seasonWeeks = {
@@ -22,8 +23,15 @@ const seasonWeeks = {
     18: new Date('December 24, 2024')
 };
 const today = new Date();
-let userID = sessionStorage.getItem('userid');
+const utcTime = today.getTime();
+const offset = new Date().getTimezoneOffset() * 60000;
+const pstOffset = 8 * 60 * 60 * 1000; 
+const pstTime = new Date(utcTime - offset + pstOffset);
+const pstHours = pstTime.getUTCHours();
+const pstMinutes = pstTime.getUTCMinutes();
+
 let allPicks = [];
+
 
 function updateDB(updatedPicks) {
     updatedPicks.forEach(pick => {
@@ -71,10 +79,63 @@ function renderPicks(userWeekPicks) {
 
     for (i = 0; i < userWeekPicks.length; i++) {
         let pick = userWeekPicks[i];
+        let selectionCellDivInnerHTML;
         let awayOverallRecord;
         let awayConferenceRecord;
         let homeOverallRecord;
         let homeConferenceRecord;
+        let gameTimestamp = new Date(`${pick.gameDate} ${pick.gameTime}`);
+        let pickDeadline = new Date(`${pick.gameDate} 9:00 AM`);
+
+        if ((pick.userID == userID) || (gameTimestamp <= pickDeadline)) {
+            savePicksButton.removeAttribute('hidden');
+            // Current User
+            if (pick.teamPicked != null) {
+                // Pick Submitted
+                if (pick.teamPicked == pick.awayTeam) {
+                    // Current User / Away Team Picked
+                    selectionCellDivInnerHTML = `<input type="radio" id="${pick.awayTeam}" name="${pick.gameID}" value="${pick.awayTeam}" onclick="document.getElementById('${pick.gameID}-pick').innerHTML = '${pick.awayTeamName}'" checked>
+                                                     <span id="${pick.gameID}-pick"></span>
+                                                  <input type="radio" id="${pick.homeTeam}" name="${pick.gameID}" value="${pick.homeTeam}" onclick="document.getElementById('${pick.gameID}-pick').innerHTML = '${pick.homeTeamName}'">`;
+                } else {
+                    // Current User / Home Team Picked
+                    selectionCellDivInnerHTML = `<input type="radio" id="${pick.awayTeam}" name="${pick.gameID}" value="${pick.awayTeam}" onclick="document.getElementById('${pick.gameID}-pick').innerHTML = '${pick.awayTeamName}'">
+                                                     <span id="${pick.gameID}-pick"></span>
+                                                  <input type="radio" id="${pick.homeTeam}" name="${pick.gameID}" value="${pick.homeTeam}" onclick="document.getElementById('${pick.gameID}-pick').innerHTML = '${pick.homeTeamName}'" checked>`;
+                }
+
+            } else {
+                // Current User / No Pick submitted yet
+                selectionCellDivInnerHTML = `<input type="radio" id="${pick.awayTeam}" name="${pick.gameID}" value="${pick.awayTeam}" onclick="document.getElementById('${pick.gameID}-pick').innerHTML = '${pick.awayTeamName}'">
+                                                     <span id="${pick.gameID}-pick"></span>
+                                                  <input type="radio" id="${pick.homeTeam}" name="${pick.gameID}" value="${pick.homeTeam}" onclick="document.getElementById('${pick.gameID}-pick').innerHTML = '${pick.homeTeamName}'">`;
+
+            }
+
+        } else {
+            // Other User
+            savePicksButton.setAttribute('hidden', '');
+            if (pick.teamPicked != null) {
+                // Pick Submitted
+                if (pick.teamPicked == pick.awayTeam) {
+                    // Other User / Away Team Picked
+                    selectionCellDivInnerHTML = `<input type="radio" id="${pick.awayTeam}" name="${pick.gameID}" value="${pick.awayTeam}" onclick="document.getElementById('${pick.gameID}-pick').innerHTML = '${pick.awayTeamName}'" checked disabled>
+                                                     <span id="${pick.gameID}-pick"></span>
+                                                  <input type="radio" id="${pick.homeTeam}" name="${pick.gameID}" value="${pick.homeTeam}" onclick="document.getElementById('${pick.gameID}-pick').innerHTML = '${pick.homeTeamName}'" disabled>`;
+                } else {
+                    // Other User / Home Team Picked
+                    selectionCellDivInnerHTML = `<input type="radio" id="${pick.awayTeam}" name="${pick.gameID}" value="${pick.awayTeam}" onclick="document.getElementById('${pick.gameID}-pick').innerHTML = '${pick.awayTeamName}'" disabled>
+                                                     <span id="${pick.gameID}-pick"></span>
+                                                  <input type="radio" id="${pick.homeTeam}" name="${pick.gameID}" value="${pick.homeTeam}" onclick="document.getElementById('${pick.gameID}-pick').innerHTML = '${pick.homeTeamName}'" checked disabled>`;
+                }
+            } else {
+                // Other User / No Pick submitted yet
+                selectionCellDivInnerHTML = `<input type="radio" id="${pick.awayTeam}" name="${pick.gameID}" value="${pick.awayTeam}" onclick="document.getElementById('${pick.gameID}-pick').innerHTML = '${pick.awayTeamName}'" disabled>
+                                                     <span id="${pick.gameID}-pick"></span>
+                                                  <input type="radio" id="${pick.homeTeam}" name="${pick.gameID}" value="${pick.homeTeam}" onclick="document.getElementById('${pick.gameID}-pick').innerHTML = '${pick.homeTeamName}'" disabled>`;
+            }
+        }
+
         
         if (pick.awayOverallTies == 0) {
             awayOverallRecord = `${pick.awayOverallWins}-${pick.awayOverallLosses}`;
@@ -112,11 +173,7 @@ function renderPicks(userWeekPicks) {
 
             <td class="selection-cell">
                 <form>
-                    <div id="${pick.gameID}-div">
-                        <input type="radio" id="${pick.awayTeam}" name="${pick.gameID}" value="${pick.awayTeam}" onclick="document.getElementById('${pick.gameID}-pick').innerHTML = '${pick.awayTeamName}'">
-                        <span id="${pick.gameID}-pick"></span>
-                        <input type="radio" id="${pick.homeTeam}" name="${pick.gameID}" value="${pick.homeTeam}" onclick="document.getElementById('${pick.gameID}-pick').innerHTML = '${pick.homeTeamName}'">
-                    </div>
+                    <div id="${pick.gameID}-div">${selectionCellDivInnerHTML}</div>
                 </form>
             </td>
             
@@ -159,7 +216,9 @@ function filterPicks() {
     const user = document.getElementById('user-select').value;
     const week = document.getElementById('week-select').value;
     const weekStart = seasonWeeks[week];
-    const weekEnd = seasonWeeks[parseInt(week + 1)];
+    const weekEnd = seasonWeeks[(parseInt(week) + 1)];
+    console.log(weekStart)
+    console.log(weekEnd);
     let filteredPicks = [];
 
     for (i = 0; i < allPicks.length; i++) {
@@ -176,6 +235,7 @@ function filterPicks() {
         }
     }
     console.log('Filtered all user picks for week ', week);
+    console.log(filteredPicks);
     return filteredPicks;
 }
 
@@ -192,7 +252,11 @@ function setDistinctUsers() {
 
     for (i = 0; i < allPicks.length; i++) {
         if (!distinctUsers.includes(allPicks[i].username)) {
-            distinctUsers.push(allPicks[i].username);
+            if (allPicks[i].userID == userID) {
+                distinctUsers.unshift(allPicks[i].username);
+            } else {
+                distinctUsers.push(allPicks[i].username);
+            }
         }
     }
     return distinctUsers;
@@ -241,7 +305,6 @@ function instantiatePage() {
 
             // Instantiate `picks`
             renderPicks(filterPicks());
-            console.log(filterPicks());
         })
         .catch(error => {
             console.error('Error: ', error);
@@ -254,4 +317,14 @@ instantiatePage()
 savePicksButton.addEventListener("click", () => {
     const updatedPicks = compilePicks();
     updateDB(updatedPicks);
+});
+
+document.getElementById('user-select').addEventListener("change", () =>{
+    const filteredPicks = filterPicks();
+    renderPicks(filteredPicks);
+});
+
+document.getElementById('week-select').addEventListener("change", () =>{
+    const filteredPicks = filterPicks();
+    renderPicks(filteredPicks);
 });
