@@ -32,6 +32,7 @@ input {
     padding: 5px 20px;
 }
 input::placeholder {
+    font-size: smaller;
     text-align: center;
 }
 
@@ -41,6 +42,7 @@ p {
 }
 a {
     color: #5996e5;
+    font-size: smaller;
     text-decoration: none;
 }
 
@@ -51,5 +53,6 @@ button {
     border-radius: 5px;
     color: #ffffff;
     font-family: "Montserrat", sans-serif;
+    font-size: smaller;
     padding: 5px 20px;
 }

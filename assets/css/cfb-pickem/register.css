@@ -1,9 +1,17 @@
+div {
+    font-size: smaller;
+}
+
 #username {
     margin-top: 40px;
 }
 
 #pw-fields {
     margin-top: 15px;
+}
+
+input {
+    font-size: smaller;
 }
 
 #create-btn {
