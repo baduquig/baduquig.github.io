@@ -49,9 +49,28 @@ function createUser() {
         })
         .then(data => {
             console.log('Request successful: ', data);
-            if (data['status'] == 200) {
+            if (data['status'] == 200) {                
                 console.log('User created successfully');
-                // create user token
+                
+                fetch(`http://127.0.0.1:5000/get-user?username=${usernameInput.value}&pw=${passwordInput.value}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Response was not ok: ' + response.statusText);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data['userid'] > 0) {
+                            sessionStorage.setItem('userid', data['userid']);
+                            window.location.href = 'pickem.html';
+                        } else {
+                            console.log('Error occurred logging in!');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error: ', error);
+                    });
+
             } else {
                 console.log('Error occurred creating user account');
             }

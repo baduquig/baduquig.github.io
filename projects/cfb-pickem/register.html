@@ -7,13 +7,20 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <!-- Stylesheet links -->
+        <!-- Stylesheet links --><!-- Stylesheet links -->
+        <link rel="stylesheet" href="../../assets/css/cfb-pickem/global.css">
+        <link rel="stylesheet" href="../../assets/css/cfb-pickem/register.css">
+
+        <!-- Google Montserrat Font -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     </head>
 
     <body>
         <h1>New User Registration</h1>
 
-        <div id="disclaimer"><p>This project is a side hobby and is not secure. Please <u>DO NOT</u> use passwords used for any other secured accounts!</p></div>
+        <div class="warning" id="disclaimer"><p>This project is a side hobby and is not secure. Please <u>DO NOT</u> use passwords used for any secured accounts! :)</p></div>
 
         <div id="registration-error"><span>User already exists!</span></div>
 
@@ -21,6 +28,7 @@
 
         <div id="pw-fields">
             <input type="password" class="pw-input" id="password" placeholder="Password">
+            <br>
             <input type="password" class="pw-input" id="confirm-password" placeholder="Confirm Password">
         </div>
 
