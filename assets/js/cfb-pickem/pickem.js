@@ -31,11 +31,12 @@ const pstHours = pstTime.getUTCHours();
 const pstMinutes = pstTime.getUTCMinutes();
 
 let allPicks = [];
-let activeTooltipCellID = '';
 
 function showTooltip(cellID) {
-    activeTooltipCellID = cellID;
     document.getElementById(cellID).style.display = 'block';
+}
+function closeTooltip(cellID) {
+    document.getElementById(cellID).style.display = 'none';
 }
 
 function updateDB(updatedPicks) {
@@ -180,7 +181,7 @@ function renderPicks(userWeekPicks) {
             homeConferenceRecord = `${pick.homeConferenceWins}-${pick.homeConferenceLosses}-${pick.homeConferenceTies}`;
         }
         
-        picksBodyInnerHTML = `${picksBodyInnerHTML}
+        picksBodyInnerHTML = `${picksBodyInnerHTML}        
         <tr>
             <td class="logo away-team-logo">
                 <img src="${pick.awayLogoURL}">
@@ -213,6 +214,7 @@ function renderPicks(userWeekPicks) {
                     info
                 </span>
                 <span class="tooltip" id="${pick.gameID}-info" style="display: none;">
+                    <span class="material-symbols-outlined">cancel</span><br><br>
                     ${pick.gameDate}, ${pick.gameTime}<br>
                     ${pick.awayTeamName}<br>
                     ${pick.awayTeamMascot}<br>
@@ -346,14 +348,14 @@ savePicksButton.addEventListener("click", () => {
     const updatedPicks = compilePicks();
     updateDB(updatedPicks);
 });
-
+/*
 document.getElementsByTagName('body')[0].addEventListener("click", () => {
     if (activeTooltipCellID.length > 1) {
         document.getElementById(activeTooltipCellID).style.display = 'none';
     }
     activeTooltipCellID = '';
 });
-
+*/
 document.getElementById('user-select').addEventListener("change", () => {
     const filteredPicks = filterPicks();
     renderPicks(filteredPicks);
