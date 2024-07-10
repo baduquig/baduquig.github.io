@@ -31,10 +31,10 @@ const pstHours = pstTime.getUTCHours();
 const pstMinutes = pstTime.getUTCMinutes();
 
 let allPicks = [];
-
+let activeTooltipCellID = '';
 
 function showTooltip(cellID) {
-    console.log('cellID: ', cellID);
+    activeTooltipCellID = cellID;
     document.getElementById(cellID).style.display = 'block';
 }
 
@@ -194,7 +194,7 @@ function renderPicks(userWeekPicks) {
 
             <td class="selection-cell">
                 <form>
-                    <div class="selection-div" id="${pick.gameID}-div" style="accent-color:${colors[pick.teamPicked][0]}; background:${colors[pick.teamPicked][0]}; color:${colors[pick.teamPicked][1]};">${selectionCellDivInnerHTML}</div>
+                    <div class="selection-div" id="${pick.gameID}-div" style="accent-color:${colors[pick.teamPicked][1]}; background:${colors[pick.teamPicked][0]}; color:${colors[pick.teamPicked][1]};">${selectionCellDivInnerHTML}</div>
                 </form>
             </td>
             
@@ -237,7 +237,7 @@ function setSelectedCell(pickedGameID, pickedTeamID, pickedTeamName) {
     document.getElementById(`${pickedGameID}-pick`).innerHTML = `${pickedTeamName}`;
     document.getElementById(`${pickedGameID}-div`).style.backgroundColor = `${colors[pickedTeamID][0]}`;
     document.getElementById(`${pickedGameID}-div`).getElementsByClassName('selection-text')[0].style.color = `${colors[pickedTeamID][1]}`;
-    document.getElementById(`${pickedTeamID}`).style.accentColor = `${colors[pickedTeamID][0]}`;
+    document.getElementById(`${pickedTeamID}`).style.accentColor = `${colors[pickedTeamID][1]}`;
 }
 
 function filterPicks() {
@@ -347,11 +347,14 @@ savePicksButton.addEventListener("click", () => {
     updateDB(updatedPicks);
 });
 
-/*document.getElementById('modal-close').addEventListener("click", () => {
-    document.getElementById('success-modal').style.display = 'none';
-});*/
+document.getElementsByTagName('body')[0].addEventListener("click", () => {
+    if (activeTooltipCellID.length > 1) {
+        document.getElementById(activeTooltipCellID).style.display = 'none';
+    }
+    activeTooltipCellID = '';
+});
 
-document.getElementById('user-select').addEventListener("change", () =>{
+document.getElementById('user-select').addEventListener("change", () => {
     const filteredPicks = filterPicks();
     renderPicks(filteredPicks);
 });
