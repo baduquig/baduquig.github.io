@@ -222,14 +222,9 @@ function renderPicks(userWeekPicks) {
                     ${pick.homeTeamName}<br>
                     ${pick.homeTeamMascot}<br><br>
                     ${pick.stadium}<br>
-                    <!--
-                    TV ${pick.tvCoverage}<br>
-                    Betting Line: ${pick.bettingLine}<br>
-                    Over/Under: ${pick.bettingLineOverUnder}<br>
-                    ${pick.awayTeamName} Win %: ${pick.awayWinPercentage}<br>
-                    ${pick.homeTeamName} Win %: ${pick.homeWinPercentage}<br>
-                    -->
-                    <span class="material-symbols-outlined" style="padding-top:10px; padding-bottom:10px;" onclick="closeTooltip('${pick.gameID}-info')>cancel</span><br>
+                    <span class="material-symbols-outlined" style="padding-top:10px; padding-bottom:10px;" onclick="closeTooltip('${pick.gameID}-info')">
+                        cancel
+                    </span>
                 </span>
             </td>
         </tr>`
