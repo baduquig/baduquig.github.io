@@ -47,9 +47,14 @@ select {
     padding: 5px 0;
     opacity: 0;
     transition: opacity 0.3s;
-    position: fixed;
-    left: 50%;
-    transform: translateX(-50%);
+    position: absolute;
+    top: -20px;
+}
+.away-team-logo .tooltip {
+    left: 55px;
+}
+.home-team-logo .tooltip {
+    right: 55px;
 }
 .logo:hover .tooltip {
     visibility: visible;
@@ -94,9 +99,9 @@ select {
     padding: 5px 0;
     opacity: 0;
     transition: opacity 0.3s;
-    position: fixed;
-    left: 50%;
-    transform: translateX(-50%);
+    position: absolute;
+    right: 80px;
+    top: -25px;
 }
 .info-cell:hover .tooltip {
     visibility: visible;
