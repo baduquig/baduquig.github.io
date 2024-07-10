@@ -52,13 +52,13 @@ function updateDB(updatedPicks) {
             })
             .then(data => {
                 console.log('Success:', data);
-                alert('Picks saved successfully!');
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Failed to update data.');
+                alert('Failed to update data for Game ID', pick.gameID);
             });
     });
+    alert('Picks saved successfully!');
 }
 
 function compilePicks() {
