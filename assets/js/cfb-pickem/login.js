@@ -14,7 +14,8 @@ function checkCredentialsInputs() {
 }
 
 function checkIfUserExists() {
-    let serverEndpoint = `http://127.0.0.1:5000/get-user?username=${usernameInput.value}&pw=${passwordInput.value}`;
+    //let serverEndpoint = `http://127.0.0.1:5000/get-user?username=${usernameInput.value}&pw=${passwordInput.value}`;
+    let serverEndpoint = `https://gbaduqui.pythonanywhere.com/get-user?username=${usernameInput.value}&pw=${passwordInput.value}`;
     console.log('Starting request to ', serverEndpoint);
 
     fetch(serverEndpoint)

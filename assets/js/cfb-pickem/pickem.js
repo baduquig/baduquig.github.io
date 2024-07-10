@@ -1,6 +1,6 @@
 const userID = sessionStorage.getItem('userid');
 const savePicksButton = document.getElementById('save-picks');
-const serverGetEndpoint = 'http://127.0.0.1:5000/all-picks';
+const serverGetEndpoint = 'https://gbaduqui.pythonanywhere.com/all-picks';
 const seasonWeeks = {
     0: new Date('August 20, 2024'),
     1: new Date('August 27, 2024'),
@@ -35,7 +35,7 @@ let allPicks = [];
 
 function updateDB(updatedPicks) {
     updatedPicks.forEach(pick => {
-        let serverPutEndpoint = `http://127.0.0.1:5000/submit-pick?userid=${pick.userID}&gameid=${pick.gameID}&selected=${pick.selectedTeam}`;
+        let serverPutEndpoint = `https://gbaduqui.pythonanywhere.com/submit-pick?userid=${pick.userID}&gameid=${pick.gameID}&selected=${pick.selectedTeam}`;
         console.log('Starting request to ', serverPutEndpoint);
         fetch(serverPutEndpoint)
             .then(response => {
@@ -227,10 +227,6 @@ function renderPicks(userWeekPicks) {
 function setSelectedCell(pickedGameID, pickedTeamID, pickedTeamName) {
     document.getElementById(`${pickedGameID}-pick`).innerHTML = `${pickedTeamName}`;
     document.getElementById(`${pickedGameID}-div`).style.backgroundColor = `${colors[pickedTeamID][0]}`;
-    /*document.getElementById(`${pickedGameID}-div`).getElementsByClassName('selection-text')[0].style.backgroundColor = `${colors[pickedTeamID][0]}`;
-    document.getElementById(`${pickedGameID}-div`).getElementsByClassName('selection-text')[0].style.borderStyle = 'solid';
-    document.getElementById(`${pickedGameID}-div`).getElementsByClassName('selection-text')[0].style.borderColor = '#FFFFFF';
-    document.getElementById(`${pickedGameID}-div`).getElementsByClassName('selection-text')[0].style.borderWidth = 'thin';*/
     document.getElementById(`${pickedGameID}-div`).getElementsByClassName('selection-text')[0].style.color = `${colors[pickedTeamID][1]}`;
     document.getElementById(`${pickedTeamID}`).style.accentColor = `${colors[pickedTeamID][0]}`;
 }

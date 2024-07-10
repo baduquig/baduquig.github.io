@@ -37,7 +37,8 @@ function registrationCompleted() {
 }
 
 function createUser() {
-    let serverEndpoint = `http://127.0.0.1:5000/create-user?username=${usernameInput.value}&pw=${passwordInput.value}`;
+    //let serverEndpoint = `http://127.0.0.1:5000/create-user?username=${usernameInput.value}&pw=${passwordInput.value}`;
+    let serverEndpoint = `https://gbaduqui.pythonanywhere.com/create-user?username=${usernameInput.value}&pw=${passwordInput.value}`;
     console.log('Starting request to ', serverEndpoint);
 
     fetch(serverEndpoint)
@@ -52,7 +53,7 @@ function createUser() {
             if (data['status'] == 200) {                
                 console.log('User created successfully');
                 
-                fetch(`http://127.0.0.1:5000/get-user?username=${usernameInput.value}&pw=${passwordInput.value}`)
+                fetch(`https://gbaduqui.pythonanywhere.com/get-user?username=${usernameInput.value}&pw=${passwordInput.value}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Response was not ok: ' + response.statusText);
@@ -81,7 +82,7 @@ function createUser() {
 }
 
 function checkIfUserExists() {
-    let serverEndpoint = `http://127.0.0.1:5000/get-user?username=${usernameInput.value}&pw=${passwordInput.value}`;
+    let serverEndpoint = `https://gbaduqui.pythonanywhere.com/get-user?username=${usernameInput.value}&pw=${passwordInput.value}`;
     console.log('Starting request to ', serverEndpoint);
 
     fetch(serverEndpoint)
