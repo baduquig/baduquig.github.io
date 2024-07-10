@@ -103,3 +103,15 @@ img {
     font-size: smaller;
     margin-top: 20px;
 }
+
+
+#success-modal {
+    background-color: #f4eed7;
+    border-radius: 20px;
+    color: #000000;
+    font-size: smaller;
+    text-align: center;
+}
+#modal-close {
+    margin-bottom: 5px;
+}

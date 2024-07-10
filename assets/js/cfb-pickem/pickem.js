@@ -46,6 +46,7 @@ function updateDB(updatedPicks) {
             })
             .then(data => {
                 console.log('Success:', data);
+                document.getElementById('success-modal').style.display = 'block';
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -338,6 +339,10 @@ savePicksButton.addEventListener("click", () => {
     updateDB(updatedPicks);
 });
 
+document.getElementById('modal-close').addEventListener("click", () => {
+    document.getElementById('success-modal').style.display = 'none';
+});
+
 document.getElementById('user-select').addEventListener("change", () =>{
     const filteredPicks = filterPicks();
     renderPicks(filteredPicks);
@@ -345,7 +350,8 @@ document.getElementById('user-select').addEventListener("change", () =>{
 
 document.getElementById('week-select').addEventListener("change", () =>{
     const filteredPicks = filterPicks();
-    renderPicks(filteredPicks);
+    renderPicks(filteredPicks)
+    alert('Picks saved!')
 });
 
 
