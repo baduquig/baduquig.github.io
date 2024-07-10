@@ -55,7 +55,7 @@ function updateDB(updatedPicks) {
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Failed to update data for Game ID', pick.gameID);
+                alert('Failed to update data for Game ID ', pick.gameID, '. Let the app developer know his system sucks :(');
             });
     });
     alert('Picks saved successfully!');
