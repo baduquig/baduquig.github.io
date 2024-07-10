@@ -214,19 +214,22 @@ function renderPicks(userWeekPicks) {
                     info
                 </span>
                 <span class="tooltip" id="${pick.gameID}-info" style="display: none;">
-                    <span class="material-symbols-outlined">cancel</span><br><br>
-                    ${pick.gameDate}, ${pick.gameTime}<br>
+                    ${pick.gameDate}<br>
+                    ${pick.gameTime}<br><br>
                     ${pick.awayTeamName}<br>
                     ${pick.awayTeamMascot}<br>
                     @<br>
                     ${pick.homeTeamName}<br>
-                    ${pick.homeTeamMascot}<br>
+                    ${pick.homeTeamMascot}<br><br>
                     ${pick.stadium}<br>
+                    <!--
                     TV ${pick.tvCoverage}<br>
                     Betting Line: ${pick.bettingLine}<br>
                     Over/Under: ${pick.bettingLineOverUnder}<br>
                     ${pick.awayTeamName} Win %: ${pick.awayWinPercentage}<br>
-                    ${pick.homeTeamName} Win %: ${pick.homeWinPercentage}
+                    ${pick.homeTeamName} Win %: ${pick.homeWinPercentage}<br>
+                    -->
+                    <span class="material-symbols-outlined" style="padding-top:10px; padding-bottom:10px;">cancel</span><br>
                 </span>
             </td>
         </tr>`
@@ -348,14 +351,7 @@ savePicksButton.addEventListener("click", () => {
     const updatedPicks = compilePicks();
     updateDB(updatedPicks);
 });
-/*
-document.getElementsByTagName('body')[0].addEventListener("click", () => {
-    if (activeTooltipCellID.length > 1) {
-        document.getElementById(activeTooltipCellID).style.display = 'none';
-    }
-    activeTooltipCellID = '';
-});
-*/
+
 document.getElementById('user-select').addEventListener("change", () => {
     const filteredPicks = filterPicks();
     renderPicks(filteredPicks);
