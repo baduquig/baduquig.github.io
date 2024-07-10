@@ -33,6 +33,11 @@ const pstMinutes = pstTime.getUTCMinutes();
 let allPicks = [];
 
 
+function showTooltip(cellID) {
+    console.log('cellID: ', cellID);
+    document.getElementById(cellID).style.display = 'block';
+}
+
 function updateDB(updatedPicks) {
     updatedPicks.forEach(pick => {
         let serverPutEndpoint = `https://gbaduqui.pythonanywhere.com/submit-pick?userid=${pick.userID}&gameid=${pick.gameID}&selected=${pick.selectedTeam}`;
@@ -46,7 +51,7 @@ function updateDB(updatedPicks) {
             })
             .then(data => {
                 console.log('Success:', data);
-                document.getElementById('success-modal').style.display = 'block';
+                alert('Picks saved successfully!');
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -186,7 +191,7 @@ function renderPicks(userWeekPicks) {
 
             <td class="selection-cell">
                 <form>
-                    <div class="selection-div" id="${pick.gameID}-div">${selectionCellDivInnerHTML}</div>
+                    <div class="selection-div" id="${pick.gameID}-div" style="accent-color:${colors[pick.teamPicked][0]}; background:${colors[pick.teamPicked][0]}; border-color:${colors[pick.teamPicked][1]}; color: ${colors[pick.teamPicked][1]};">${selectionCellDivInnerHTML}</div>
                 </form>
             </td>
             
@@ -201,10 +206,10 @@ function renderPicks(userWeekPicks) {
             </td>
 
             <td class="info-cell">
-                <span class="material-symbols-outlined">
+                <span class="material-symbols-outlined" onclick="showTooltip('${pick.gameID}-info')">
                     info
                 </span>
-                <span class="tooltip">
+                <span class="tooltip" id="${pick.gameID}-info" style="display: none;">
                     ${pick.gameDate}, ${pick.gameTime}<br>
                     ${pick.awayTeamName}<br>
                     ${pick.awayTeamMascot}<br>
@@ -339,9 +344,9 @@ savePicksButton.addEventListener("click", () => {
     updateDB(updatedPicks);
 });
 
-document.getElementById('modal-close').addEventListener("click", () => {
+/*document.getElementById('modal-close').addEventListener("click", () => {
     document.getElementById('success-modal').style.display = 'none';
-});
+});*/
 
 document.getElementById('user-select').addEventListener("change", () =>{
     const filteredPicks = filterPicks();
@@ -350,8 +355,7 @@ document.getElementById('user-select').addEventListener("change", () =>{
 
 document.getElementById('week-select').addEventListener("change", () =>{
     const filteredPicks = filterPicks();
-    renderPicks(filteredPicks)
-    alert('Picks saved!')
+    renderPicks(filteredPicks);
 });
 
 

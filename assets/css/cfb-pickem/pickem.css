@@ -10,10 +10,18 @@ select {
 }
 #user-select {
     background-color: #474642;
+    color: #FFFFFF;
+    margin-bottom: 10px;
+}
+#week-select {
+    font-size: medium;
+    height: 35px;
+    width: 200px;
 }
 
 
 #deadline-warning {
+    font-size: medium;
     padding-top: 25px;
 }
 
@@ -49,20 +57,22 @@ select {
 }
 
 #picks-table tr {
-    height: 20px;
+    height: 30px;
 }
 .selection-div {
     border-radius: 30px;
 }
 .selection-text {
     text-align: center;
-    width: 75px;
+    width: 125px;
 }
 .away-radio {
     float: left;
+    margin-left: 1px;
 }
 .home-radio {
     float: right;
+    margin-right: 1px;
 }
 
 
@@ -95,7 +105,7 @@ select {
 
 
 img {
-    height: 20px;
+    height: 25px;
 }
 
 
@@ -104,7 +114,7 @@ img {
     margin-top: 20px;
 }
 
-
+/*
 #success-modal {
     background-color: #f4eed7;
     border-radius: 20px;
@@ -114,4 +124,4 @@ img {
 }
 #modal-close {
     margin-bottom: 5px;
-}
+}*/
