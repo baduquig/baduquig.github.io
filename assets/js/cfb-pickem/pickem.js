@@ -121,6 +121,7 @@ function renderPicks(userWeekPicks) {
                                                      <td class="selection-text"><span id="${pick.gameID}-pick"></span></td>
                                                   <td class="home-radio"><input type="radio" id="${pick.homeTeam}" name="${pick.gameID}" value="${pick.homeTeam}" onclick="setSelectedCell(${pick.gameID}, '${pick.homeTeam}', '${pick.homeTeamName}')"></td>
                                              </tr></table>`;
+                pick.teamPicked = '0';
 
             }
 
@@ -151,6 +152,8 @@ function renderPicks(userWeekPicks) {
                                                      <td class="selection-text"><span id="${pick.gameID}-pick"></span></td>
                                                   <td class="home-radio"><input type="radio" id="${pick.homeTeam}" name="${pick.gameID}" value="${pick.homeTeam}" onclick="setSelectedCell(${pick.gameID}, '${pick.homeTeam}', '${pick.homeTeamName}')" disabled></td>
                                              </tr></table>`;
+                pick.teamPicked = '0';
+
             }
         }
 
@@ -176,7 +179,7 @@ function renderPicks(userWeekPicks) {
         } else {
             homeConferenceRecord = `${pick.homeConferenceWins}-${pick.homeConferenceLosses}-${pick.homeConferenceTies}`;
         }
-
+        
         picksBodyInnerHTML = `${picksBodyInnerHTML}
         <tr>
             <td class="logo away-team-logo">
@@ -191,7 +194,7 @@ function renderPicks(userWeekPicks) {
 
             <td class="selection-cell">
                 <form>
-                    <div class="selection-div" id="${pick.gameID}-div" style="accent-color:${colors[pick.teamPicked][0]}; background:${colors[pick.teamPicked][0]}; border-color:${colors[pick.teamPicked][1]}; color: ${colors[pick.teamPicked][1]};">${selectionCellDivInnerHTML}</div>
+                    <div class="selection-div" id="${pick.gameID}-div" style="accent-color:${colors[pick.teamPicked][0]}; background:${colors[pick.teamPicked][0]}; color:${colors[pick.teamPicked][1]};">${selectionCellDivInnerHTML}</div>
                 </form>
             </td>
             
@@ -361,6 +364,7 @@ document.getElementById('week-select').addEventListener("change", () =>{
 
 
 const colors = {
+    '0': ['#474642', '#474642'],
     '103': ['#98002E', '#BC9B6A'],
     '107': ['#602D89', '#FFFFFF'],
     '113': ['#971B2F', '#B1B3B3'],
