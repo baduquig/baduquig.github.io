@@ -91,10 +91,12 @@ function renderPicks(userWeekPicks) {
         let awayConferenceRecord;
         let homeOverallRecord;
         let homeConferenceRecord;
-        let gameTimestamp = new Date(`${pick.gameDate} ${pick.gameTime}`);
-        let pickDeadline = new Date(`${pick.gameDate} 9:00 AM`);
+        //let gameTimestamp = new Date(`${pick.gameDate} ${pick.gameTime}`);
+        //let pickDeadline = new Date(`${pick.gameDate} 9:00 AM`);
+        //let gameTimestamp = new Date(`${pick.gameDate}`);
+        let pickDeadline = new Date(`${pick.gameDate}`);
 
-        if ((pick.userID == userID) || (gameTimestamp <= pickDeadline)) {
+        if ((pick.userID == userID) && (today < pickDeadline)) {
             savePicksButton.removeAttribute('hidden');
             // Current User
             if (pick.teamPicked != null) {
