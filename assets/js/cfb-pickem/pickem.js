@@ -91,6 +91,7 @@ function renderPicks(userWeekPicks) {
         let awayConferenceRecord;
         let homeOverallRecord;
         let homeConferenceRecord;
+        let pickBorderColor;
         //let gameTimestamp = new Date(`${pick.gameDate} ${pick.gameTime}`);
         //let pickDeadline = new Date(`${pick.gameDate} 9:00 AM`);
         //let gameTimestamp = new Date(`${pick.gameDate}`);
@@ -134,7 +135,7 @@ function renderPicks(userWeekPicks) {
             if (pick.teamPicked != null) {
                 // Pick Submitted
                 if (pick.teamPicked == pick.awayTeam) {
-                    // Other User / Away Team Picked                    
+                    // Other User / Away Team Picked
                     selectionCellDivInnerHTML = `<table><tr>
                                                     <td class="away-radio"><input type="radio" id="${pick.awayTeam}" name="${pick.gameID}" value="${pick.awayTeam}" onclick="setSelectedCell(${pick.gameID}, '${pick.awayTeam}', '${pick.awayTeamName}')" checked disabled></td>
                                                         <td class="selection-text"><span id="${pick.gameID}-pick">${pick.awayTeamName}</span></td>
@@ -182,6 +183,16 @@ function renderPicks(userWeekPicks) {
         } else {
             homeConferenceRecord = `${pick.homeConferenceWins}-${pick.homeConferenceLosses}-${pick.homeConferenceTies}`;
         }
+
+        if (today <= pickDeadline) {
+            pickBorderColor = '#474642';
+        }
+        else if (((pick.teamPicked == pick.homeTeam) && (pick.homeTotal > pick.awayTotal)) || ((pick.teamPicked == pick.awayTeam) && (pick.awayTotal > pick.homeTotal))) {
+            pickBorderColor = '#3cf213';
+        }
+        else {
+            pickBorderColor = '#f21317';
+        }
         
         picksBodyInnerHTML = `${picksBodyInnerHTML}        
         <tr>
@@ -197,7 +208,7 @@ function renderPicks(userWeekPicks) {
 
             <td class="selection-cell">
                 <form>
-                    <div class="selection-div" id="${pick.gameID}-div" style="accent-color:${colors[pick.teamPicked][1]}; background:${colors[pick.teamPicked][0]}; color:${colors[pick.teamPicked][1]};">${selectionCellDivInnerHTML}</div>
+                    <div class="selection-div" id="${pick.gameID}-div" style="accent-color:${colors[pick.teamPicked][1]}; background:${colors[pick.teamPicked][0]}; border: 2px solid ${pickBorderColor}; color:${colors[pick.teamPicked][1]};">${selectionCellDivInnerHTML}</div>
                 </form>
             </td>
             
@@ -224,7 +235,8 @@ function renderPicks(userWeekPicks) {
                     ${pick.homeTeamName}<br>
                     ${pick.homeTeamMascot}<br><br>
                     ${pick.stadium}<br>
-                    ${pick.city}, ${pick.state}
+                    ${pick.city}, ${pick.state}<br><br>
+                    <a href=""https://www.espn.com/college-football/game/_/gameId/${pick.gameID}/>Game Details</a><br>
                     <span class="material-symbols-outlined" style="padding-top:10px; padding-bottom:10px;" onclick="closeTooltip('${pick.gameID}-info')">
                         cancel
                     </span>
@@ -234,6 +246,7 @@ function renderPicks(userWeekPicks) {
     }
     picksBodyInnerHTML = `${picksBodyInnerHTML}</table>`;
     document.getElementById('picks-body').innerHTML = picksBodyInnerHTML;
+
 }
 
 function setSelectedCell(pickedGameID, pickedTeamID, pickedTeamName) {
@@ -308,7 +321,7 @@ function createWeeksDropdown(currentWeek) {
 function setCurrentWeek() {    
     for (i = 0; i <= Object.keys(seasonWeeks).length; i++) {
         console.log('Current week: ', i);
-        if (today <= seasonWeeks[i]) {
+        if ((today <= seasonWeeks[i]) && (today > seasonWeeks[i - 1])) {
             return i;
         }
     }
@@ -355,7 +368,25 @@ document.getElementById('user-select').addEventListener("change", () => {
     renderPicks(filteredPicks);
 });
 
-document.getElementById('week-select').addEventListener("change", () =>{
+document.getElementById('week-select').addEventListener("change", () => {
+    const filteredPicks = filterPicks();
+    renderPicks(filteredPicks);
+});
+
+document.getElementById('previous-week').addEventListener("click", () => {
+    const currentWeek = document.getElementById('week-select').value;
+    const previousWeek = Number(currentWeek) - 1;
+    document.getElementById('week-select').value = previousWeek;
+
+    const filteredPicks = filterPicks();
+    renderPicks(filteredPicks);
+});
+
+document.getElementById('next-week').addEventListener("click", () => {
+    const currentWeek = document.getElementById('week-select').value;
+    const previousWeek = Number(currentWeek) + 1;
+    document.getElementById('week-select').value = previousWeek;
+    
     const filteredPicks = filterPicks();
     renderPicks(filteredPicks);
 });
