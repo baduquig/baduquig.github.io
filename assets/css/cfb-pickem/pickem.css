@@ -120,6 +120,19 @@ img {
     margin-bottom: 25px;
 }
 
+#leaderboard-body {
+    margin-top: 15px;
+    text-align: center;
+}
+
+#leaderboard-body span{
+    font-size: medium;
+}
+
+#leaderboard-body span{
+    font-size: medium;
+}
+
 #leaderboard-body tr {
     text-align: right;
 }

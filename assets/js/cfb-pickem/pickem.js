@@ -250,7 +250,7 @@ function renderPicks(userWeekPicks) {
 } // end renderPicks()
 
 function renderLeaderBoard() {
-    let leaderBoardInnerHTML = '<table><tr><td>User</td><td>Correct</td><td>Wrong</td><td>Skipped</td><td>Total Games</td></tr>';
+    let leaderBoardInnerHTML = `<span>Week ${document.getElementById('week-select').value} Leaderboard</span><table><tr><td style="font-weight:550; text-align:left;">User</td><td style="font-weight:550;">Correct</td><td style="font-weight:550;">Wrong</td><td style="font-weight:550;">Skipped</td><td style="font-weight:550;">Total Games</td></tr>`;
     let compiledStats = [];
 
     for (i = 0; i < allPicks.length; i++) {
@@ -307,7 +307,7 @@ function renderLeaderBoard() {
     console.log('compiledStats: ', compiledStats);
 
     for (i = 0; i < compiledStats.length; i++) {
-        leaderBoardInnerHTML = `${leaderBoardInnerHTML}<tr><td>${compiledStats[i].username}</td><td>${compiledStats[i].correct}</td><td>${compiledStats[i].wrong}</td><td>${compiledStats[i].skipped}</td><td>${compiledStats[i].total}</td></tr>`;
+        leaderBoardInnerHTML = `${leaderBoardInnerHTML}<tr><td style="text-align:left">${compiledStats[i].username}</td><td>${compiledStats[i].correct}</td><td>${compiledStats[i].wrong}</td><td>${compiledStats[i].skipped}</td><td>${compiledStats[i].total}</td></tr>`;
     }
 
     leaderBoardInnerHTML = `${leaderBoardInnerHTML}</table>`;
