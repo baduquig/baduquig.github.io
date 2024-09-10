@@ -247,6 +247,71 @@ function renderPicks(userWeekPicks) {
     picksBodyInnerHTML = `${picksBodyInnerHTML}</table>`;
     document.getElementById('picks-body').innerHTML = picksBodyInnerHTML;
 
+} // end renderPicks()
+
+function renderLeaderBoard() {
+    let leaderBoardInnerHTML = '<table><tr><td>User</td><td>Correct</td><td>Wrong</td><td>Submitted</td><td>Skipped</td><td>Total Games</td></tr>';
+    let compiledStats = [];
+
+    for (i = 0; i < allPicks.length; i++) {
+        let gameDate = new Date(allPicks[i].gameDate);
+        let pickCorrect = 0;
+        let userInCompiledStats = compiledStats.find(user => user.username == allPicks[i].username);
+        
+        if (today > gameDate) {
+            console.log('teamPicked: ', allPicks[i].teamPicked, ' | homeTotal: ', allPicks[i].homeTotal, ' | awayTotal: ', allPicks[i].awayTotal);
+            if ((allPicks[i].teamPicked == allPicks[i].homeTeam) && (allPicks[i].homeTotal > allPicks[i].awayTotal)) {
+                pickCorrect = true;
+            } else if ((allPicks[i].teamPicked == allPicks[i].awayTeam) && (allPicks[i].awayTotal > allPicks[i].homeTotal)) {
+                pickCorrect = true;
+            } else {
+                pickCorrect = false;
+            }
+            console.log('pickCorrect: ', pickCorrect);
+        }
+
+        if (userInCompiledStats) {
+            if (pickCorrect == 0) {
+                userInCompiledStats.skipped += 1;
+            } else if (pickCorrect) {
+                userInCompiledStats.correct += 1;
+                userInCompiledStats.submitted += 1;
+            } else {
+                userInCompiledStats.correct += 1;
+                userInCompiledStats.submitted += 1;
+            }
+            userInCompiledStats.total += 1;
+        } else {
+            let distinctUser = {};
+            distinctUser.username = allPicks[i].username;
+            if (pickCorrect == 0) {
+                distinctUser.correct = 0;
+                distinctUser.wrong = 0;
+                distinctUser.submitted = 0;
+                distinctUser.skipped = 1;
+            } else if (pickCorrect) {
+                distinctUser.correct = 1;
+                distinctUser.wrong = 0;
+                distinctUser.submitted = 1;
+                distinctUser.skipped = 0;
+            } else {
+                distinctUser.correct = 1;
+                distinctUser.wrong = 0;
+                distinctUser.submitted = 1;
+                distinctUser.skipped = 0;
+            }
+            distinctUser.total = 1;
+            compiledStats.push(distinctUser);
+        }
+    }
+    console.log('compiledStats: ', compiledStats);
+
+    for (i = 0; i < compiledStats.length; i++) {
+        leaderBoardInnerHTML = `${leaderBoardInnerHTML}<tr><td>${compiledStats['username']}</td><td>${compiledStats['correct']}</td><td>${compiledStats['wrong']}</td><td>${compiledStats['skipped']}</td><td>${compiledStats['total']}</td></tr>`;
+    }
+
+    leaderBoardInnerHTML = `${leaderBoardInnerHTML}</table>`;
+    document.getElementById('leaderboard-body').innerHTML = leaderBoardInnerHTML;
 }
 
 function setSelectedCell(pickedGameID, pickedTeamID, pickedTeamName) {
@@ -349,6 +414,9 @@ function instantiatePage() {
 
             // Instantiate `picks`
             renderPicks(filterPicks());
+
+            // Instantiate `leaderboard`
+            renderLeaderBoard();
         })
         .catch(error => {
             console.error('Error: ', error);
@@ -371,6 +439,7 @@ document.getElementById('user-select').addEventListener("change", () => {
 document.getElementById('week-select').addEventListener("change", () => {
     const filteredPicks = filterPicks();
     renderPicks(filteredPicks);
+    renderLeaderBoard();
 });
 
 document.getElementById('previous-week').addEventListener("click", () => {
@@ -380,6 +449,7 @@ document.getElementById('previous-week').addEventListener("click", () => {
 
     const filteredPicks = filterPicks();
     renderPicks(filteredPicks);
+    renderLeaderBoard();
 });
 
 document.getElementById('next-week').addEventListener("click", () => {
@@ -389,6 +459,7 @@ document.getElementById('next-week').addEventListener("click", () => {
     
     const filteredPicks = filterPicks();
     renderPicks(filteredPicks);
+    renderLeaderBoard();
 });
 
 
