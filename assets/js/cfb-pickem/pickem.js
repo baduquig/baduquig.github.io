@@ -236,7 +236,7 @@ function renderPicks(userWeekPicks) {
                     ${pick.homeTeamMascot}<br><br>
                     ${pick.stadium}<br>
                     ${pick.city}, ${pick.state}<br><br>
-                    <a href=""https://www.espn.com/college-football/game/_/gameId/${pick.gameID}/>Game Details</a><br>
+                    <a href="https://www.espn.com/college-football/game/_/gameId/${pick.gameID}/">Game Details</a><br>
                     <span class="material-symbols-outlined" style="padding-top:10px; padding-bottom:10px;" onclick="closeTooltip('${pick.gameID}-info')">
                         cancel
                     </span>
