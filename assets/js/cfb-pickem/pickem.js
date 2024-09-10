@@ -250,64 +250,64 @@ function renderPicks(userWeekPicks) {
 } // end renderPicks()
 
 function renderLeaderBoard() {
-    let leaderBoardInnerHTML = '<table><tr><td>User</td><td>Correct</td><td>Wrong</td><td>Submitted</td><td>Skipped</td><td>Total Games</td></tr>';
+    let leaderBoardInnerHTML = '<table><tr><td>User</td><td>Correct</td><td>Wrong</td><td>Skipped</td><td>Total Games</td></tr>';
     let compiledStats = [];
 
     for (i = 0; i < allPicks.length; i++) {
         let gameDate = new Date(allPicks[i].gameDate);
-        let pickCorrect = 0;
+        let pickCorrect = 'na';
         let userInCompiledStats = compiledStats.find(user => user.username == allPicks[i].username);
+        const beginWeekRange = seasonWeeks[document.getElementById('week-select').value];
+        const endWeekRange = seasonWeeks[Number(document.getElementById('week-select').value) + 1];
         
-        if (today > gameDate) {
-            console.log('teamPicked: ', allPicks[i].teamPicked, ' | homeTotal: ', allPicks[i].homeTotal, ' | awayTotal: ', allPicks[i].awayTotal);
-            if ((allPicks[i].teamPicked == allPicks[i].homeTeam) && (allPicks[i].homeTotal > allPicks[i].awayTotal)) {
-                pickCorrect = true;
-            } else if ((allPicks[i].teamPicked == allPicks[i].awayTeam) && (allPicks[i].awayTotal > allPicks[i].homeTotal)) {
-                pickCorrect = true;
-            } else {
-                pickCorrect = false;
+        if ((beginWeekRange <= gameDate) && (gameDate < endWeekRange)) {
+            if (today > gameDate) {
+                if ((allPicks[i].teamPicked == allPicks[i].homeTeam) && (allPicks[i].homeTotal > allPicks[i].awayTotal)) {
+                    pickCorrect = true;
+                } else if ((allPicks[i].teamPicked == allPicks[i].awayTeam) && (allPicks[i].awayTotal > allPicks[i].homeTotal)) {
+                    pickCorrect = true;
+                } else if (allPicks[i].teamPicked == null) {
+                    pickCorrect = 'na';
+                } else {
+                    pickCorrect = false;
+                }
             }
-            console.log('pickCorrect: ', pickCorrect);
-        }
-
-        if (userInCompiledStats) {
-            if (pickCorrect == 0) {
-                userInCompiledStats.skipped += 1;
-            } else if (pickCorrect) {
-                userInCompiledStats.correct += 1;
-                userInCompiledStats.submitted += 1;
+    
+            if (userInCompiledStats) {
+                if (pickCorrect == 'na') {
+                    userInCompiledStats.skipped += 1;
+                } else if (pickCorrect) {
+                    userInCompiledStats.correct += 1;
+                } else {
+                    userInCompiledStats.wrong += 1;
+                }
+                userInCompiledStats.total += 1;
             } else {
-                userInCompiledStats.correct += 1;
-                userInCompiledStats.submitted += 1;
+                let distinctUser = {};
+                distinctUser.username = allPicks[i].username;
+                if (pickCorrect == 'na') {
+                    distinctUser.correct = 0;
+                    distinctUser.wrong = 0;
+                    distinctUser.skipped = 1;
+                } else if (pickCorrect) {
+                    distinctUser.correct = 1;
+                    distinctUser.wrong = 0;
+                    distinctUser.skipped = 0;
+                } else {
+                    distinctUser.correct = 0;
+                    distinctUser.wrong = 1;
+                    distinctUser.skipped = 0;
+                }
+                distinctUser.total = 1;
+                compiledStats.push(distinctUser);
             }
-            userInCompiledStats.total += 1;
-        } else {
-            let distinctUser = {};
-            distinctUser.username = allPicks[i].username;
-            if (pickCorrect == 0) {
-                distinctUser.correct = 0;
-                distinctUser.wrong = 0;
-                distinctUser.submitted = 0;
-                distinctUser.skipped = 1;
-            } else if (pickCorrect) {
-                distinctUser.correct = 1;
-                distinctUser.wrong = 0;
-                distinctUser.submitted = 1;
-                distinctUser.skipped = 0;
-            } else {
-                distinctUser.correct = 1;
-                distinctUser.wrong = 0;
-                distinctUser.submitted = 1;
-                distinctUser.skipped = 0;
-            }
-            distinctUser.total = 1;
-            compiledStats.push(distinctUser);
         }
     }
+    compiledStats.sort((a, b) => b.correct - a.correct);
     console.log('compiledStats: ', compiledStats);
 
     for (i = 0; i < compiledStats.length; i++) {
-        leaderBoardInnerHTML = `${leaderBoardInnerHTML}<tr><td>${compiledStats['username']}</td><td>${compiledStats['correct']}</td><td>${compiledStats['wrong']}</td><td>${compiledStats['skipped']}</td><td>${compiledStats['total']}</td></tr>`;
+        leaderBoardInnerHTML = `${leaderBoardInnerHTML}<tr><td>${compiledStats[i].username}</td><td>${compiledStats[i].correct}</td><td>${compiledStats[i].wrong}</td><td>${compiledStats[i].skipped}</td><td>${compiledStats[i].total}</td></tr>`;
     }
 
     leaderBoardInnerHTML = `${leaderBoardInnerHTML}</table>`;

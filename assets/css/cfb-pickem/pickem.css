@@ -120,6 +120,10 @@ img {
     margin-bottom: 25px;
 }
 
+#leaderboard-body table {
+    text-align: right;
+}
+
 /*
 #success-modal {
     background-color: #f4eed7;
