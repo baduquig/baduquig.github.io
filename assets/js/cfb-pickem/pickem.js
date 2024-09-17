@@ -187,7 +187,7 @@ function renderPicks(userWeekPicks) {
         if (today <= pickDeadline) {
             pickBorderColor = '#474642';
         }
-        else if (((pick.teamPicked == pick.homeTeam) && (pick.homeTotal > pick.awayTotal)) || ((pick.teamPicked == pick.awayTeam) && (pick.awayTotal > pick.homeTotal))) {
+        else if (((pick.teamPicked == pick.homeTeam) && (Number(pick.homeTotal) > Number(pick.awayTotal))) || ((pick.teamPicked == pick.awayTeam) && (Number(pick.awayTotal) > Number(pick.homeTotal)))) {
             pickBorderColor = '#3cf213';
         }
         else {
@@ -262,9 +262,9 @@ function renderLeaderBoard() {
         
         if ((beginWeekRange <= gameDate) && (gameDate < endWeekRange)) {
             if (today > gameDate) {
-                if ((allPicks[i].teamPicked == allPicks[i].homeTeam) && (allPicks[i].homeTotal > allPicks[i].awayTotal)) {
+                if ((allPicks[i].teamPicked == allPicks[i].homeTeam) && (Number(allPicks[i].homeTotal) > Number(allPicks[i].awayTotal))) {
                     pickCorrect = true;
-                } else if ((allPicks[i].teamPicked == allPicks[i].awayTeam) && (allPicks[i].awayTotal > allPicks[i].homeTotal)) {
+                } else if ((allPicks[i].teamPicked == allPicks[i].awayTeam) && (Number(allPicks[i].awayTotal) > Number(allPicks[i].homeTotal))) {
                     pickCorrect = true;
                 } else if (allPicks[i].teamPicked == null) {
                     pickCorrect = 'na';
