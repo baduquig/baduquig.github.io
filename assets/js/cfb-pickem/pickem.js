@@ -387,7 +387,7 @@ function setCurrentWeek() {
     for (i = 0; i <= Object.keys(seasonWeeks).length; i++) {
         console.log('Current week: ', i);
         if ((today <= seasonWeeks[i]) && (today > seasonWeeks[i - 1])) {
-            return i;
+            return i - 1;
         }
     }
     return 14;
@@ -402,7 +402,7 @@ function instantiatePage() {
             return response.json();
         })
         .then(data => {
-            // Instantiate `allData`
+            // Instantiate `all
             allPicks = data;
             console.log('HTTP request successful!');
 
