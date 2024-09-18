@@ -214,6 +214,7 @@ function renderPicks(userWeekPicks) {
                     ${pick.awayTeamMascot}<br>
                     Record: ${awayOverallRecord}<br>
                     (Conference: ${awayConferenceRecord})
+                    <a href="https://www.espn.com/college-football/team/_/id/${pick.awayTeam}">School Details</a>
                 </span>
             </td>
 
@@ -230,6 +231,7 @@ function renderPicks(userWeekPicks) {
                     ${pick.homeTeamMascot}<br>
                     Record: ${homeOverallRecord}<br>
                     (Conference: ${homeConferenceRecord})
+                    <a href="https://www.espn.com/college-football/team/_/id/${pick.homeTeam}">School Details</a>
                 </span>
             </td>
 
