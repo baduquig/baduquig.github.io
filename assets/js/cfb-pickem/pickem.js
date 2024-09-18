@@ -92,9 +92,6 @@ function renderPicks(userWeekPicks) {
         let homeOverallRecord;
         let homeConferenceRecord;
         let pickBorderColor;
-        //let gameTimestamp = new Date(`${pick.gameDate} ${pick.gameTime}`);
-        //let pickDeadline = new Date(`${pick.gameDate} 9:00 AM`);
-        //let gameTimestamp = new Date(`${pick.gameDate}`);
         let pickDeadline = new Date(`${pick.gameDate}`);
 
         if ((pick.userID == userID) && (today < pickDeadline)) {
@@ -138,14 +135,14 @@ function renderPicks(userWeekPicks) {
                     // Other User / Away Team Picked
                     selectionCellDivInnerHTML = `<table><tr>
                                                     <td class="away-radio"><input type="radio" id="${pick.awayTeam}" name="${pick.gameID}" value="${pick.awayTeam}" onclick="setSelectedCell(${pick.gameID}, '${pick.awayTeam}', '${pick.awayTeamName}')" checked disabled></td>
-                                                        <td class="selection-text"><span id="${pick.gameID}-pick">${pick.awayTeamName}</span></td>
+                                                        <td class="selection-text"><span id="${pick.gameID}-pick">${pick.awayTotal}  -  ${pick.homeTotal}</span></td>
                                                     <td class="home-radio"><input type="radio" id="${pick.homeTeam}" name="${pick.gameID}" value="${pick.homeTeam}" onclick="setSelectedCell(${pick.gameID}, '${pick.homeTeam}', '${pick.homeTeamName}')" disabled></td>
                                                 </tr></table>`;
                 } else {
                     // Other User / Home Team Picked
                     selectionCellDivInnerHTML = `<table><tr>
                                                     <td class="away-radio"><input type="radio" id="${pick.awayTeam}" name="${pick.gameID}" value="${pick.awayTeam}" onclick="setSelectedCell(${pick.gameID}, '${pick.awayTeam}', '${pick.awayTeamName}')" disabled></td>
-                                                         <td class="selection-text"><span id="${pick.gameID}-pick">${pick.homeTeamName}</span></td>
+                                                         <td class="selection-text"><span id="${pick.gameID}-pick">${pick.awayTotal}  -  ${pick.homeTotal}</span></td>
                                                       <td class="home-radio"><input type="radio" id="${pick.homeTeam}" name="${pick.gameID}" value="${pick.homeTeam}" onclick="setSelectedCell(${pick.gameID}, '${pick.homeTeam}', '${pick.homeTeamName}')" checked disabled></td>
                                                  </tr></table>`;
                 }
@@ -153,7 +150,7 @@ function renderPicks(userWeekPicks) {
                 // Other User / No Pick submitted yet
                 selectionCellDivInnerHTML = `<table><tr>
                                                 <td class="away-radio"><input type="radio" id="${pick.awayTeam}" name="${pick.gameID}" value="${pick.awayTeam}" onclick="setSelectedCell(${pick.gameID}, '${pick.awayTeam}', '${pick.awayTeamName}')" disabled></td>
-                                                     <td class="selection-text"><span id="${pick.gameID}-pick"></span></td>
+                                                     <td class="selection-text"><span id="${pick.gameID}-pick">${pick.awayTotal}  -  ${pick.homeTotal}</span></td>
                                                   <td class="home-radio"><input type="radio" id="${pick.homeTeam}" name="${pick.gameID}" value="${pick.homeTeam}" onclick="setSelectedCell(${pick.gameID}, '${pick.homeTeam}', '${pick.homeTeamName}')" disabled></td>
                                              </tr></table>`;
                 pick.teamPicked = '0';

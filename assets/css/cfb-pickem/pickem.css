@@ -26,8 +26,8 @@ select {
 }
 
 #picks-body {
-    font-size: x-small;
-    font-weight: 600;
+    font-size: small;
+    font-weight: 200;
     margin-top: 25px;
 }
 
@@ -115,7 +115,7 @@ img {
 
 
 #save-picks {
-    font-size: smaller;
+    font-size:;
     margin-top: 20px;
     margin-bottom: 25px;
 }
