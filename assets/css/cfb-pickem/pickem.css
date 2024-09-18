@@ -77,6 +77,9 @@ select {
 .home-radio {
     margin-right: 1px;
 }
+.home-radio input {
+    margin-right: 1px;
+}
 
 
 .info-cell span {
@@ -86,6 +89,7 @@ select {
     position: relative;
     display: inline-block;
     cursor: pointer;
+    margin-top: 5px;
 }
 .info-cell .tooltip {
     visibility: hidden;
@@ -109,6 +113,9 @@ select {
 
 img {
     height: 25px;
+}
+.logo {
+    margin-top: 5px;
 }
 
 
@@ -134,15 +141,3 @@ img {
 #leaderboard-body tr {
     text-align: right;
 }
-
-/*
-#success-modal {
-    background-color: #f4eed7;
-    border-radius: 20px;
-    color: #000000;
-    font-size: smaller;
-    text-align: center;
-}
-#modal-close {
-    margin-bottom: 5px;
-}*/
