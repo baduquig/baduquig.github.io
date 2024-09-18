@@ -72,11 +72,10 @@ select {
     width: 125px;
 }
 .away-radio {
-    float: left;
     margin-left: 1px;
 }
 .home-radio {
-    float: right;
+    margin-right: 1px;
 }
 
 
