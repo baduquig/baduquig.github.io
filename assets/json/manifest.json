@@ -2,7 +2,7 @@
     "name": "College Football Pickem 2024",
     "short_name": "CFB Pickem",
     "description": "Complete FBS College Football Pickem",
-    "start_url": "/index.html",
+    "start_url": "index.html",
     "display": "standalone",
     "background_color": "#474642",
     "theme_color": "#FFFFFF",
