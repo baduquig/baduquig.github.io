@@ -135,7 +135,7 @@ function renderPicks(userWeekPicks) {
                 // Pick Submitted
                 if (pick.teamPicked == pick.awayTeam) {
                     // Other User / Away Team Picked
-                    if (today < pickDeadline) {
+                    if ((today < pickDeadline) || (pick.awayTotal == 0 && pick.homeTotal == 0)) {
                         selectionText = `${pick.awayTeamName}`;
                     }
 
@@ -146,7 +146,7 @@ function renderPicks(userWeekPicks) {
                                                 </tr></table>`;
                 } else {
                     // Other User / Home Team Picked
-                    if (today < pickDeadline) {
+                    if ((today < pickDeadline) || (pick.awayTotal == 0 && pick.homeTotal == 0)) {
                         selectionText = `${pick.homeTeamName}`;
                     }
 
