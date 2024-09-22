@@ -213,8 +213,11 @@ function renderPicks(userWeekPicks) {
                     ${pick.awayTeamName}<br>
                     ${pick.awayTeamMascot}<br>
                     Record: ${awayOverallRecord}<br>
-                    (Conference: ${awayConferenceRecord})
+                    (Conference: ${awayConferenceRecord})<br><br>
                     <a href="https://www.espn.com/college-football/team/_/id/${pick.awayTeam}">School Details</a>
+                    <span class="material-symbols-outlined" style="padding-top:10px; padding-bottom:10px;" onclick="closeTooltip('${pick.gameID}-info')">
+                        cancel
+                    </span>
                 </span>
             </td>
 
@@ -230,8 +233,11 @@ function renderPicks(userWeekPicks) {
                     ${pick.homeTeamName}<br>
                     ${pick.homeTeamMascot}<br>
                     Record: ${homeOverallRecord}<br>
-                    (Conference: ${homeConferenceRecord})
+                    (Conference: ${homeConferenceRecord})<br><br>
                     <a href="https://www.espn.com/college-football/team/_/id/${pick.homeTeam}">School Details</a>
+                    <span class="material-symbols-outlined" style="padding-top:10px; padding-bottom:10px;" onclick="closeTooltip('${pick.gameID}-info')">
+                        cancel
+                    </span>
                 </span>
             </td>
 
