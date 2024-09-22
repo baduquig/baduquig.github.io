@@ -135,7 +135,7 @@ function renderPicks(userWeekPicks) {
                 // Pick Submitted
                 if (pick.teamPicked == pick.awayTeam) {
                     // Other User / Away Team Picked
-                    if ((today < pickDeadline) || (pick.awayTotal == 0 && pick.homeTotal == 0)) {
+                    if ((pick.awayTotal == 0) && (pick.homeTotal == 0)) {
                         selectionText = `${pick.awayTeamName}`;
                     }
 
@@ -146,7 +146,7 @@ function renderPicks(userWeekPicks) {
                                                 </tr></table>`;
                 } else {
                     // Other User / Home Team Picked
-                    if ((today < pickDeadline) || (pick.awayTotal == 0 && pick.homeTotal == 0)) {
+                    if ((pick.awayTotal == 0) && (pick.homeTotal == 0)) {
                         selectionText = `${pick.homeTeamName}`;
                     }
 
@@ -195,7 +195,7 @@ function renderPicks(userWeekPicks) {
             homeConferenceRecord = `${pick.homeConferenceWins}-${pick.homeConferenceLosses}-${pick.homeConferenceTies}`;
         }
 
-        if (today <= pickDeadline) {
+        if ((pick.awayTotal == 0) && (pick.homeTotal == 0)) {
             pickBorderColor = '#474642';
         }
         else if (((pick.teamPicked == pick.homeTeam) && (Number(pick.homeTotal) > Number(pick.awayTotal))) || ((pick.teamPicked == pick.awayTeam) && (Number(pick.awayTotal) > Number(pick.homeTotal)))) {
