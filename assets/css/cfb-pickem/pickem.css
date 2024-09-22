@@ -23,6 +23,7 @@ select {
 #deadline-warning {
     font-size: medium;
     padding-top: 25px;
+    text-align: center;
 }
 
 #picks-body {
