@@ -2,6 +2,10 @@
     margin-top: 40px;
 }
 
+#guest-btn {
+    background-color: #225bf7;
+}
+
 #sign-in-btn {
     margin-top: auto;
 }

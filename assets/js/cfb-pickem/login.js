@@ -1,14 +1,17 @@
 const loginErrorDiv = document.getElementById('login-error');
 const usernameInput = document.getElementById('username');
 const passwordInput = document.getElementById('password');
+const guestButton = document.getElementById('guest-btn');
 const signinButton = document.getElementById('sign-in-btn');
 
 
 function checkCredentialsInputs() {
     loginErrorDiv.setAttribute('hidden', '');
     if ((usernameInput.value.length == 0) || (passwordInput.value.length == 0)) {
+        guestButton.removeAttribute('hidden');
         signinButton.setAttribute('hidden', '');
     } else {
+        guestButton.setAttribute('hidden', '');
         signinButton.removeAttribute('hidden');
     }
 }
@@ -45,6 +48,10 @@ function checkIfUserExists() {
 
 usernameInput.addEventListener("input", checkCredentialsInputs);
 passwordInput.addEventListener("input", checkCredentialsInputs);
-signinButton.addEventListener("click", checkIfUserExists)
+signinButton.addEventListener("click", checkIfUserExists);
+guestButton.addEventListener("click", () => {
+    sessionStorage.setItem('userid', '9999');
+    window.location.href = 'pickem.html';
+});
 
 checkCredentialsInputs();
