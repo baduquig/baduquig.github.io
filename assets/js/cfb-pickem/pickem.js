@@ -215,6 +215,7 @@ function renderPicks(userWeekPicks) {
                     Record: ${awayOverallRecord}<br>
                     (Conference: ${awayConferenceRecord})<br><br>
                     <a href="https://www.espn.com/college-football/team/_/id/${pick.awayTeam}">School Details</a>
+                    <br>
                     <span class="material-symbols-outlined" style="padding-top:10px; padding-bottom:10px;" onclick="closeTooltip('${pick.gameID}-info')">
                         cancel
                     </span>
@@ -235,6 +236,7 @@ function renderPicks(userWeekPicks) {
                     Record: ${homeOverallRecord}<br>
                     (Conference: ${homeConferenceRecord})<br><br>
                     <a href="https://www.espn.com/college-football/team/_/id/${pick.homeTeam}">School Details</a>
+                    <br>
                     <span class="material-symbols-outlined" style="padding-top:10px; padding-bottom:10px;" onclick="closeTooltip('${pick.gameID}-info')">
                         cancel
                     </span>
@@ -247,7 +249,7 @@ function renderPicks(userWeekPicks) {
                 </span>
                 <span class="tooltip" id="${pick.gameID}-info" style="display: none;">
                     ${pick.gameDate}<br>
-                    ${pick.gameTime}<br><br>
+                    ${pick.gameTime} EST<br><br>
                     ${pick.awayTeamName}<br>
                     ${pick.awayTeamMascot}<br>
                     @<br>
@@ -362,6 +364,60 @@ function filterPicks() {
             filteredPicks.push(objectCopy);
         }
     }
+
+    filteredPicks.sort((a, b) => {
+        // Sort by year if game year differs
+        if (a.gameYear > b.gameYear) {
+            return a.gameYear - b.gameYear;
+        } else if (b.gameYear > a.gameYear) {
+            return b.gameYear > a.gameYear;
+        } else {
+            // Sort by month if game year matches
+            if (a.gameMonth > b.gameMonth) {
+                return a.gameMonth > b.gameMonth;
+            } else if (b.gameMonth > a.gameMonth) {
+                return b.gameMonth > a.gameMonth;
+            } else {
+                // Sort by day if game year and month match
+                if (a.gameDay > b.gameDay) {
+                    return a.gameDay > b.gameDay;
+                } else if (b.gameDay > a.gameDay) {
+                    return b.gameDay > a.gameDay;
+                } else {
+                    // Sort by AM/PM if game year, month and day match
+                    const aHour = Number(a.gameTime.split(":")[0]);
+                    const bHour = Number(b.gameTime.split(":")[0]);
+                    const aMinute = Number(a.gameTime.split(":")[1].substr(0, 2));
+                    const bMinute = Number(b.gameTime.split(":")[1].substr(0, 2));
+                    console.log(aHour);
+                    console.log(bHour);
+                    console.log(typeof aHour);
+                    console.log(typeof bHour);
+                    console.log('');
+                    if ((aHour == 12) && (bHour != 12)) {
+                        return a.gameTime - b.gameTime;
+                    } else if ((bHour == 12) && (aHour != 12)) {
+                        return b.gameTime - a.gameTime;
+                    } else {
+                        // Sort by hour if games AM/PM matches
+                        if (aHour > bHour) {
+                            return aHour - bHour;
+                        } else if (bHour - aHour) {
+                            return bHour - aHour;
+                        } else {
+                            // Sort by minute if Hour mathces
+                            if (aMinute > bMinute) {
+                                return aMinute - bMinute;
+                            } else {
+                                return bMinute - aMinute;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+
     console.log('Filtered all user picks for week ', week);
     console.log(filteredPicks);
     return filteredPicks;
