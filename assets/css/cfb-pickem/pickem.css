@@ -62,6 +62,9 @@ select {
     opacity: 1;
 }
 
+.gameday-header {
+    padding-left: 25%;
+}
 #picks-table tr {
     height: 30px;
 }

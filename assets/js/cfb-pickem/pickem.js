@@ -83,6 +83,7 @@ function compilePicks() {
 
 function renderPicks(userWeekPicks) {
     let picksBodyInnerHTML = '<table id="picks-table">';
+    let gamedayHeader = '';
 
     for (i = 0; i < userWeekPicks.length; i++) {
         let pick = userWeekPicks[i];
@@ -203,6 +204,13 @@ function renderPicks(userWeekPicks) {
         }
         else {
             pickBorderColor = '#f21317';
+        }
+
+        console.log(pick.gameDate);
+        console.log(gamedayHeader);
+        if (pick.gameDate !== gamedayHeader) {
+            gamedayHeader = pick.gameDate;
+            picksBodyInnerHTML = `${picksBodyInnerHTML}<tr><td></td></tr><tr><td class="gameday-header" colspan="3">${pick.gameDate}</td></tr>`;
         }
         
         picksBodyInnerHTML = `${picksBodyInnerHTML}        
@@ -365,58 +373,7 @@ function filterPicks() {
         }
     }
 
-    filteredPicks.sort((a, b) => {
-        // Sort by year if game year differs
-        if (a.gameYear > b.gameYear) {
-            return a.gameYear - b.gameYear;
-        } else if (b.gameYear > a.gameYear) {
-            return b.gameYear > a.gameYear;
-        } else {
-            // Sort by month if game year matches
-            if (a.gameMonth > b.gameMonth) {
-                return a.gameMonth > b.gameMonth;
-            } else if (b.gameMonth > a.gameMonth) {
-                return b.gameMonth > a.gameMonth;
-            } else {
-                // Sort by day if game year and month match
-                if (a.gameDay > b.gameDay) {
-                    return a.gameDay > b.gameDay;
-                } else if (b.gameDay > a.gameDay) {
-                    return b.gameDay > a.gameDay;
-                } else {
-                    // Sort by AM/PM if game year, month and day match
-                    const aHour = Number(a.gameTime.split(":")[0]);
-                    const bHour = Number(b.gameTime.split(":")[0]);
-                    const aMinute = Number(a.gameTime.split(":")[1].substr(0, 2));
-                    const bMinute = Number(b.gameTime.split(":")[1].substr(0, 2));
-                    console.log(aHour);
-                    console.log(bHour);
-                    console.log(typeof aHour);
-                    console.log(typeof bHour);
-                    console.log('');
-                    if ((aHour == 12) && (bHour != 12)) {
-                        return a.gameTime - b.gameTime;
-                    } else if ((bHour == 12) && (aHour != 12)) {
-                        return b.gameTime - a.gameTime;
-                    } else {
-                        // Sort by hour if games AM/PM matches
-                        if (aHour > bHour) {
-                            return aHour - bHour;
-                        } else if (bHour - aHour) {
-                            return bHour - aHour;
-                        } else {
-                            // Sort by minute if Hour mathces
-                            if (aMinute > bMinute) {
-                                return aMinute - bMinute;
-                            } else {
-                                return bMinute - aMinute;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    });
+    filteredPicks.sort((a, b) => new Date(`${a.gameDate} ${a.gameTime}`) - new Date(`${b.gameDate} ${b.gameTime}`));
 
     console.log('Filtered all user picks for week ', week);
     console.log(filteredPicks);
