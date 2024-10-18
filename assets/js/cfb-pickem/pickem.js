@@ -207,10 +207,17 @@ function renderPicks(userWeekPicks) {
             pickBorderColor = '#f21317';
         }
 
-        if (Number(pick.awayWinPercentage) > Number(pick.homeWinPercentage)) {
-            winProbability = pick.awayWinPercentage + ' ' + pick.awayTeamName + '<br><br>';
-        } else if (Number(pick.homeWinPercentage) > Number(pick.awayWinPercentage)) {
-            winProbability = pick.homeWinPercentage + ' ' + pick.homeTeamName + '<br><br>';
+        if (today < pickDeadline) {
+            awayWinPercentage = pick.awayWinPercentage.replace('%', '');
+            homeWinPercentage = pick.homeWinPercentage.replace('%', '');
+
+            if (Number(awayWinPercentage) > Number(homeWinPercentage)) {
+                winProbability = pick.awayWinPercentage + ' ' + pick.awayTeamName + '<br><br>';
+            } else if (Number(homeWinPercentage) > Number(awayWinPercentage)) {
+                winProbability = pick.homeWinPercentage + ' ' + pick.homeTeamName + '<br><br>';
+            } else {
+                winProbability = '';
+            }
         } else {
             winProbability = '';
         }
