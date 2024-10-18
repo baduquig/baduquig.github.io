@@ -92,6 +92,7 @@ function renderPicks(userWeekPicks) {
         let awayConferenceRecord;
         let homeOverallRecord;
         let homeConferenceRecord;
+        let winProbability;
         let pickBorderColor;
         let pickDeadline = new Date(`${pick.gameDate}`);
 
@@ -206,8 +207,14 @@ function renderPicks(userWeekPicks) {
             pickBorderColor = '#f21317';
         }
 
-        console.log(pick.gameDate);
-        console.log(gamedayHeader);
+        if (Number(pick.awayWinPercentage) > Number(pick.homeWinPercentage)) {
+            winProbability = pick.awayWinPercentage + ' ' + pick.awayTeamName + '<br><br>';
+        } else if (Number(pick.homeWinPercentage) > Number(pick.awayWinPercentage)) {
+            winProbability = pick.homeWinPercentage + ' ' + pick.homeTeamName + '<br><br>';
+        } else {
+            winProbability = '';
+        }
+
         if (pick.gameDate !== gamedayHeader) {
             gamedayHeader = pick.gameDate;
             picksBodyInnerHTML = `${picksBodyInnerHTML}<tr><td></td></tr><tr><td class="gameday-header" colspan="3">${pick.gameDate}</td></tr>`;
@@ -223,7 +230,7 @@ function renderPicks(userWeekPicks) {
                     Record: ${awayOverallRecord}<br>
                     (Conference: ${awayConferenceRecord})<br><br>
                     <a href="https://www.espn.com/college-football/team/_/id/${pick.awayTeam}">School Details</a>
-                    <br>
+                    <br><br>
                     <span class="material-symbols-outlined" style="padding-top:10px; padding-bottom:10px;" onclick="closeTooltip('${pick.gameID}-info')">
                         cancel
                     </span>
@@ -244,7 +251,7 @@ function renderPicks(userWeekPicks) {
                     Record: ${homeOverallRecord}<br>
                     (Conference: ${homeConferenceRecord})<br><br>
                     <a href="https://www.espn.com/college-football/team/_/id/${pick.homeTeam}">School Details</a>
-                    <br>
+                    <br><br>
                     <span class="material-symbols-outlined" style="padding-top:10px; padding-bottom:10px;" onclick="closeTooltip('${pick.gameID}-info')">
                         cancel
                     </span>
@@ -263,9 +270,8 @@ function renderPicks(userWeekPicks) {
                     @<br>
                     ${pick.homeTeamName}<br>
                     ${pick.homeTeamMascot}<br><br>
-                    ${pick.stadium}<br>
-                    ${pick.city}, ${pick.state}<br><br>
-                    <a href="https://www.espn.com/college-football/game/_/gameId/${pick.gameID}/">Game Details</a><br>
+                    ${winProbability}
+                    <a href="https://www.espn.com/college-football/game/_/gameId/${pick.gameID}/">Game Details</a><br><br>
                     <span class="material-symbols-outlined" style="padding-top:10px; padding-bottom:10px;" onclick="closeTooltip('${pick.gameID}-info')">
                         cancel
                     </span>
