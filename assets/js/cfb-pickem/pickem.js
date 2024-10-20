@@ -271,7 +271,8 @@ function renderPicks(userWeekPicks) {
                 </span>
                 <span class="tooltip" id="${pick.gameID}-info" style="display: none;">
                     ${pick.gameDate}<br>
-                    ${pick.gameTime} EST<br><br>
+                    ${pick.gameTime} EST<br>
+                    ${pick.tvCoverage}<br><br>
                     ${pick.awayTeamName}<br>
                     ${pick.awayTeamMascot}<br>
                     @<br>
